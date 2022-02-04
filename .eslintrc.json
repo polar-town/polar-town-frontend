@@ -13,6 +13,16 @@
   },
   "plugins": ["react"],
   "rules": {
-    "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx"] }]
+    "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx"] }],
+    "no-param-reassign": "off",
+    "import/prefer-default-export": "off",
+    "no-promise-executor-return": "off",
+    "import/order": "off",
+    "no-use-before-define": "off",
+    "no-unused-vars": "off",
+    "no-undef": "off",
+    "react/jsx-no-bind": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "react/require-default-props": "off"
   }
 }
