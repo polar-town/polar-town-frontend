@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, Avatar } from "@mui/material";
-import GoogleLogin from "react-google-login";
 import axios from "axios";
-import USER_INFO_SCOPE from "../../constants/userInfoScope";
+import useGapi from "../../hooks/useGapi";
 
 const StyledLoginOverlay = styled.div`
   background: linear-gradient(to top, #03bcf6, #89fff1);
@@ -16,6 +14,7 @@ const StyledLoginContent = styled.div`
   background-color: #f2f2f2;
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 30%;
   padding: 40px;
   border-radius: 10px;
@@ -24,7 +23,7 @@ const StyledLoginContent = styled.div`
 
 const StyledLogoImage = styled.img`
   image-rendering: pixelated;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   margin-top: 10px;
   width: 150px;
   display: block;
@@ -32,21 +31,43 @@ const StyledLogoImage = styled.img`
   margin-right: auto;
 `;
 
+const StyledFailureMessage = styled.span`
+  color: #ff0000;
+  weight: 700;
+  margin-top: 10px;
+`;
+
 function Login() {
-  const responseGoogle = async (result) => {
-    const { code } = result;
-    const serverResponse = await axios(
+  const [error, setError] = useState("");
+  const gapi = useGapi();
+
+  useEffect(() => {
+    if (!gapi) return;
+
+    gapi.signin2.render("google-login-button", {
+      width: 250,
+      height: 50,
+      theme: "dark",
+      longtitle: true,
+      onsuccess: responseGoogle,
+      onfailure: responseError,
+    });
+  }, [gapi]);
+
+  async function responseGoogle(result) {
+    const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
-      { code },
+      { result },
     );
+  }
 
-    // serverResponse handling needed
-    // e.g. set user in store
-  };
+  function responseError() {
+    setError("Login Failed");
 
-  const responseError = (error) => {
-    // error handling needed
-  };
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+  }
 
   return (
     <StyledLoginOverlay>
@@ -55,27 +76,8 @@ function Login() {
           src="images/polar-town-logo.png"
           alt="game logo with bear paw"
         />
-        <GoogleLogin
-          clientId={process.env.REACT_APP_CLIENT_ID}
-          render={(renderProps) => (
-            <Button
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
-              variant="contained"
-              color="primary"
-              startIcon={<Avatar src="images/google-logo.png" />}
-            >
-              Login
-            </Button>
-          )}
-          onSuccess={responseGoogle}
-          onFailure={responseError}
-          cookiePolicy="single_host_origin"
-          responseType="code"
-          accessType="offline"
-          scope={USER_INFO_SCOPE}
-          redirectUri={process.env.REACT_APP_REDIRECT_URI}
-        />
+        <div id="google-login-button"></div>
+        {error && <StyledFailureMessage>{error}</StyledFailureMessage>}
       </StyledLoginContent>
     </StyledLoginOverlay>
   );
