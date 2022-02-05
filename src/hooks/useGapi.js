@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import USER_INFO_SCOPE from "../constants/userInfoScope";
 
-const useGapi = () => {
+function useGapi() {
   const [gapi, setGapi] = useState(null);
 
   useEffect(() => {
@@ -31,6 +31,6 @@ const useGapi = () => {
   }
 
   return gapi;
-};
+}
 
 export default useGapi;
