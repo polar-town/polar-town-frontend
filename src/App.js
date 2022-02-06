@@ -5,7 +5,6 @@ import Mail from "./components/Mail/Mail";
 function App() {
   return (
     <>
-      <div className="App" />
       <Mail />
     </>
   );
