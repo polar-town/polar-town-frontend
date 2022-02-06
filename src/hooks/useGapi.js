@@ -6,8 +6,8 @@ function useGapi() {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.onload = handleLoad;
 
+    script.onload = handleLoad;
     script.src = "https://apis.google.com/js/platform.js";
     document.body.appendChild(script);
   }, []);
