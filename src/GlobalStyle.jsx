@@ -2,7 +2,8 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
   :root {
-    --header: #1e5269;
+    --header-content: #1e5269;
+    --header-background: #d7f5ff;
   }
 
   *, *::before, *::after {

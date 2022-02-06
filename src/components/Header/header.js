@@ -8,14 +8,6 @@ const StyledHeaderDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  i {
-    color: var(--header);
-    margin-right: 20px;
-    margin-left: 10px;
-    font-size: 20px;
-    cursor: pointer;
-  }
 `;
 
 const StyledImgWrapperDiv = styled.div`
@@ -28,19 +20,29 @@ const StyledImgWrapperDiv = styled.div`
   }
 `;
 
+const StyledNavWrapperDiv = styled.div`
+  i {
+    color: var(--header-content);
+    margin-right: 20px;
+    margin-left: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+`;
+
 function Header() {
   return (
     <StyledHeaderDiv>
       <StyledImgWrapperDiv>
         <img src="images/logo.png" alt="logo" />
       </StyledImgWrapperDiv>
-      <div>
+      <StyledNavWrapperDiv>
         <i className="fas fa-envelope"></i>
         <i className="fas fa-user-plus"></i>
         <i className="fas fa-user-friends"></i>
         <i className="fas fa-store"></i>
         <i className="fas fa-sign-out-alt"></i>
-      </div>
+      </StyledNavWrapperDiv>
     </StyledHeaderDiv>
   );
 }
