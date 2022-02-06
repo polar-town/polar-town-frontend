@@ -1,12 +1,15 @@
 import React from "react";
-import "./App.css";
+import GlobalStyle from "./GlobalStyle";
+import Header from "./components/Header/header";
 import Login from "./components/Login/Login";
 
 function App() {
   return (
-    <div className="App">
+    <>
+      <GlobalStyle />
+      <Header />
       <Login />
-    </div>
+    </>
   );
 }
 
