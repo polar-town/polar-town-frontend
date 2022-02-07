@@ -1,38 +1,14 @@
 import axios from "axios";
 
-export async function getPromotionMailList() {
+export async function getMailList(inbox) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/CATEGORY_PROMOTIONS`,
+      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inbox}`,
     );
 
-    console.log(response);
+    return response;
   } catch (err) {
-    console.log(err);
-  }
-}
-
-export async function getSpamMailList() {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/SPAM`,
-    );
-
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-export async function getTrashMailList() {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/TRASH`,
-    );
-
-    console.log(response);
-  } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -41,10 +17,9 @@ export async function moveEmailToTrash() {
     const response = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/TRASH`,
     );
-
-    console.log(response);
+    return response;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -54,8 +29,8 @@ export async function deleteTrashEmail() {
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/TRASH`,
     );
 
-    console.log(response);
+    return response;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
