@@ -22,18 +22,6 @@ const StyledNavDiv = styled.div`
   width: 34vw;
   height: 1vh;
   cursor: pointer;
-
-  .promotion {
-    color: var(--mail-promotion);
-  }
-
-  .spam {
-    color: var(--mail-spam);
-  }
-
-  .trash {
-    color: var(--mail-trash);
-  }
 `;
 
 const StyledSubHeaderDiv = styled.div`
@@ -106,11 +94,6 @@ function Mail() {
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
-  const navRef = useRef();
-
-  useEffect(() => {
-    navRef.current?.childNodes[0].classList.add("promotion");
-  }, [targetEmailId]);
 
   useEffect(() => {
     async function getUserEmailList() {
@@ -135,26 +118,7 @@ function Mail() {
         )}
         {!targetEmailId && (
           <StyledMailDiv>
-            <StyledNavDiv
-              ref={navRef}
-              onClick={(e) => {
-                if (e.target.textContent === "Promotion") {
-                  e.target.classList.add("promotion");
-                  e.target.parentNode.children[1].classList.remove("spam");
-                  e.target.parentNode.children[2].classList.remove("trash");
-                }
-                if (e.target.textContent === "Spam") {
-                  e.target.classList.add("spam");
-                  e.target.parentNode.children[0].classList.remove("promotion");
-                  e.target.parentNode.children[2].classList.remove("trash");
-                }
-                if (e.target.textContent === "Trash") {
-                  e.target.classList.add("trash");
-                  e.target.parentNode.children[0].classList.remove("promotion");
-                  e.target.parentNode.children[1].classList.remove("spam");
-                }
-              }}
-            >
+            <StyledNavDiv>
               <NavButton category="Promotion" />
               <NavButton category="Spam" />
               <NavButton category="Trash" />
@@ -204,7 +168,7 @@ function Mail() {
             </StyledMailDetailDiv>
             <StyledGmailLogoButton
               onClick={() => {
-                window.open("https://mail.google.com/mail/u/1/#inbox");
+                window.open(process.env.REACT_APP_USER_GMAIL);
               }}
             >
               <img
