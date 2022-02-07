@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import DeleteIconButton from "./DeleteIconButton";
+import organizeDate from "../../utils/date";
 
 const StyledMailRowDiv = styled.div`
   p {
@@ -106,15 +107,6 @@ function MailRow({
 }) {
   const [isHover, setIsHover] = useState(false);
 
-  function organizeDate(data) {
-    const newDate = new Date(data);
-    const year = newDate.getFullYear();
-    const month = newDate.getMonth() + 1;
-    const date = newDate.getDate();
-
-    return `${year}.${month}.${date}`;
-  }
-
   return (
     <>
       <StyledMailRowDiv
@@ -139,7 +131,7 @@ function MailRow({
         />
         <StyledMailDetailDiv>
           <p className="sender">{sender}</p>
-          <p className="date">{organizeDate(date)}</p>
+          <p className="date">{organizeDate(date, false)}</p>
           <p className="title">{title}</p>
           <p className="content">{` - ${content}`}</p>
           <StyledDeleteButtonDiv>

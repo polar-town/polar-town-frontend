@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import organizeDate from "../../utils/date";
 
 const StyledGoBackButton = styled.button`
   all: unset;
@@ -53,19 +54,6 @@ const StyledContentDiv = styled.div`
 `;
 
 function MailDetail({ targetEmail, onToggleEmailView }) {
-  function organizeDate(data) {
-    const newDate = new Date(data);
-    const year = newDate.getFullYear();
-    const month = newDate.getMonth() + 1;
-    const date = newDate.getDate();
-    const hour = newDate.getHours();
-    const minute = newDate.getMinutes();
-
-    return `${year}.${month}.${date} ${hour} : ${
-      minute < 10 ? `0${minute}` : minute
-    }`;
-  }
-
   return (
     <>
       <StyledGoBackButton
@@ -91,6 +79,7 @@ function MailDetail({ targetEmail, onToggleEmailView }) {
         <StyledDateDiv>
           {organizeDate(
             targetEmail.headers.filter((item) => item.name === "Date")[0].value,
+            true,
           )}
         </StyledDateDiv>
         <StyledDividerDiv />
