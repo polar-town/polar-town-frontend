@@ -6,7 +6,7 @@ const StyledNavButton = styled.button`
   width: 160px;
   height: 50px;
   all: unset;
-  color: #666666;
+  color: var(--mail-basic);
   font-size: 25px;
   font-weight: 700;
   cursor: pointer;
