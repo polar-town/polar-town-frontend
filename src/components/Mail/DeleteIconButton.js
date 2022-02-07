@@ -8,12 +8,12 @@ const StyledDeleteButton = styled.button`
   font-size: 18px;
   border: none;
   border-radius: 50%;
-  color: #666666;
+  color: var(--mail-basic);
   cursor: pointer;
 
   &:hover {
-    color: #000000;
-    background-color: #66666630;
+    color: var(--black);
+    background-color: var(--mail-hover);
   }
 `;
 
