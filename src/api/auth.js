@@ -3,8 +3,7 @@ import getAccessToken from "../utils/accessToken";
 
 export async function checkUserLoginStatus() {
   const gapi = useGapi();
-  const GoogleAuth = gapi.auth2.getAuthInstance();
-  const isLogedIn = GoogleAuth.isSignedIn.get();
+  const isLogedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
 
   if (isLogedIn) {
     try {

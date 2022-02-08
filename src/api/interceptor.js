@@ -14,7 +14,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     if (!config.headers["Authorization"]) {
-      config.headers["Authorization"] = `Barearer ${currentUserAccessToken}`;
+      config.headers["Authorization"] = `Bearer ${currentUserAccessToken}`;
     }
 
     return config;
@@ -30,10 +30,12 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalRequest = err.config;
+
     if (err.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
       const newAccessToken = await getAccessToken();
-      originalRequest.headers["Authorization"] = `Barearer ${newAccessToken}`;
+
+      originalRequest._retry = true;
+      originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
       return instance(originalRequest);
     }

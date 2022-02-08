@@ -11,7 +11,7 @@ async function verifyRefreshToken(email) {
   try {
     return await getAccessToken();
   } catch (err) {
-    if (err.responce.status === 403) {
+    if (err.response.status === 403) {
       try {
         await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/logout`, {
           email,
