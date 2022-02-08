@@ -1,5 +1,5 @@
-import axios from "axios";
 import useGapi from "../hooks/useGapi";
+import getAccessToken from "../utils/accessToken";
 
 export async function checkUserLoginStatus() {
   const gapi = useGapi();
@@ -8,11 +8,7 @@ export async function checkUserLoginStatus() {
 
   if (isLogedIn) {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/auth/refresh`
-      );
-
-      return response.data;
+      return await getAccessToken();
     } catch (err) {
       console.error(err);
     }

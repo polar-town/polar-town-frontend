@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useGapi from "../hooks/useGapi";
+import getAccessToken from "../utils/accessToken";
 
 async function verifyRefreshToken(email) {
   const navigate = useNavigate();
@@ -8,11 +9,7 @@ async function verifyRefreshToken(email) {
   const GoogleAuth = gapi.auth2.getAuthInstance();
 
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/auth/refresh`
-    );
-
-    return response;
+    return await getAccessToken();
   } catch (err) {
     if (err.responce.status === 403) {
       try {
