@@ -4,14 +4,14 @@ import GlobalStyle from "./GlobalStyle";
 import Header from "./components/Header/header";
 import Login from "./components/Login/Login";
 import Mail from "./components/Mail/Mail";
-import CokeCount from "./components/CokeCount/CokeCount";
+import CokeCounter from "./components/CokeCounter/CokeCounter";
 
 function App() {
   return (
     <>
       <GlobalStyle />
       <Header />
-      <CokeCount />
+      <CokeCounter />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/mail" element={<Mail />} />
