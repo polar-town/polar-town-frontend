@@ -1,10 +1,6 @@
-import React, { useEffect } from "react";
-import getAccessToken from "../../utils/accessToken";
+import React from "react";
 
 function Town() {
-  useEffect(() => {
-    getAccessToken();
-  });
   return <div>이것은 마을 페이지</div>;
 }
 
