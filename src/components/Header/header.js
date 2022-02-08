@@ -63,7 +63,7 @@ function Header() {
   return (
     <StyledHeader>
       <StyledImgWrapperDiv>
-        <img src="images/logo.png" alt="mailLogo" />
+        <img src="/images/logo.png" alt="mailLogo" />
       </StyledImgWrapperDiv>
       {currentUserAccessToken && (
         <StyledNavWrapperNav>
@@ -72,11 +72,11 @@ function Header() {
             onClick={() => {
               navigate("/mail");
             }}
-          ></i>
-          <i className="fas fa-user-plus"></i>
-          <i className="fas fa-user-friends"></i>
-          <i className="fas fa-store"></i>
-          <i className="fas fa-sign-out-alt" onClick={logout}></i>
+          />
+          <i className="fas fa-user-plus" />
+          <i className="fas fa-user-friends" />
+          <i className="fas fa-store" />
+          <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>
       )}
     </StyledHeader>
