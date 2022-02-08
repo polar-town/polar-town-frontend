@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     --mail-promotion: #1b72e8;
     --mail-spam: #d92f25;
     --mail-trash: #168037;
+    --game-modal-background: #d6f5f5;
   }
 
   *, *::before, *::after {

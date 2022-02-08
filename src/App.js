@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import GlobalStyle from "./GlobalStyle";
 import Header from "./components/Header/header";
 import Login from "./components/Login/Login";
-import Mail from "./components/Mail/Mail";
 import Town from "./components/Town/Town";
 import CokeCounter from "./components/CokeCounter/CokeCounter";
 import { selectUser, selectUserToken } from "./features/user/userSlice";
@@ -26,7 +25,6 @@ function App() {
       <Routes>
         <Route path="/users/:id" element={<Town />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/mail" element={<Mail />} />
       </Routes>
     </>
   );
