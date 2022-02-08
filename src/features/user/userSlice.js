@@ -20,5 +20,6 @@ export const userSlice = createSlice({
 export const { increseCoke, decreaseCoke } = userSlice.actions;
 
 export const selectCokeCount = (state) => state.user.cokeCount;
+export const selectUserToken = (state) => {};
 
 export default userSlice.reducer;

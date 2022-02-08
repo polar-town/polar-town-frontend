@@ -6,6 +6,7 @@ import Header from "./components/Header/header";
 import Login from "./components/Login/Login";
 import Mail from "./components/Mail/Mail";
 import CokeCounter from "./components/CokeCounter/CokeCounter";
+import { selectUserToken } from "./features/user/userSlice";
 
 function App() {
   const currentUserAccessToken = useSelector(selectUserToken);
