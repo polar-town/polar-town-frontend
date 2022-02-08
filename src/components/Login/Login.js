@@ -58,9 +58,10 @@ function Login() {
   }, [gapi]);
 
   async function responseGoogle(result) {
-    const name = result.Ju.sf;
-    const userEmail = result.Ju.zv;
-    const googleLoginUser = gapi.auth2.getAuthInstance().currentUser.get();
+    const googleLoginUser = result;
+    const profile = googleLoginUser.getBasicProfile();
+    const name = profile.getName();
+    const userEmail = profile.getEmail();
 
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
