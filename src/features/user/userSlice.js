@@ -18,6 +18,7 @@ export const userSlice = createSlice({
         action.payload;
 
       return {
+        ...initialState,
         id,
         username,
         email,
