@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import useGapi from "../../hooks/useGapi";
+import { useDispatch } from "react-redux";
+import { saveLoginUser } from "../../features/user/userSlice";
 
 const StyledLoginOverlay = styled.div`
   background: linear-gradient(to top, #03bcf6, #89fff1);
@@ -33,13 +35,14 @@ const StyledLogoImage = styled.img`
 
 const StyledFailureMessage = styled.span`
   color: #ff0000;
-  weight: 700;
+  font-weight: 700;
   margin-top: 10px;
 `;
 
 function Login() {
   const [error, setError] = useState("");
   const gapi = useGapi();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!gapi) return;
@@ -55,10 +58,26 @@ function Login() {
   }, [gapi]);
 
   async function responseGoogle(result) {
+    const name = result.Ju.sf;
+    const userEmail = result.Ju.zv;
+    const googleLoginUser = gapi.auth2.getAuthInstance().currentUser.get();
+
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
-      { result },
+      { name, email: userEmail },
     );
+
+    const { id, username, email, accessToken } = serverResponse.data.result;
+
+    const currentUser = {
+      id,
+      username,
+      email,
+      accessToken,
+      googleLoginUser,
+    };
+
+    dispatch(saveLoginUser(currentUser));
   }
 
   function responseError() {

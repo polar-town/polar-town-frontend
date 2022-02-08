@@ -1,7 +1,11 @@
+import axios from "axios";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { removeLogoutUser, selectUser } from "../../features/user/userSlice";
+import useGapi from "../../hooks/useGapi";
 
-const StyledHeaderDiv = styled.div`
+const StyledHeader = styled.header`
   width: 100vw;
   height: 60px;
   background: rgba(214, 245, 245, 0.5);
@@ -20,7 +24,7 @@ const StyledImgWrapperDiv = styled.div`
   }
 `;
 
-const StyledNavWrapperDiv = styled.div`
+const StyledNavWrapperNav = styled.nav`
   i {
     color: var(--header-content);
     margin-right: 20px;
@@ -31,19 +35,37 @@ const StyledNavWrapperDiv = styled.div`
 `;
 
 function Header() {
+  const dispatch = useDispatch();
+  const gapi = useGapi();
+  const user = useSelector(selectUser);
+
+  const logout = async () => {
+    const auth2 = gapi.auth2.getAuthInstance();
+
+    auth2.signOut().then(function () {
+      auth2.disconnect();
+    });
+
+    dispatch(removeLogoutUser());
+
+    await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
+      email: user.email,
+    });
+  };
+
   return (
-    <StyledHeaderDiv>
+    <StyledHeader>
       <StyledImgWrapperDiv>
-        <img src="images/logo.png" alt="logo" />
+        <img src="images/logo.png" alt="mailLogo" />
       </StyledImgWrapperDiv>
-      <StyledNavWrapperDiv>
+      <StyledNavWrapperNav>
         <i className="fas fa-envelope"></i>
         <i className="fas fa-user-plus"></i>
         <i className="fas fa-user-friends"></i>
         <i className="fas fa-store"></i>
-        <i className="fas fa-sign-out-alt"></i>
-      </StyledNavWrapperDiv>
-    </StyledHeaderDiv>
+        <i className="fas fa-sign-out-alt" onClick={logout}></i>
+      </StyledNavWrapperNav>
+    </StyledHeader>
   );
 }
 
