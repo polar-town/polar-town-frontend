@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUserToken } from "../features/user/userSlice";
-import useRefreshToken from "../utils/getAccessToken";
+import getAccessToken from "../utils/accessToken";
 
 const currentUserAccessToken = useSelector(selectUserToken);
 
@@ -21,7 +21,7 @@ instance.interceptors.request.use(
   },
   (err) => {
     return Promise.reject(err);
-  },
+  }
 );
 
 instance.interceptors.response.use(
@@ -32,14 +32,14 @@ instance.interceptors.response.use(
     const originalRequest = err.config;
     if (err.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const newAccessToken = await useRefreshToken();
+      const newAccessToken = await getAccessToken();
       originalRequest.headers["Authorization"] = `Barearer ${newAccessToken}`;
 
       return instance(originalRequest);
     }
 
     return Promise.reject(err);
-  },
+  }
 );
 
 export default instance;
