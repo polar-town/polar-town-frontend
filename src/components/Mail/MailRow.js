@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import DeleteIconButton from "./DeleteIconButton";
+import organizeDate from "../../utils/date";
 
 const StyledMailRowDiv = styled.div`
   p {
@@ -10,12 +11,12 @@ const StyledMailRowDiv = styled.div`
   }
 
   position: relative;
-  padding: 10px;
-  margin-top: 10px;
   width: 38vw;
-  height: 10vh;
+  height: 110px;
+  padding: 10px;
   border-bottom: 1px solid #66666650;
   line-height: 23px;
+  cursor: pointer;
 
   &:first-child {
     margin-top: 0;
@@ -36,7 +37,7 @@ const StyledMailRowDiv = styled.div`
 
 const StyledCheckBoxInput = styled.input`
   position: absolute;
-  left: 15px;
+  left: 0.8vw;
   top: 0;
   bottom: 0;
   margin: auto;
@@ -47,7 +48,7 @@ const StyledCheckBoxInput = styled.input`
 
 const StyledMailDetailDiv = styled.div`
   position: relative;
-  width: 60vh;
+  width: 31vw;
   margin-left: 50px;
 
   .sender {
@@ -63,12 +64,12 @@ const StyledMailDetailDiv = styled.div`
   .date {
     position: absolute;
     top: 0;
-    right: -65px;
+    right: -2vw;
     font-size: 12px;
   }
 
   .title {
-    width: 30vw;
+    width: 33vw;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -77,7 +78,7 @@ const StyledMailDetailDiv = styled.div`
   }
 
   .content {
-    width: 35vw;
+    width: 33vw;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -90,7 +91,7 @@ const StyledMailDetailDiv = styled.div`
 
 const StyledDeleteButtonDiv = styled.div`
   position: absolute;
-  right: -60px;
+  right: -2vw;
   top: 30px;
 `;
 
@@ -106,21 +107,15 @@ function MailRow({
 }) {
   const [isHover, setIsHover] = useState(false);
 
-  function organizeDate(data) {
-    const newDate = new Date(data);
-    const year = newDate.getFullYear();
-    const month = newDate.getMonth() + 1;
-    const date = newDate.getDate();
-
-    return `${year}.${month}.${date}`;
-  }
-
   return (
     <>
       <StyledMailRowDiv
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        onClick={() => onTargetEmailId(id)}
+        onClick={(e) => {
+          if (e.target.tagName === "INPUT") return;
+          onTargetEmailId(id);
+        }}
       >
         <StyledCheckBoxInput
           type="checkbox"
@@ -136,7 +131,7 @@ function MailRow({
         />
         <StyledMailDetailDiv>
           <p className="sender">{sender}</p>
-          <p className="date">{organizeDate(date)}</p>
+          <p className="date">{organizeDate(date, false)}</p>
           <p className="title">{title}</p>
           <p className="content">{` - ${content}`}</p>
           <StyledDeleteButtonDiv>

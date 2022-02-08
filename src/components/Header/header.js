@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const StyledHeaderDiv = styled.div`
   width: 100vw;
@@ -31,13 +32,20 @@ const StyledNavWrapperDiv = styled.div`
 `;
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <StyledHeaderDiv>
       <StyledImgWrapperDiv>
         <img src="images/logo.png" alt="logo" />
       </StyledImgWrapperDiv>
       <StyledNavWrapperDiv>
-        <i className="fas fa-envelope"></i>
+        <i
+          className="fas fa-envelope"
+          onClick={() => {
+            navigate("/mail");
+          }}
+        ></i>
         <i className="fas fa-user-plus"></i>
         <i className="fas fa-user-friends"></i>
         <i className="fas fa-store"></i>

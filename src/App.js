@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle";
 import Header from "./components/Header/header";
 import Login from "./components/Login/Login";
@@ -10,9 +11,11 @@ function App() {
     <>
       <GlobalStyle />
       <Header />
-      <Login />
       <CokeCount />
-      <Mail />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/mail" element={<Mail />} />
+      </Routes>
     </>
   );
 }
