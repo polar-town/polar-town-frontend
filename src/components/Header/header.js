@@ -2,8 +2,13 @@ import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { removeLogoutUser, selectUser } from "../../features/user/userSlice";
+import {
+  removeLogoutUser,
+  selectUser,
+  selectUserToken,
+} from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
+import { useNavigate } from "react-router-dom";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -36,8 +41,10 @@ const StyledNavWrapperNav = styled.nav`
 
 function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const gapi = useGapi();
   const user = useSelector(selectUser);
+  const currentUserAccessToken = useSelector(selectUserToken);
 
   const logout = async () => {
     const auth2 = gapi.auth2.getAuthInstance();
@@ -58,13 +65,20 @@ function Header() {
       <StyledImgWrapperDiv>
         <img src="images/logo.png" alt="mailLogo" />
       </StyledImgWrapperDiv>
-      <StyledNavWrapperNav>
-        <i className="fas fa-envelope"></i>
-        <i className="fas fa-user-plus"></i>
-        <i className="fas fa-user-friends"></i>
-        <i className="fas fa-store"></i>
-        <i className="fas fa-sign-out-alt" onClick={logout}></i>
-      </StyledNavWrapperNav>
+      {currentUserAccessToken && (
+        <StyledNavWrapperNav>
+          <i
+            className="fas fa-envelope"
+            onClick={() => {
+              navigate("/mail");
+            }}
+          ></i>
+          <i className="fas fa-user-plus"></i>
+          <i className="fas fa-user-friends"></i>
+          <i className="fas fa-store"></i>
+          <i className="fas fa-sign-out-alt" onClick={logout}></i>
+        </StyledNavWrapperNav>
+      )}
     </StyledHeader>
   );
 }

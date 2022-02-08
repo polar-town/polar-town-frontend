@@ -2,8 +2,15 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
   :root {
+    --black: #000000;
+    --white: #ffffff;
     --header-content: #1e5269;
     --header-background: #d7f5ff;
+    --mail-hover: #e7e7e7;
+    --mail-basic: #666666;
+    --mail-promotion: #1b72e8;
+    --mail-spam: #d92f25;
+    --mail-trash: #168037;
   }
 
   *, *::before, *::after {
@@ -13,6 +20,8 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: "Helvetica", "Arial", sans-serif;
     line-height: 1.5;
+    overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   h2, p {
