@@ -3,7 +3,6 @@ import styled from "styled-components";
 import MailDetail from "./MailDetail";
 import NavButton from "./NavButton";
 import MailRow from "./MailRow";
-import ModalPortals from "../ModalPortals/ModalPortals";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
 
@@ -106,82 +105,80 @@ function Mail() {
   }, []);
 
   return (
-    <ModalPortals>
-      <MailModal>
-        {targetEmailId && (
-          <MailDetail
-            targetEmail={
-              userEmailList.filter((email) => email.id === targetEmailId)[0]
-            }
-            onToggleEmailView={setTargetEmailId}
-          />
-        )}
-        {!targetEmailId && (
-          <StyledMailDiv>
-            <StyledNavDiv>
-              <NavButton category="Promotion" />
-              <NavButton category="Spam" />
-              <NavButton category="Trash" />
-            </StyledNavDiv>
-            <StyledSubHeaderDiv>
-              <input
-                type="checkbox"
-                className="allCheckBox"
-                id="allCheckBox"
-                onChange={(e) => {
-                  if (e.target.checked === true) {
-                    const mailIdsArray = [];
-                    userEmailList.forEach((mail) => mailIdsArray.push(mail.id));
-                    setCheckedIds(mailIdsArray);
-                  } else {
-                    setCheckedIds([]);
-                  }
-                }}
-                checked={checkedIds.length === userEmailList.length}
-              />
-              <label className="allCheckBoxLabel" htmlFor="allCheckBox">
-                전체 선택
-              </label>
-              <DeleteIconButton />
-            </StyledSubHeaderDiv>
-            <StyledMailDetailDiv>
-              {userEmailList.map((mail) => (
-                <MailRow
-                  key={mail.id}
-                  id={mail.id}
-                  sender={
-                    mail.headers.filter((item) => item.name === "From")[0].value
-                  }
-                  title={
-                    mail.headers.filter((item) => item.name === "Subject")[0]
-                      .value
-                  }
-                  content={mail.snippet}
-                  date={
-                    mail.headers.filter((item) => item.name === "Date")[0].value
-                  }
-                  onCheckedId={setCheckedIds}
-                  checkedIdList={checkedIds}
-                  onTargetEmailId={setTargetEmailId}
-                />
-              ))}
-            </StyledMailDetailDiv>
-            <StyledGmailLogoButton
-              onClick={() => {
-                window.open(process.env.REACT_APP_USER_GMAIL);
+    <MailModal>
+      {targetEmailId && (
+        <MailDetail
+          targetEmail={
+            userEmailList.filter((email) => email.id === targetEmailId)[0]
+          }
+          onToggleEmailView={setTargetEmailId}
+        />
+      )}
+      {!targetEmailId && (
+        <StyledMailDiv>
+          <StyledNavDiv>
+            <NavButton category="Promotion" />
+            <NavButton category="Spam" />
+            <NavButton category="Trash" />
+          </StyledNavDiv>
+          <StyledSubHeaderDiv>
+            <input
+              type="checkbox"
+              className="allCheckBox"
+              id="allCheckBox"
+              onChange={(e) => {
+                if (e.target.checked === true) {
+                  const mailIdsArray = [];
+                  userEmailList.forEach((mail) => mailIdsArray.push(mail.id));
+                  setCheckedIds(mailIdsArray);
+                } else {
+                  setCheckedIds([]);
+                }
               }}
-            >
-              <img
-                src="images/gmail-logo.png"
-                width="70"
-                title="Gmail로 이동"
-                alt="gmail-logo"
+              checked={checkedIds.length === userEmailList.length}
+            />
+            <label className="allCheckBoxLabel" htmlFor="allCheckBox">
+              전체 선택
+            </label>
+            <DeleteIconButton />
+          </StyledSubHeaderDiv>
+          <StyledMailDetailDiv>
+            {userEmailList.map((mail) => (
+              <MailRow
+                key={mail.id}
+                id={mail.id}
+                sender={
+                  mail.headers.filter((item) => item.name === "From")[0].value
+                }
+                title={
+                  mail.headers.filter((item) => item.name === "Subject")[0]
+                    .value
+                }
+                content={mail.snippet}
+                date={
+                  mail.headers.filter((item) => item.name === "Date")[0].value
+                }
+                onCheckedId={setCheckedIds}
+                checkedIdList={checkedIds}
+                onTargetEmailId={setTargetEmailId}
               />
-            </StyledGmailLogoButton>
-          </StyledMailDiv>
-        )}
-      </MailModal>
-    </ModalPortals>
+            ))}
+          </StyledMailDetailDiv>
+          <StyledGmailLogoButton
+            onClick={() => {
+              window.open(process.env.REACT_APP_USER_GMAIL);
+            }}
+          >
+            <img
+              src="images/gmail-logo.png"
+              width="70"
+              title="Gmail로 이동"
+              alt="gmail-logo"
+            />
+          </StyledGmailLogoButton>
+        </StyledMailDiv>
+      )}
+    </MailModal>
   );
 }
 

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { closeMail } from "../../features/modal/modalSlice";
+import { closeAll } from "../../features/modal/modalSlice";
 
 const ModalWrapper = styled.div`
   position: relative;
@@ -42,7 +42,7 @@ function MailModal({ children }) {
       <div className="modalBox">
         <button
           onClick={() => {
-            dispatch(closeMail());
+            dispatch(closeAll());
           }}
           className="modalCloseButton"
           type="button"
