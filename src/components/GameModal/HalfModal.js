@@ -1,6 +1,6 @@
-import proptypes from "proptypes";
 import React, { useState } from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
 
 const StyledHalfModal = styled.div`
   margin: 0 auto;
