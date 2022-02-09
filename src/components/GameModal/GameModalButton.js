@@ -1,6 +1,6 @@
-import proptypes from "proptypes";
 import React from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
 
 const StyleGameModalBtn = styled.button`
   width: 60px;

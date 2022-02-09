@@ -1,6 +1,6 @@
 import React from "react";
-import proptypes from "proptypes";
 import styled from "styled-components";
+import proptypes from "prop-types";
 import ModalPortals from "../ModalPortals/ModalPortals";
 
 const ModalWrapper = styled.div`
@@ -118,7 +118,7 @@ GameModal.propTypes = {
   onClose: proptypes.func,
   maskClosable: proptypes.bool,
   subject: proptypes.string,
-  children: proptypes.string,
+  children: proptypes.node,
 };
 
 export default GameModal;
