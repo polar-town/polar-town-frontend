@@ -66,6 +66,7 @@ function Login() {
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
       { name, email: userEmail },
+      { withCredentials: true },
     );
 
     const { id, username, email, accessToken } = serverResponse.data.result;
