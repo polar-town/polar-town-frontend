@@ -55,6 +55,7 @@ export const {
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
+export const selectUserId = (state) => state.user.id;
 export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
 

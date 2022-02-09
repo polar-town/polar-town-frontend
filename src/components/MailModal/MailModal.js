@@ -1,7 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { closeMail } from "../../features/modal/modalSlice";
 
 const ModalWrapper = styled.div`
   position: relative;
@@ -16,6 +17,7 @@ const ModalWrapper = styled.div`
     border-radius: 20px;
     background-color: var(--white);
     border: 1px solid black;
+    z-index: 999;
   }
 
   .modalCloseButton {
@@ -33,13 +35,15 @@ const ModalWrapper = styled.div`
 `;
 
 function MailModal({ children }) {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <ModalWrapper>
       <div className="modalBox">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            dispatch(closeMail());
+          }}
           className="modalCloseButton"
           type="button"
           title="닫기"

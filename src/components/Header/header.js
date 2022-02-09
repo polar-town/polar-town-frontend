@@ -8,7 +8,7 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import { useNavigate } from "react-router-dom";
+import { openMail } from "../../features/modal/modalSlice";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -41,7 +41,6 @@ const StyledNavWrapperNav = styled.nav`
 
 function Header() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const gapi = useGapi();
   const user = useSelector(selectUser);
   const currentUserAccessToken = useSelector(selectUserToken);
@@ -70,7 +69,7 @@ function Header() {
           <i
             className="fas fa-envelope"
             onClick={() => {
-              navigate("/mail");
+              dispatch(openMail());
             }}
           />
           <i className="fas fa-user-plus" />

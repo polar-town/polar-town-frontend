@@ -1,10 +1,23 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import PostBox from "./PostBox";
+import Mail from "../Mail/Mail";
+import GuestBook from "../GuestBook/GuestBook";
+import {
+  selectMailIsOpen,
+  selectPostBoxIsOpen,
+} from "../../features/modal/modalSlice";
 
 function Town() {
+  const mailIsClicked = useSelector(selectMailIsOpen);
+  const postBoxIsClicked = useSelector(selectPostBoxIsOpen);
+
   return (
-    <>
-      <div>이것은 마을 페이지</div>
-    </>
+    <div>
+      <PostBox />
+      {mailIsClicked && <Mail />}
+      {postBoxIsClicked && <GuestBook />}
+    </div>
   );
 }
 
