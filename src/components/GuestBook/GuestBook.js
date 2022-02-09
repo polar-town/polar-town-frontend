@@ -1,12 +1,12 @@
 import { nanoid } from "@reduxjs/toolkit";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getMessageList } from "../../api/guestbook";
+import { closeGuestBook } from "../../features/modal/modalSlice";
 import { selectUserId } from "../../features/user/userSlice";
-import MailModal from "../MailModal/MailModal";
-import ModalPortals from "../ModalPortals/ModalPortals";
+import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
 
@@ -21,6 +21,7 @@ const StyledGuestBookContainer = styled.div`
 function GuestBook() {
   const [messageList, setMessageList] = useState([]);
   const { id } = useParams();
+  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
   const isMyTown = id === userId;
 
@@ -28,33 +29,36 @@ function GuestBook() {
     try {
       const messages = await getMessageList(id);
 
-      setMessageList(messages.data.result);
+      setMessageList(messages.data.result.guestBook);
     } catch (error) {
       console.error(error);
     }
-  }, [messageList]);
+  }, []);
 
   return (
-    <ModalPortals>
-      <MailModal>
-        <StyledGuestBookContainer>
-          {!isMyTown && <MessageInput onMessageListUpdate={setMessageList} />}
-          {messageList &&
-            messageList.map((post) => {
-              const uniqueId = nanoid();
+    <GameModal
+      subject="방명록"
+      onClose={() => {
+        dispatch(closeGuestBook());
+      }}
+    >
+      <StyledGuestBookContainer>
+        {!isMyTown && <MessageInput onMessageListUpdate={setMessageList} />}
+        {messageList &&
+          messageList.map((post) => {
+            const uniqueId = nanoid();
 
-              return (
-                <MessageRow
-                  key={uniqueId}
-                  name={post.name}
-                  message={post.message}
-                  date={post.date}
-                />
-              );
-            })}
-        </StyledGuestBookContainer>
-      </MailModal>
-    </ModalPortals>
+            return (
+              <MessageRow
+                key={uniqueId}
+                name={post.name}
+                message={post.message}
+                date={post.date}
+              />
+            );
+          })}
+      </StyledGuestBookContainer>
+    </GameModal>
   );
 }
 

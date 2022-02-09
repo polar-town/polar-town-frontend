@@ -18,6 +18,7 @@ const StyledCokeCountContainer = styled.li`
 
   img {
     width: 30px;
+    image-rendering: pixelated;
   }
 
   span {
