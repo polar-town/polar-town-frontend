@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import ModalPortals from "../ModalPortals/ModalPortals";
+import { closeAll } from "../../features/modal/modalSlice";
+import { useDispatch } from "react-redux";
 
 const ModalWrapper = styled.div`
   box-sizing: border-box;
-  display: ${(props) => (props.visible ? "block" : "none")};
+  display: block;
   position: fixed;
   top: 0;
   right: 0;
@@ -18,7 +19,7 @@ const ModalWrapper = styled.div`
 
 const ModalOverlay = styled.div`
   box-sizing: border-box;
-  display: ${(props) => (props.visible ? "block" : "none")};
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -72,28 +73,21 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-function GameModal({
-  visible,
-  onClose,
-  children,
-  maskClosable,
-  className,
-  subject,
-}) {
+function GameModal({ onClose, children, maskClosable, className, subject }) {
+  const dispatch = useDispatch();
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      dispatch(closeAll());
     }
   };
 
   return (
-    <ModalPortals>
-      <ModalOverlay visible={visible} />
+    <>
+      <ModalOverlay />
       <ModalWrapper
         className={className}
         onClick={maskClosable ? onMaskClick : null}
         tabIndex={-1}
-        visible={visible}
       >
         <ModalInner tabIndex={0} className="modal-inner">
           <CloseButton className="modal-close" onClick={() => onClose()}>
@@ -103,12 +97,11 @@ function GameModal({
           <ModalInnerContent>{children}</ModalInnerContent>
         </ModalInner>
       </ModalWrapper>
-    </ModalPortals>
+    </>
   );
 }
 
 GameModal.defaultProps = {
-  visible: false,
   maskClosable: true,
 };
 

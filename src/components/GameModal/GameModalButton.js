@@ -3,8 +3,8 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 
 const StyleGameModalBtn = styled.button`
-  width: 60px;
-  height: 30px;
+  width: 80px;
+  height: 40px;
   border-radius: 5px;
   border: none;
   background-color: #edd5cb;
