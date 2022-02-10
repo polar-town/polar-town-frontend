@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { openGuestBook } from "../../features/modal/modalSlice";
 
 const StypedPostBoxContainer = styled.div`
   width: 100vw;
@@ -22,12 +21,7 @@ function PostBox() {
 
   return (
     <StypedPostBoxContainer>
-      <img
-        onClick={() => {
-          dispatch(openGuestBook());
-        }}
-        src="/images/postbox.png"
-      />
+      <img onClick={() => {}} src="/images/postbox.png" />
     </StypedPostBoxContainer>
   );
 }

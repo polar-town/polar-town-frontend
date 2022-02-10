@@ -8,7 +8,6 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import { openMail } from "../../features/modal/modalSlice";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -66,12 +65,7 @@ function Header() {
       </StyledImgWrapperDiv>
       {currentUserAccessToken && (
         <StyledNavWrapperNav>
-          <i
-            className="fas fa-envelope"
-            onClick={() => {
-              dispatch(openMail());
-            }}
-          />
+          <i className="fas fa-envelope" onClick={() => {}} />
           <i className="fas fa-user-plus" />
           <i className="fas fa-user-friends" />
           <i className="fas fa-store" />
