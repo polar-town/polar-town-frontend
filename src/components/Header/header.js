@@ -8,7 +8,7 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import { openMail } from "../../features/modal/modalSlice";
+import { openFriendList, openMail } from "../../features/modal/modalSlice";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -73,7 +73,12 @@ function Header() {
             }}
           />
           <i className="fas fa-user-plus" />
-          <i className="fas fa-user-friends" />
+          <i
+            className="fas fa-user-friends"
+            onClick={() => {
+              dispatch(openFriendList());
+            }}
+          />
           <i className="fas fa-store" />
           <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>

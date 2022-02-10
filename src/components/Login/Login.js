@@ -62,10 +62,11 @@ function Login() {
     const profile = googleLoginUser.getBasicProfile();
     const name = profile.getName();
     const userEmail = profile.getEmail();
+    const photoUrl = profile.getImageUrl();
 
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
-      { name, email: userEmail },
+      { name, email: userEmail, photoUrl },
       { withCredentials: true },
     );
 

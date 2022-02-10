@@ -39,17 +39,21 @@ function HalfModal({ category, children }) {
           checked={showFirstContent}
           onClick={() => setShowFirstContent(true)}
         >
-          {category[0]}
+          {category?.[0]}
         </StyledHalfNavDiv>
         <StyledHalfNavDiv
           checked={!showFirstContent}
           onClick={() => setShowFirstContent(false)}
         >
-          {category[1]}
+          {category?.[1]}
         </StyledHalfNavDiv>
       </StyledHalfHeaderDiv>
       <StyledHalfContentDiv>
-        {showFirstContent ? <div>{children[0]}</div> : <div>{children[1]}</div>}
+        {showFirstContent ? (
+          <div>{children?.[0]}</div>
+        ) : (
+          <div>{children?.[1]}</div>
+        )}
       </StyledHalfContentDiv>
     </StyledHalfModal>
   );
