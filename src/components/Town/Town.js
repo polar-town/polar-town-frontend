@@ -1,18 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
 import GuestBook from "../GuestBook/GuestBook";
-import {
-  selectIsNotificationOpen,
-  selectMailIsOpen,
-  selectPostBoxIsOpen,
-  selectFriendListIsOpen,
-} from "../../features/modal/modalSlice";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import FriendList from "../FriendList/FriendList";
+import proptypes from "prop-types";
+import Header from "../Header/header";
+import CokeCounter from "../CokeCounter/CokeCounter";
 
 const StyledTownDiv = styled.div`
   background-image: url("/images/town-background-image.jpg");
@@ -21,23 +18,43 @@ const StyledTownDiv = styled.div`
   background-position: center 90%;
 `;
 
-function Town() {
-  const isMailOpen = useSelector(selectMailIsOpen);
-  const isPostBoxOpen = useSelector(selectPostBoxIsOpen);
-  const isNotificationOpen = useSelector(selectIsNotificationOpen);
-  const isFrendListOpen = useSelector(selectFriendListIsOpen);
+function Town({ onTownTransition }) {
+  const [onMail, setOnMail] = useState(false);
+  const [onPostBox, setOnPostBox] = useState(false);
+  const [onNotification, setOnNotification] = useState(false);
+  const [onFriendList, setOnFriendList] = useState(false);
 
   return (
-    <StyledTownDiv>
-      <PostBox />
-      <ModalPortals>
-        {isMailOpen && <Mail />}
-        {isPostBoxOpen && <GuestBook />}
-        {isNotificationOpen && <Notification />}
-        {isFrendListOpen && <FriendList />}
-      </ModalPortals>
-    </StyledTownDiv>
+    <>
+      <Header
+        toggleMail={setOnMail}
+        toggleFindUser={() => {}}
+        toggleFriendList={setOnFriendList}
+        toggleShop={() => {}}
+      />
+      <CokeCounter />
+      <StyledTownDiv>
+        <PostBox toggleGuestbook={setOnPostBox} />
+        <ModalPortals>
+          {onMail && <Mail toggleMail={setOnMail} />}
+          {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onNotification && (
+            <Notification toggleNotification={setOnNotification} />
+          )}
+          {onFriendList && (
+            <FriendList
+              visitFriend={onTownTransition}
+              toggleFriendList={setOnFriendList}
+            />
+          )}
+        </ModalPortals>
+      </StyledTownDiv>
+    </>
   );
 }
+
+Town.propTypes = {
+  onTownTransition: proptypes.func.isRequired,
+};
 
 export default Town;

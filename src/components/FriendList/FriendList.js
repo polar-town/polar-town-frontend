@@ -5,8 +5,9 @@ import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import Friends from "./Friends";
 import PendingFriends from "./PendingFriends";
+import proptypes from "prop-types";
 
-function FriendList() {
+function FriendList({ toggleFriendList }) {
   const dispatch = useDispatch();
 
   const data = [
@@ -25,7 +26,7 @@ function FriendList() {
   return (
     <GameModal
       onClose={() => {
-        dispatch(closeFriendList());
+        toggleFriendList(false);
       }}
     >
       <HalfModal category={["친구 목록", "친구 요청"]}>
@@ -37,3 +38,7 @@ function FriendList() {
 }
 
 export default FriendList;
+
+FriendList.propTypes = {
+  toggleFriendList: proptypes.func.isRequired,
+};

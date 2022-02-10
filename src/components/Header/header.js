@@ -8,7 +8,7 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import { openFriendList, openMail } from "../../features/modal/modalSlice";
+import proptype from "prop-types";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -39,7 +39,7 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header() {
+function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
@@ -69,14 +69,14 @@ function Header() {
           <i
             className="fas fa-envelope"
             onClick={() => {
-              dispatch(openMail());
+              toggleMail(true);
             }}
           />
           <i className="fas fa-user-plus" />
           <i
             className="fas fa-user-friends"
             onClick={() => {
-              dispatch(openFriendList());
+              toggleFriendList(true);
             }}
           />
           <i className="fas fa-store" />
@@ -88,3 +88,10 @@ function Header() {
 }
 
 export default Header;
+
+Header.propTypes = {
+  toggleMail: proptype.func,
+  toggleFindUser: proptype.func,
+  toggleFriendList: proptype.func,
+  toggleShop: proptype.func,
+};

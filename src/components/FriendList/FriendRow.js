@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
+import { nanoid } from "nanoid";
+import { useNavigate } from "react-router-dom";
 import GameModalButton from "../GameModal/GameModalButton";
 import { OPTION, TYPE } from "../../constants/friendList";
-import { nanoid } from "nanoid";
+import { useDispatch } from "react-redux";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -13,7 +15,6 @@ const ProfileContainer = styled.div`
   padding-bottom: 20px;
   margin-bottom: 20px;
 `;
-
 const ProfileRigntSection = styled.section`
   display: flex;
   align-items: center;
@@ -37,7 +38,24 @@ const Photo = styled.div`
   margin: 0px 10px;
 `;
 
+const VISIT = "0";
+const ACCEPT = "0";
+
 function FriendRow({ name, id, photo, type }) {
+  const dispatch = useDispatch();
+  const visitFriendTown = () => {
+    console.log("visitFriendTown");
+  };
+  const deleteFriend = async () => {
+    console.log("deleteFriend");
+  };
+  const acceptFriendRequest = async () => {
+    console.log("acceptFriendRequest");
+  };
+  const declineFriendRequest = async () => {
+    console.log("declineFriendRequest");
+  };
+
   return (
     <ProfileContainer>
       <ProfileRigntSection>
@@ -48,12 +66,34 @@ function FriendRow({ name, id, photo, type }) {
         {type === TYPE.MY_FRIEND &&
           OPTION.MY_FRIEND.map((option) => {
             const key = nanoid();
-            return <GameModalButton key={key} content={option} />;
+            const handleSelect =
+              option === OPTION.MY_FRIEND[VISIT]
+                ? visitFriendTown
+                : deleteFriend;
+
+            return (
+              <GameModalButton
+                key={key}
+                content={option}
+                onSelect={handleSelect}
+              />
+            );
           })}
         {type === TYPE.PENDING_FRIEND &&
           OPTION.PENDING_FRIEND.map((option) => {
             const key = nanoid();
-            return <GameModalButton key={key} content={option} />;
+            const handleSelect =
+              option === OPTION.PENDING_FRIEND[ACCEPT]
+                ? acceptFriendRequest
+                : declineFriendRequest;
+
+            return (
+              <GameModalButton
+                key={key}
+                content={option}
+                onSelect={handleSelect}
+              />
+            );
           })}
       </ProfileLeftSection>
     </ProfileContainer>

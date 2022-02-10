@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import proptypes from "prop-types";
 import useGapi from "../../hooks/useGapi";
 import { useDispatch } from "react-redux";
 import { saveLoginUser } from "../../features/user/userSlice";
+import Header from "../Header/header";
 
 const StyledLoginOverlay = styled.div`
   background: linear-gradient(to top, #03bcf6, #89fff1);
@@ -39,7 +41,7 @@ const StyledFailureMessage = styled.span`
   margin-top: 10px;
 `;
 
-function Login() {
+function Login({ goTown }) {
   const [error, setError] = useState("");
   const gapi = useGapi();
   const dispatch = useDispatch();
@@ -81,6 +83,7 @@ function Login() {
     };
 
     dispatch(saveLoginUser(currentUser));
+    goTown(id);
   }
 
   function responseError() {
@@ -92,17 +95,24 @@ function Login() {
   }
 
   return (
-    <StyledLoginOverlay>
-      <StyledLoginContent>
-        <StyledLogoImage
-          src="images/polar-town-logo.png"
-          alt="game logo with bear paw"
-        />
-        <div id="google-login-button"></div>
-        {error && <StyledFailureMessage>{error}</StyledFailureMessage>}
-      </StyledLoginContent>
-    </StyledLoginOverlay>
+    <>
+      <Header />
+      <StyledLoginOverlay>
+        <StyledLoginContent>
+          <StyledLogoImage
+            src="images/polar-town-logo.png"
+            alt="game logo with bear paw"
+          />
+          <div id="google-login-button"></div>
+          {error && <StyledFailureMessage>{error}</StyledFailureMessage>}
+        </StyledLoginContent>
+      </StyledLoginOverlay>
+    </>
   );
 }
 
 export default Login;
+
+Login.propTypes = {
+  goTown: proptypes.func.isRequired,
+};
