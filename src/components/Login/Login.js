@@ -64,11 +64,11 @@ function Login({ goTown }) {
     const profile = googleLoginUser.getBasicProfile();
     const name = profile.getName();
     const userEmail = profile.getEmail();
-    const photoUrl = profile.getImageUrl();
+    const photo = profile.getImageUrl();
 
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
-      { name, email: userEmail, photoUrl },
+      { name, email: userEmail, photo },
       { withCredentials: true },
     );
 

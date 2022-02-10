@@ -6,7 +6,11 @@ import GameModalButton from "../GameModal/GameModalButton";
 import { OPTION, TYPE } from "../../constants/friendList";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
-import { deleteFriend } from "../../api/friendlist";
+import {
+  deleteFriend,
+  addFriendList,
+  deletePendingFriend,
+} from "../../api/friendlist";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -46,29 +50,36 @@ function FriendRow({
   name,
   id,
   photo,
+  email,
   type,
   visitFriend,
   toggleFriendList,
   handleDeletion,
+  handleResponse,
 }) {
   const userId = useSelector(selectUserId);
 
   const visitFriendTown = () => {
-    console.log("visitFriendTown");
     visitFriend(id);
     toggleFriendList(false);
   };
-  const deleteFriend = async () => {
-    console.log("deleteFriend");
+  const onDeletion = async () => {
+    await deleteFriend(userId, email);
     handleDeletion((prev) => {
       return prev.filter((friend) => friend.id !== id);
     });
   };
   const acceptFriendRequest = async () => {
-    console.log("acceptFriendRequest");
+    await addFriendList(userId, email);
+    handleResponse((prev) => {
+      return prev.filter((pendingFriend) => pendingFriend.id !== id);
+    });
   };
   const declineFriendRequest = async () => {
-    console.log("declineFriendRequest");
+    await deletePendingFriend(userId, email);
+    handleResponse((prev) => {
+      return prev.filter((pendingFriend) => pendingFriend.id !== id);
+    });
   };
 
   return (
@@ -82,9 +93,7 @@ function FriendRow({
           OPTION.MY_FRIEND.map((option) => {
             const key = nanoid();
             const handleSelect =
-              option === OPTION.MY_FRIEND[VISIT]
-                ? visitFriendTown
-                : deleteFriend;
+              option === OPTION.MY_FRIEND[VISIT] ? visitFriendTown : onDeletion;
 
             return (
               <GameModalButton
@@ -119,10 +128,12 @@ FriendRow.propTypes = {
   name: proptypes.string.isRequired,
   id: proptypes.string.isRequired,
   photo: proptypes.string.isRequired,
+  email: proptypes.string.isRequired,
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
   handleDeletion: proptypes.func,
+  handleResponse: proptypes.func,
 };
 
 export default FriendRow;

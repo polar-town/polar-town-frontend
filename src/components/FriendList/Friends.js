@@ -2,10 +2,10 @@ import { nanoid } from "nanoid";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import protypes from "prop-types";
-import { TYPE } from "../../constants/friendList";
-import { getFriendList } from "../../api/friendlist";
 import FriendRow from "./FriendRow";
+import { TYPE } from "../../constants/friendList";
 import { selectUserId } from "../../features/user/userSlice";
+import { getFriendList } from "../../api/friendlist";
 
 function Friends({ visitFriend, toggleFriendList }) {
   const [friends, setFriends] = useState([]);
@@ -27,6 +27,7 @@ function Friends({ visitFriend, toggleFriendList }) {
               name={friend.name}
               id={friend.id}
               photo={friend.photo}
+              email={friend.email}
               type={TYPE.MY_FRIEND}
               visitFriend={visitFriend}
               toggleFriendList={toggleFriendList}

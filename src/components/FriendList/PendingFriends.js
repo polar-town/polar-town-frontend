@@ -1,36 +1,37 @@
 import { nanoid } from "nanoid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import FriendRow from "./FriendRow";
 import { TYPE } from "../../constants/friendList";
+import { selectUserId } from "../../features/user/userSlice";
+import { getPendingFriendList } from "../../api/friendlist";
 
 function PendingFriends() {
   const [pendingFriends, setPendingFriends] = useState([]);
-  const data = [
-    {
-      name: "조은별",
-      id: "62026c8514ae0f388ed66708",
-      url: "https://lh3.googleusercontent.com/a/AATXAJxxbHrLYUxCeas7MEWa79xgPZVVMHek_XFrhypx=s96-c",
-    },
-    {
-      name: "최 리",
-      id: "62024632a669ed3ebbfbfe38",
-      url: "https://lh3.googleusercontent.com/a/AATXAJxgk2MYxYmGTfM8LRWnEFbooyhzGrR7rJBpm3ve=s96-c",
-    },
-  ];
+  const userId = useSelector(selectUserId);
+
+  useEffect(async () => {
+    const pendingFriendList = await getPendingFriendList(userId);
+    setPendingFriends(pendingFriendList);
+  }, []);
+
   return (
     <div>
-      {data.map((friend) => {
-        const key = nanoid();
-        return (
-          <FriendRow
-            key={key}
-            name={friend.name}
-            id={friend.id}
-            photo={friend.url}
-            type={TYPE.PENDING_FRIEND}
-          />
-        );
-      })}
+      {!!pendingFriends?.length &&
+        pendingFriends.map((friend) => {
+          const key = nanoid();
+          return (
+            <FriendRow
+              key={key}
+              name={friend.name}
+              id={friend.id}
+              photo={friend.photo}
+              email={friend.email}
+              type={TYPE.PENDING_FRIEND}
+              handleResponse={setPendingFriends}
+            />
+          );
+        })}
     </div>
   );
 }
