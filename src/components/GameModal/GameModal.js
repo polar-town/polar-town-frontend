@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import { closeAll } from "../../features/modal/modalSlice";
-import { useDispatch } from "react-redux";
 
 const ModalWrapper = styled.div`
   box-sizing: border-box;
@@ -74,10 +72,9 @@ const CloseButton = styled.button`
 `;
 
 function GameModal({ onClose, children, maskClosable, className, subject }) {
-  const dispatch = useDispatch();
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
-      dispatch(closeAll());
+      onClose();
     }
   };
 
