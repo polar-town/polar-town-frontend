@@ -8,22 +8,24 @@ const StyledCokeCountContainer = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--header-background);
-  width: 200px;
+  background-color: rgb(231, 194, 184, 0.7);
+  width: 180px;
   height: 60px;
-  margin-top: 10px;
-  margin-left: 10px;
-  border-radius: 15px;
-  border: 5px outset var(--header-content);
+  margin: 15px 0 0 15px;
+  border-radius: 13px;
 
   img {
-    width: 30px;
+    width: 28px;
     image-rendering: pixelated;
   }
 
   span {
-    margin-left: 20px;
-    font-size: 30px;
+    margin-left: 10px;
+    font-size: 25px;
+  }
+
+  .count {
+    padding-top: 3px;
   }
 `;
 
@@ -33,7 +35,8 @@ function CokeCounter() {
   return (
     <StyledCokeCountContainer>
       <img src="/images/coke.png" />
-      <span>{cokeCount}</span>
+      <span>x</span>
+      <span className="count">{cokeCount}</span>
     </StyledCokeCountContainer>
   );
 }
