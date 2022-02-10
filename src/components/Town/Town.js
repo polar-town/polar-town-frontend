@@ -1,28 +1,19 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import PostBox from "./PostBox";
-import Mail from "../Mail/Mail";
-import GuestBook from "../GuestBook/GuestBook";
-import {
-  selectIsNotificationOpen,
-  selectMailIsOpen,
-  selectPostBoxIsOpen,
-} from "../../features/modal/modalSlice";
 import ModalPortals from "../ModalPortals/ModalPortals";
-import Notification from "../Notification/Notification";
+import ItemBox from "../ItemBox/ItemBox";
+import Shop from "../Shop/Shop";
 
 function Town() {
-  const isMailOpen = useSelector(selectMailIsOpen);
-  const isPostBoxOpen = useSelector(selectPostBoxIsOpen);
-  const isNotificationOpen = useSelector(selectIsNotificationOpen);
+  const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
     <div>
       <PostBox />
       <ModalPortals>
-        {isMailOpen && <Mail />}
-        {isPostBoxOpen && <GuestBook />}
-        {isNotificationOpen && <Notification />}
+        {isItemBoxOpen && <ItemBox onClose={setIsItemBoxOpen} />}
+        {isShopOpen && <Shop onClose={setIsShopOpen} />}
       </ModalPortals>
     </div>
   );
