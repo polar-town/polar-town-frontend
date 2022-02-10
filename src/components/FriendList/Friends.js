@@ -1,38 +1,47 @@
 import { nanoid } from "nanoid";
-import React, { useState } from "react";
-import FriendRow from "./FriendRow";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import protypes from "prop-types";
 import { TYPE } from "../../constants/friendList";
+import { getFriendList } from "../../api/friendlist";
+import FriendRow from "./FriendRow";
+import { selectUserId } from "../../features/user/userSlice";
 
-function Friends() {
+function Friends({ visitFriend, toggleFriendList }) {
   const [friends, setFriends] = useState([]);
-  const data = [
-    {
-      name: "조은별",
-      id: "62026c8514ae0f388ed66708",
-      url: "https://lh3.googleusercontent.com/a/AATXAJxxbHrLYUxCeas7MEWa79xgPZVVMHek_XFrhypx=s96-c",
-    },
-    {
-      name: "최 리",
-      id: "62024632a669ed3ebbfbfe38",
-      url: "https://lh3.googleusercontent.com/a/AATXAJxgk2MYxYmGTfM8LRWnEFbooyhzGrR7rJBpm3ve=s96-c",
-    },
-  ];
+  const userId = useSelector(selectUserId);
+
+  useEffect(async () => {
+    const friendList = await getFriendList(userId);
+    console.log(friendList);
+    setFriends(friendList);
+  }, []);
+
   return (
     <div>
-      {data.map((friend) => {
-        const key = nanoid();
-        return (
-          <FriendRow
-            key={key}
-            name={friend.name}
-            id={friend.id}
-            photo={friend.url}
-            type={TYPE.MY_FRIEND}
-          />
-        );
-      })}
+      {!!friends.length &&
+        friends.map((friend) => {
+          console.log(friend);
+          const key = nanoid();
+          return (
+            <FriendRow
+              key={key}
+              name={friend.name}
+              id={friend.id}
+              photo={friend.photo}
+              type={TYPE.MY_FRIEND}
+              visitFriend={visitFriend}
+              toggleFriendList={toggleFriendList}
+            />
+          );
+        })}
     </div>
   );
 }
 
 export default Friends;
+
+Friends.propTypes = {
+  visitFriend: protypes.func.isRequired,
+  toggleFriendList: protypes.func.isRequired,
+};

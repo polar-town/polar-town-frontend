@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import GameModalButton from "../GameModal/GameModalButton";
 import { OPTION, TYPE } from "../../constants/friendList";
-import { useDispatch } from "react-redux";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -41,10 +40,11 @@ const Photo = styled.div`
 const VISIT = "0";
 const ACCEPT = "0";
 
-function FriendRow({ name, id, photo, type }) {
-  const dispatch = useDispatch();
+function FriendRow({ name, id, photo, type, visitFriend, toggleFriendList }) {
   const visitFriendTown = () => {
     console.log("visitFriendTown");
+    visitFriend(id);
+    toggleFriendList(false);
   };
   const deleteFriend = async () => {
     console.log("deleteFriend");
@@ -105,6 +105,8 @@ FriendRow.propTypes = {
   id: proptypes.string.isRequired,
   photo: proptypes.string.isRequired,
   type: proptypes.string.isRequired,
+  toggleFriendList: proptypes.func,
+  visitFriend: proptypes.func,
 };
 
 export default FriendRow;
