@@ -1,14 +1,14 @@
 import { nanoid } from "@reduxjs/toolkit";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getMessageList } from "../../api/guestbook";
-import { closeModal, closeGuestBook } from "../../features/modal/modalSlice";
 import { selectUserId } from "../../features/user/userSlice";
 import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
+import proptypes from "prop-types";
 
 const StyledGuestBookContainer = styled.div`
   height: 350px;
@@ -18,10 +18,9 @@ const StyledGuestBookContainer = styled.div`
   background-color: var(--game-modal-background);
 `;
 
-function GuestBook() {
+function GuestBook({ toggleGuestbook }) {
   const [messageList, setMessageList] = useState([]);
   const { id } = useParams();
-  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
   const isMyTown = id === userId;
 
@@ -39,7 +38,7 @@ function GuestBook() {
     <GameModal
       subject="방명록"
       onClose={() => {
-        dispatch(closeGuestBook());
+        toggleGuestbook(false);
       }}
     >
       <StyledGuestBookContainer>
@@ -63,3 +62,7 @@ function GuestBook() {
 }
 
 export default GuestBook;
+
+GuestBook.propTypes = {
+  toggleGuestbook: proptypes.func.isRequired,
+};
