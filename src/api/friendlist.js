@@ -22,3 +22,13 @@ export async function getFriendList(userId) {
     console.error(error);
   }
 }
+
+export async function deleteFriend(userId) {
+  try {
+    await axios.delete(
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends`,
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}

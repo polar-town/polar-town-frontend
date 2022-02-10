@@ -13,15 +13,13 @@ function Friends({ visitFriend, toggleFriendList }) {
 
   useEffect(async () => {
     const friendList = await getFriendList(userId);
-    console.log(friendList);
     setFriends(friendList);
   }, []);
 
   return (
     <div>
-      {!!friends.length &&
+      {!!friends?.length &&
         friends.map((friend) => {
-          console.log(friend);
           const key = nanoid();
           return (
             <FriendRow
@@ -32,6 +30,7 @@ function Friends({ visitFriend, toggleFriendList }) {
               type={TYPE.MY_FRIEND}
               visitFriend={visitFriend}
               toggleFriendList={toggleFriendList}
+              handleDeletion={setFriends}
             />
           );
         })}
