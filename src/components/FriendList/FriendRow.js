@@ -2,9 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { nanoid } from "nanoid";
-import { useNavigate } from "react-router-dom";
 import GameModalButton from "../GameModal/GameModalButton";
 import { OPTION, TYPE } from "../../constants/friendList";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../features/user/userSlice";
+import { deleteFriend } from "../../api/friendlist";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -40,7 +42,17 @@ const Photo = styled.div`
 const VISIT = "0";
 const ACCEPT = "0";
 
-function FriendRow({ name, id, photo, type, visitFriend, toggleFriendList }) {
+function FriendRow({
+  name,
+  id,
+  photo,
+  type,
+  visitFriend,
+  toggleFriendList,
+  handleDeletion,
+}) {
+  const userId = useSelector(selectUserId);
+
   const visitFriendTown = () => {
     console.log("visitFriendTown");
     visitFriend(id);
@@ -48,6 +60,9 @@ function FriendRow({ name, id, photo, type, visitFriend, toggleFriendList }) {
   };
   const deleteFriend = async () => {
     console.log("deleteFriend");
+    handleDeletion((prev) => {
+      return prev.filter((friend) => friend.id !== id);
+    });
   };
   const acceptFriendRequest = async () => {
     console.log("acceptFriendRequest");
@@ -107,6 +122,7 @@ FriendRow.propTypes = {
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
+  handleDeletion: proptypes.func,
 };
 
 export default FriendRow;

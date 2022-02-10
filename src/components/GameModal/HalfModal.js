@@ -61,7 +61,7 @@ function HalfModal({ category, children }) {
 
 HalfModal.propTypes = {
   category: proptypes.array,
-  children: proptypes.string,
+  children: proptypes.array,
 };
 
 export default HalfModal;
