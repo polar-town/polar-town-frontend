@@ -75,6 +75,7 @@ const CloseButton = styled.button`
 
 function GameModal({ onClose, children, maskClosable, className, subject }) {
   const dispatch = useDispatch();
+
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
       dispatch(closeAll());
