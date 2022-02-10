@@ -6,7 +6,11 @@ import GameModalButton from "../GameModal/GameModalButton";
 import { OPTION, TYPE } from "../../constants/friendList";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
-import { deleteFriend } from "../../api/friendlist";
+import {
+  deleteFriend,
+  addFriendList,
+  deletePendingFriend,
+} from "../../api/friendlist";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -16,6 +20,7 @@ const ProfileContainer = styled.div`
   padding-bottom: 20px;
   margin-bottom: 20px;
 `;
+
 const ProfileRigntSection = styled.section`
   display: flex;
   align-items: center;
@@ -24,6 +29,7 @@ const ProfileRigntSection = styled.section`
     font-size: 18px;
   }
 `;
+
 const ProfileLeftSection = styled.section`
   button {
     margin-left: 10px;
@@ -39,36 +45,41 @@ const Photo = styled.div`
   margin: 0px 10px;
 `;
 
-const VISIT = "0";
-const ACCEPT = "0";
+const VISIT = 0;
+const ACCEPT = 0;
 
 function FriendRow({
-  name,
-  id,
-  photo,
+  friend,
   type,
   visitFriend,
   toggleFriendList,
   handleDeletion,
+  handleResponse,
 }) {
   const userId = useSelector(selectUserId);
+  const { name, email, photo, id } = friend;
 
   const visitFriendTown = () => {
-    console.log("visitFriendTown");
     visitFriend(id);
     toggleFriendList(false);
   };
-  const deleteFriend = async () => {
-    console.log("deleteFriend");
+  const onDeletion = async () => {
+    await deleteFriend(userId, email);
     handleDeletion((prev) => {
       return prev.filter((friend) => friend.id !== id);
     });
   };
   const acceptFriendRequest = async () => {
-    console.log("acceptFriendRequest");
+    await addFriendList(userId, email);
+    handleResponse((prev) => {
+      return prev.filter((pendingFriend) => pendingFriend.id !== id);
+    });
   };
   const declineFriendRequest = async () => {
-    console.log("declineFriendRequest");
+    await deletePendingFriend(userId, email);
+    handleResponse((prev) => {
+      return prev.filter((pendingFriend) => pendingFriend.id !== id);
+    });
   };
 
   return (
@@ -82,9 +93,7 @@ function FriendRow({
           OPTION.MY_FRIEND.map((option) => {
             const key = nanoid();
             const handleSelect =
-              option === OPTION.MY_FRIEND[VISIT]
-                ? visitFriendTown
-                : deleteFriend;
+              option === OPTION.MY_FRIEND[VISIT] ? visitFriendTown : onDeletion;
 
             return (
               <GameModalButton
@@ -116,13 +125,12 @@ function FriendRow({
 }
 
 FriendRow.propTypes = {
-  name: proptypes.string.isRequired,
-  id: proptypes.string.isRequired,
-  photo: proptypes.string.isRequired,
+  friend: proptypes.object.isRequired,
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
   handleDeletion: proptypes.func,
+  handleResponse: proptypes.func,
 };
 
 export default FriendRow;

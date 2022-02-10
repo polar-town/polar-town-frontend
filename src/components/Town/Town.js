@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import proptypes from "prop-types";
 import styled from "styled-components";
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -6,7 +7,6 @@ import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import FriendList from "../FriendList/FriendList";
-import proptypes from "prop-types";
 import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 
