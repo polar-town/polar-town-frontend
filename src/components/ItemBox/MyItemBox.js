@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Item from "../Item/Item";
 import { getInItemBox } from "../../api/item";
 import { countItem, itemCounter } from "../../utils/item";
+import { ITEM_LIST } from "../../constants/item";
 import {
   selectItemCount,
   updateItemCount,
@@ -23,14 +24,6 @@ function MyItemBox() {
   const [isMounted, setIsMounted] = useState(false);
   const [myItemList, setMyItemList] = useState([]);
   const [iceCount, setIceCount] = useState([]);
-  const itemNameList = [
-    "PolarBear",
-    "Penguin",
-    "Seal",
-    "Igloo",
-    "Flower",
-    "Ice",
-  ];
   const itemCount = useSelector(selectItemCount);
 
   useEffect(async () => {
@@ -67,7 +60,7 @@ function MyItemBox() {
 
   return (
     <StyledDiv>
-      {itemNameList.map((item) => {
+      {ITEM_LIST.map((item) => {
         return (
           <Item
             key={item}

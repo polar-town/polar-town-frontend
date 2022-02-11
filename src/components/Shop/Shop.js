@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Item from "../Item/Item";
 import GameModal from "../GameModal/GameModal";
+import { ITEM_LIST, ITEM_PRICE_LIST } from "../../constants/item";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -12,24 +13,15 @@ const StyledDiv = styled.div`
 `;
 
 function Shop({ onClose }) {
-  const itemList = {
-    PolarBear: "200",
-    Penguin: "300",
-    Seal: "400",
-    Igloo: "500",
-    Flower: "50",
-    Ice: "200",
-  };
-
   return (
     <GameModal onClose={onClose} subject="상점">
       <StyledDiv>
-        {Object.keys(itemList).map((item) => {
+        {ITEM_LIST.map((item) => {
           return (
             <Item
               key={item}
               storageType="shop"
-              content={itemList[item]}
+              content={ITEM_PRICE_LIST[item]}
               imageName={item}
             />
           );

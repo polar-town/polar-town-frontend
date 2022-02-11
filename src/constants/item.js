@@ -1,4 +1,4 @@
-export const itemList = [
+export const ITEM_LIST = [
   "PolarBear",
   "Penguin",
   "Seal",
@@ -7,7 +7,7 @@ export const itemList = [
   "Ice",
 ];
 
-export const itemPriceList = {
+export const ITEM_PRICE_LIST = {
   PolarBear: "200",
   Penguin: "300",
   Seal: "400",
