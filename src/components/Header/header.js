@@ -2,13 +2,13 @@ import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import proptype from "prop-types";
 import {
   removeLogoutUser,
   selectUser,
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import proptype from "prop-types";
 
 const StyledHeader = styled.header`
   width: 100vw;

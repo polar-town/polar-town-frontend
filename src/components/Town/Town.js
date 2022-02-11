@@ -9,6 +9,8 @@ import Notification from "../Notification/Notification";
 import FriendList from "../FriendList/FriendList";
 import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
+import ItemBox from "../ItemBox/ItemBox";
+import Shop from "../Shop/Shop";
 
 const StyledTownDiv = styled.div`
   background-image: url("/images/town-background-image.jpg");
@@ -22,6 +24,8 @@ function Town({ onTownTransition }) {
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
+  const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
 
   return (
     <>
@@ -46,6 +50,8 @@ function Town({ onTownTransition }) {
               toggleFriendList={setOnFriendList}
             />
           )}
+          {isItemBoxOpen && <ItemBox onClose={setIsItemBoxOpen} />}
+          {isShopOpen && <Shop onClose={setIsShopOpen} />}
         </ModalPortals>
       </StyledTownDiv>
     </>
