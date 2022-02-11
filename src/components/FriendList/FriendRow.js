@@ -3,16 +3,23 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 import { nanoid } from "nanoid";
 import GameModalButton from "../GameModal/GameModalButton";
+import FriendProfile from "../FriendProfile/FriendProfile";
 import { OPTION, TYPE } from "../../constants/friendList";
-import { useSelector } from "react-redux";
-import { selectUserId } from "../../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectUserId,
+  selectFriendList,
+  selectPendingFriendList,
+  updateFriendList,
+  updatePendingFriendList,
+} from "../../features/user/userSlice";
 import {
   deleteFriend,
   addFriendList,
   deletePendingFriend,
 } from "../../api/friendlist";
 
-const ProfileContainer = styled.div`
+const FriendRowContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,75 +27,61 @@ const ProfileContainer = styled.div`
   padding-bottom: 20px;
   margin-bottom: 20px;
 `;
-const ProfileRigntSection = styled.section`
-  display: flex;
-  align-items: center;
 
-  span {
-    font-size: 18px;
-  }
-`;
-const ProfileLeftSection = styled.section`
+const FriendRowButtonContainer = styled.section`
   button {
     margin-left: 10px;
   }
 `;
 
-const Photo = styled.div`
-  background-image: ${(props) => `url("${props.url}")`};
-  background-size: 100%;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin: 0px 10px;
-`;
+const VISIT = 0;
+const ACCEPT = 0;
 
-const VISIT = "0";
-const ACCEPT = "0";
-
-function FriendRow({
-  name,
-  id,
-  photo,
-  email,
-  type,
-  visitFriend,
-  toggleFriendList,
-  handleDeletion,
-  handleResponse,
-}) {
+function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
   const userId = useSelector(selectUserId);
+  const dispatch = useDispatch();
+  const { name, email, photo, id, iceCount } = friend;
 
-  const visitFriendTown = () => {
-    visitFriend(id);
+  function visitFriendTown() {
+    visitFriend(id, iceCount);
     toggleFriendList(false);
-  };
-  const onDeletion = async () => {
+  }
+
+  async function onDeletion() {
+    const prevFriendList = useSelector(selectFriendList);
+    const newFriendList = prevFriendList.filter((friend) => friend.id !== id);
+
     await deleteFriend(userId, email);
-    handleDeletion((prev) => {
-      return prev.filter((friend) => friend.id !== id);
-    });
-  };
-  const acceptFriendRequest = async () => {
+    dispatch(updateFriendList(newFriendList));
+  }
+
+  async function acceptFriendRequest() {
+    const prevFriendList = useSelector(selectFriendList);
+    const newFriendList = prevFriendList.push(friend);
+    const prevPendingFriendList = useSelector(selectPendingFriendList);
+    const newPendingFriendList = prevPendingFriendList.filter(
+      (friend) => friend.id !== id,
+    );
+
     await addFriendList(userId, email);
-    handleResponse((prev) => {
-      return prev.filter((pendingFriend) => pendingFriend.id !== id);
-    });
-  };
-  const declineFriendRequest = async () => {
+    dispatch(updatePendingFriendList(newPendingFriendList));
+    dispatch(updateFriendList(newFriendList));
+  }
+
+  async function declineFriendRequest() {
+    const prevPendingFriendList = useSelector(selectPendingFriendList);
+    const newPendingFriendList = prevPendingFriendList.filter(
+      (friend) => friend.id !== id,
+    );
+
     await deletePendingFriend(userId, email);
-    handleResponse((prev) => {
-      return prev.filter((pendingFriend) => pendingFriend.id !== id);
-    });
-  };
+    dispatch(updatePendingFriendList(newPendingFriendList));
+  }
 
   return (
-    <ProfileContainer>
-      <ProfileRigntSection>
-        <Photo url={photo} />
-        <span>{name}</span>
-      </ProfileRigntSection>
-      <ProfileLeftSection>
+    <FriendRowContainer>
+      <FriendProfile name={name} photo={photo} />
+      <FriendRowButtonContainer>
         {type === TYPE.MY_FRIEND &&
           OPTION.MY_FRIEND.map((option) => {
             const key = nanoid();
@@ -119,21 +112,16 @@ function FriendRow({
               />
             );
           })}
-      </ProfileLeftSection>
-    </ProfileContainer>
+      </FriendRowButtonContainer>
+    </FriendRowContainer>
   );
 }
 
 FriendRow.propTypes = {
-  name: proptypes.string.isRequired,
-  id: proptypes.string.isRequired,
-  photo: proptypes.string.isRequired,
-  email: proptypes.string.isRequired,
+  friend: proptypes.object.isRequired,
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
-  handleDeletion: proptypes.func,
-  handleResponse: proptypes.func,
 };
 
 export default FriendRow;

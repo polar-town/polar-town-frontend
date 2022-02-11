@@ -17,9 +17,10 @@ export async function leaveNewMessage(townId, message) {
     const response = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
       { message },
+      { withCredentials: true },
     );
 
-    return response;
+    return response.data.result;
   } catch (error) {
     console.error(error);
   }

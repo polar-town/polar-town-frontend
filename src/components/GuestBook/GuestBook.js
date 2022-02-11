@@ -43,7 +43,7 @@ function GuestBook({ toggleGuestbook }) {
     >
       <StyledGuestBookContainer>
         {!isMyTown && <MessageInput onMessageListUpdate={setMessageList} />}
-        {messageList &&
+        {!!messageList.length &&
           messageList.map((post) => {
             const uniqueId = nanoid();
 

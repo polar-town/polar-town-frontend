@@ -1,18 +1,23 @@
 import { nanoid } from "nanoid";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FriendRow from "./FriendRow";
 import { TYPE } from "../../constants/friendList";
-import { selectUserId } from "../../features/user/userSlice";
+import {
+  selectUserId,
+  updatePendingFriendList,
+} from "../../features/user/userSlice";
 import { getPendingFriendList } from "../../api/friendlist";
 
 function PendingFriends() {
   const [pendingFriends, setPendingFriends] = useState([]);
+  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
 
   useEffect(async () => {
     const pendingFriendList = await getPendingFriendList(userId);
     setPendingFriends(pendingFriendList);
+    dispatch(updatePendingFriendList(pendingFriendList));
   }, []);
 
   return (
@@ -23,10 +28,7 @@ function PendingFriends() {
           return (
             <FriendRow
               key={key}
-              name={friend.name}
-              id={friend.id}
-              photo={friend.photo}
-              email={friend.email}
+              friend={friend}
               type={TYPE.PENDING_FRIEND}
               handleResponse={setPendingFriends}
             />

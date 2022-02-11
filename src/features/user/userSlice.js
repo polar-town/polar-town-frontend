@@ -7,6 +7,8 @@ const initialState = {
   email: null,
   accessToken: null,
   googleLoginUser: null,
+  friendList: [],
+  pendingFriendList: [],
 };
 
 export const userSlice = createSlice({
@@ -14,17 +16,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     saveLoginUser: (state, action) => {
-      const { id, username, email, accessToken, googleLoginUser } =
-        action.payload;
-
-      return {
-        ...initialState,
-        id,
-        username,
-        email,
-        accessToken,
-        googleLoginUser,
-      };
+      Object.assign(state, action.payload);
     },
     removeLogoutUser: () => {
       return initialState;
@@ -43,6 +35,12 @@ export const userSlice = createSlice({
     decreaseCoke: (state, action) => {
       state.cokeCount -= action.payload;
     },
+    updateFriendList: (state, action) => {
+      state.friendList = action.payload;
+    },
+    updatePendingFriendList: (state, action) => {
+      state.PendingFriendList = action.payload;
+    },
   },
 });
 
@@ -52,11 +50,15 @@ export const {
   exchangeAccessToken,
   increseCoke,
   decreaseCoke,
+  updateFriendList,
+  updatePendingFriendList,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
 export const selectUserId = (state) => state.user.id;
 export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
+export const selectFriendList = (state) => state.user.friendList;
+export const selectPendingFriendList = (state) => state.user.pendingFriendList;
 
 export default userSlice.reducer;

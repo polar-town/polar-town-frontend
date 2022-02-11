@@ -33,8 +33,9 @@ function MessageInput({ onMessageListUpdate }) {
 
   async function handleSendButtonClick() {
     const messageValue = messageInput.current.value;
-    const newMessage = await leaveNewMessage(id, messageValue);
+    const { newMessage } = await leaveNewMessage(id, messageValue);
 
+    messageInput.current.value = "";
     onMessageListUpdate((prev) => [newMessage, ...prev]);
   }
 

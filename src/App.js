@@ -6,11 +6,17 @@ import Town from "./components/Town/Town";
 
 function App() {
   const [townId, setTownId] = useState("");
+  const [townIceCount, setTownIceCount] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     townId ? navigate(`users/${townId}`) : navigate("/login");
   }, [townId]);
+
+  function onTownTransition(id, iceCount) {
+    setTownId(id);
+    setTownIceCount(iceCount);
+  }
 
   return (
     <>
@@ -18,9 +24,9 @@ function App() {
       <Routes>
         <Route
           path="/users/:id"
-          element={<Town onTownTransition={setTownId} />}
+          element={<Town onTownTransition={onTownTransition} />}
         />
-        <Route path="/login" element={<Login goTown={setTownId} />} />
+        <Route path="/login" element={<Login goTown={onTownTransition} />} />
       </Routes>
     </>
   );

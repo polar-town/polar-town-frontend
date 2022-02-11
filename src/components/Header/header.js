@@ -1,6 +1,7 @@
-import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import proptype from "prop-types";
 import styled from "styled-components";
 import {
   removeLogoutUser,
@@ -8,7 +9,6 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import proptype from "prop-types";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -39,7 +39,13 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
+function Header({
+  toggleMail,
+  toggleFriendSearch,
+  toggleFriendList,
+  toggleShop,
+  onSignout,
+}) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
@@ -53,7 +59,7 @@ function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
     });
 
     dispatch(removeLogoutUser());
-
+    onSignout("", 1);
     await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
       email: user.email,
     });
@@ -72,7 +78,12 @@ function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
               toggleMail(true);
             }}
           />
-          <i className="fas fa-user-plus" />
+          <i
+            className="fas fa-user-plus"
+            onClick={() => {
+              toggleFriendSearch(true);
+            }}
+          />
           <i
             className="fas fa-user-friends"
             onClick={() => {
@@ -91,7 +102,8 @@ export default Header;
 
 Header.propTypes = {
   toggleMail: proptype.func,
-  toggleFindUser: proptype.func,
+  toggleFriendSearch: proptype.func,
   toggleFriendList: proptype.func,
   toggleShop: proptype.func,
+  onSignout: proptype.func,
 };
