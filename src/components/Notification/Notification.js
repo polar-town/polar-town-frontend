@@ -9,6 +9,7 @@ import {
 import GameModalButton from "../GameModal/GameModalButton";
 import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
+import proptype from "prop-types";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -31,7 +32,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function Notification() {
+function Notification({ toggleNotification }) {
   const dispatch = useDispatch();
   const notificationType = useSelector(selectNotificationType);
   const [buttonContent, setButtonContent] = useState([]);
@@ -72,3 +73,7 @@ function Notification() {
 }
 
 export default Notification;
+
+Notification.propTypes = {
+  toggleNotification: proptype.func.isRequired,
+};

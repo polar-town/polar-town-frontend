@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
+import proptype from "prop-types";
+import { openGuestBook } from "../../features/modal/modalSlice";
 
-const StypedPostBoxContainer = styled.div`
+const PostBoxContainer = styled.div`
   width: 100vw;
   height: 100vh;
   position: relative;
@@ -16,14 +18,21 @@ const StypedPostBoxContainer = styled.div`
   }
 `;
 
-function PostBox() {
-  const dispatch = useDispatch();
-
+function PostBox({ toggleGuestbook }) {
   return (
-    <StypedPostBoxContainer>
-      <img onClick={() => {}} src="/images/postbox.png" />
-    </StypedPostBoxContainer>
+    <PostBoxContainer>
+      <img
+        onClick={() => {
+          toggleGuestbook(true);
+        }}
+        src="/images/postbox.png"
+      />
+    </PostBoxContainer>
   );
 }
 
 export default PostBox;
+
+PostBox.propTypes = {
+  toggleGuestbook: proptype.func.isRequired,
+};

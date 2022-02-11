@@ -5,6 +5,7 @@ import NavButton from "./NavButton";
 import MailRow from "./MailRow";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
+import proptypes from "prop-types";
 
 const StyledMailDiv = styled.div`
   position: relative;
@@ -89,7 +90,7 @@ const StyledGmailLogoButton = styled.button`
   }
 `;
 
-function Mail() {
+function Mail({ toggleMail }) {
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
@@ -105,7 +106,7 @@ function Mail() {
   }, []);
 
   return (
-    <MailModal>
+    <MailModal toggleMail={toggleMail}>
       {targetEmailId && (
         <MailDetail
           targetEmail={
@@ -183,3 +184,7 @@ function Mail() {
 }
 
 export default Mail;
+
+Mail.propTypes = {
+  toggleMail: proptypes.func.isRequired,
+};

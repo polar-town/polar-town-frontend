@@ -88,7 +88,7 @@ function GameModal({ onClose, children, maskClosable, className, subject }) {
       >
         <ModalInner tabIndex={0} className="modal-inner">
           <CloseButton className="modal-close" onClick={() => onClose()}>
-            <i className="fas fa-times"></i>
+            <i className="fas fa-times" />
           </CloseButton>
           {subject && <ModalInnerSubject>{subject}</ModalInnerSubject>}
           <ModalInnerContent>{children}</ModalInnerContent>

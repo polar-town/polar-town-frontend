@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import proptype from "prop-types";
 import {
   removeLogoutUser,
   selectUser,
@@ -38,7 +39,7 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header() {
+function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
@@ -65,9 +66,19 @@ function Header() {
       </StyledImgWrapperDiv>
       {currentUserAccessToken && (
         <StyledNavWrapperNav>
-          <i className="fas fa-envelope" onClick={() => {}} />
+          <i
+            className="fas fa-envelope"
+            onClick={() => {
+              toggleMail(true);
+            }}
+          />
           <i className="fas fa-user-plus" />
-          <i className="fas fa-user-friends" />
+          <i
+            className="fas fa-user-friends"
+            onClick={() => {
+              toggleFriendList(true);
+            }}
+          />
           <i className="fas fa-store" />
           <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>
@@ -77,3 +88,10 @@ function Header() {
 }
 
 export default Header;
+
+Header.propTypes = {
+  toggleMail: proptype.func,
+  toggleFindUser: proptype.func,
+  toggleFriendList: proptype.func,
+  toggleShop: proptype.func,
+};
