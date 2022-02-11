@@ -24,7 +24,7 @@ function Town({ onTownTransition }) {
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
-  const [onItemBox, setOnItemBox] = useState(false);
+  const [onItemBox, setOnItemBox] = useState(true);
   const [onShop, setOnShop] = useState(false);
 
   return (
@@ -51,7 +51,9 @@ function Town({ onTownTransition }) {
             />
           )}
           {onItemBox && <ItemBox onClose={setOnItemBox} />}
-          {onShop && <Shop onClose={setOnShop} />}
+          {onShop && (
+            <Shop onClose={setOnShop} toggleNotification={setOnNotification} />
+          )}
         </ModalPortals>
       </StyledTownDiv>
     </>

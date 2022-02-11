@@ -102,9 +102,25 @@ const StyledCashContainerDiv = styled.div`
   }
 `;
 
-function Item({ storageType, content, imageName, shouldOverlaid }) {
+function Item({
+  storageType,
+  content,
+  imageName,
+  shouldOverlaid,
+  toggleNotification,
+  moveToOutBox,
+}) {
   return (
-    <StyledItemContainerDiv>
+    <StyledItemContainerDiv
+      onClick={(e) => {
+        {
+          toggleNotification && toggleNotification(true);
+        }
+        {
+          moveToOutBox && moveToOutBox(e.target.id);
+        }
+      }}
+    >
       <StyledItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
         <i className="fas fa-solid fa-lock lock" />
       </StyledItemOverlayDiv>
@@ -137,4 +153,6 @@ Item.propTypes = {
   ]),
   imageName: PropTypes.string.isRequired,
   shouldOverlaid: PropTypes.bool,
+  toggleNotification: PropTypes.func,
+  moveToOutBox: PropTypes.func,
 };
