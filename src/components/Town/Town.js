@@ -50,7 +50,7 @@ function Town({ onTownTransition }) {
               toggleFriendList={setOnFriendList}
             />
           )}
-          {onItemBox && <ItemBox onClose={setOnItemBox} />}
+          {onItemBox && <ItemBox toggleItemBox={setOnItemBox} />}
           {onShop && (
             <Shop onClose={setOnShop} toggleNotification={setOnNotification} />
           )}
