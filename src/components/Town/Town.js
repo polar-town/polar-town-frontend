@@ -24,8 +24,8 @@ function Town({ onTownTransition }) {
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
-  const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
-  const [isShopOpen, setIsShopOpen] = useState(false);
+  const [onItemBox, setOnItemBox] = useState(false);
+  const [onShop, setOnShop] = useState(false);
 
   return (
     <>
@@ -33,7 +33,7 @@ function Town({ onTownTransition }) {
         toggleMail={setOnMail}
         toggleFindUser={() => {}}
         toggleFriendList={setOnFriendList}
-        toggleShop={() => {}}
+        toggleShop={setOnShop}
       />
       <CokeCounter />
       <StyledTownDiv>
@@ -50,8 +50,8 @@ function Town({ onTownTransition }) {
               toggleFriendList={setOnFriendList}
             />
           )}
-          {isItemBoxOpen && <ItemBox onClose={setIsItemBoxOpen} />}
-          {isShopOpen && <Shop onClose={setIsShopOpen} />}
+          {onItemBox && <ItemBox onClose={setOnItemBox} />}
+          {onShop && <Shop onClose={setOnShop} />}
         </ModalPortals>
       </StyledTownDiv>
     </>
