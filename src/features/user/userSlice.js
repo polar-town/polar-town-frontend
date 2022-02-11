@@ -37,6 +37,9 @@ export const userSlice = createSlice({
         accessToken,
       };
     },
+    currentCoke: (state, action) => {
+      state.cokeCount = action.payload;
+    },
     increseCoke: (state, action) => {
       state.cokeCount += action.payload;
     },
@@ -50,6 +53,7 @@ export const {
   saveLoginUser,
   removeLogoutUser,
   exchangeAccessToken,
+  currentCoke,
   increseCoke,
   decreaseCoke,
 } = userSlice.actions;

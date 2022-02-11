@@ -170,7 +170,7 @@ function Mail() {
             }}
           >
             <img
-              src="images/gmail-logo.png"
+              src="/images/gmail-logo.png"
               width="70"
               title="Gmail로 이동"
               alt="gmail-logo"

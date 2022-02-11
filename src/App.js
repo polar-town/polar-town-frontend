@@ -12,6 +12,7 @@ function App() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const currentUserAccessToken = useSelector(selectUserToken);
+  const iceCount = 10;
 
   useEffect(() => {
     currentUserAccessToken ? navigate(`users/${user.id}`) : navigate("/login");
@@ -23,7 +24,10 @@ function App() {
       <Header />
       {currentUserAccessToken && <CokeCounter />}
       <Routes>
-        <Route path="/users/:id" element={<Town />} />
+        <Route
+          path="/users/:id"
+          element={<Town iceCount={`/images/ice-background/${iceCount}.png`} />}
+        />
         <Route path="/login" element={<Login />} />
       </Routes>
     </>

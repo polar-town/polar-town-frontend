@@ -11,9 +11,10 @@ const StypedPostBoxContainer = styled.div`
   img {
     width: 75px;
     position: absolute;
-    top: 380px;
-    left: 150px;
+    top: 260px;
+    left: 70px;
     image-rendering: pixelated;
+    cursor: pointer;
   }
 `;
 
