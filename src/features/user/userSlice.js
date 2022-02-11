@@ -51,7 +51,6 @@ export const userSlice = createSlice({
       state.cokeCount -= action.payload;
     },
     updateItemCount: (state, action) => {
-      console.log(action.payload);
       const { PolarBear, Penguin, Seal, Igloo, Flower } = action.payload;
 
       return {

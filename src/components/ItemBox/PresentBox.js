@@ -14,17 +14,16 @@ const StyledItemContainerDiv = styled.div`
   justify-content: space-between;
   align-content: flex-start;
   overflow-y: auto;
-  scrollbar-color: #c9d6d5;
 
   ::-webkit-scrollbar {
     display: none;
-    width: 15px;
   }
 `;
 
 function PresentBox() {
   const [presentList, setPresentList] = useState([]);
   const { id } = useParams();
+  const GMAIL_ADDRESS = 10;
 
   useEffect(async () => {
     try {
@@ -45,7 +44,10 @@ function PresentBox() {
             <Item
               key={key}
               storageType="presentBox"
-              data={item.purchasedBy.slice(0, item.purchasedBy.length - 10)}
+              content={item.purchasedBy.slice(
+                0,
+                item.purchasedBy.length - GMAIL_ADDRESS
+              )}
               imageName={item.name}
             />
           );

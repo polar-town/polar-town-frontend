@@ -29,7 +29,7 @@ function Shop({ onClose }) {
             <Item
               key={item}
               storageType="shop"
-              data={itemList[item]}
+              content={itemList[item]}
               imageName={item}
             />
           );

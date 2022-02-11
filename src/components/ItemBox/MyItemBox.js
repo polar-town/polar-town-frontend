@@ -18,6 +18,8 @@ const StyledDiv = styled.div`
 `;
 
 function MyItemBox() {
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
   const [myItemList, setMyItemList] = useState([]);
   const [iceCount, setIceCount] = useState([]);
@@ -29,9 +31,6 @@ function MyItemBox() {
     "Flower",
     "Ice",
   ];
-  const { id } = useParams();
-  const dispatch = useDispatch();
-
   const itemCount = useSelector(selectItemCount);
 
   useEffect(async () => {
@@ -73,7 +72,7 @@ function MyItemBox() {
           <Item
             key={item}
             storageType="myItemBox"
-            data={item === "Ice" ? iceCount : itemCount[item]}
+            content={item === "Ice" ? iceCount : itemCount[item]}
             imageName={item}
             shouldOverlaid={itemCount[item] === 0 ? true : false}
           />

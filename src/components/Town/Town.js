@@ -5,8 +5,8 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 
 function Town() {
-  const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
-  const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isItemBoxOpen, setIsItemBoxOpen] = useState(true);
+  const [isShopOpen, setIsShopOpen] = useState(true);
 
   return (
     <div>

@@ -37,33 +37,33 @@ const StyledItemContainerDiv = styled.div`
     margin-top: 0;
   }
 
-  #polarBear {
+  #PolarBear {
     width: 105px;
     margin-top: 20px;
   }
 
-  #penguin {
+  #Penguin {
     width: 150px;
     margin-top: 35px;
   }
 
-  #seal {
+  #Seal {
     width: 165px;
     margin-top: 50px;
     margin-left: 50px;
   }
 
-  #igloo {
+  #Igloo {
     width: 225px;
     margin-top: 20px;
   }
 
-  #ice {
+  #Ice {
     width: 90px;
     margin-top: 55px;
   }
 
-  #flower {
+  #Flower {
     width: 80px;
     margin-top: 65px;
   }
@@ -102,41 +102,21 @@ const StyledCashContainerDiv = styled.div`
   }
 `;
 
-function Item({ storageType, data, imageName, shouldOverlaid }) {
-  function selectImage(imageName) {
-    switch (imageName) {
-      case "PolarBear":
-        return { image: "/images/polarbear.png", id: "polarBear" };
-      case "Penguin":
-        return { image: "/images/penguin.png", id: "penguin" };
-      case "Seal":
-        return { image: "/images/seal.png", id: "seal" };
-      case "Igloo":
-        return { image: "/images/igloo.png", id: "igloo" };
-      case "Ice":
-        return { image: "/images/ice.png", id: "ice" };
-      case "Flower":
-        return { image: "/images/flower.png", id: "flower" };
-      default:
-        return "/images/logo.png";
-    }
-  }
-
+function Item({ storageType, content, imageName, shouldOverlaid }) {
   return (
     <StyledItemContainerDiv>
       <StyledItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
         <i className="fas fa-solid fa-lock lock" />
       </StyledItemOverlayDiv>
-      <img src={selectImage(imageName).image} id={selectImage(imageName).id} />
-      {storageType === "myItemBox" && <p>{`x ${data}`}</p>}
-      {storageType === "presentBox" && <p>{`From ${data}`}</p>}
+      <img src={`/images/${imageName}.png`} id={imageName} />
+      {storageType === "myItemBox" && <p>{`x ${content}`}</p>}
+      {storageType === "presentBox" && <p>{`From ${content}`}</p>}
       {storageType === "shop" && (
         <StyledCashContainerDiv>
           <>
             <img src="/images/coke.png" />
-            <p>{data}</p>
+            <p>{content}</p>
           </>
-
           <button>
             <i className="fas fa-solid fa-gift" />
           </button>
@@ -150,7 +130,7 @@ export default Item;
 
 Item.propTypes = {
   storageType: PropTypes.string.isRequired,
-  data: PropTypes.oneOfType([
+  content: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.array,
     PropTypes.string,
