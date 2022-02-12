@@ -48,6 +48,8 @@ function Town({ iceCount, onTownTransition }) {
   const [onFriendSearch, setOnFriendSearch] = useState(false);
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
+  const [notificationType, setNotificationType] = useState("");
+  const [targetItem, setTargetItem] = useState("");
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
@@ -75,8 +77,21 @@ function Town({ iceCount, onTownTransition }) {
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
           {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onShopOpen && (
+            <Shop
+              onClose={setOnShopOpen}
+              toggleNotification={setOnNotification}
+              getTargetItem={setTargetItem}
+              getNotificationType={setNotificationType}
+              onFriendList={setOnFriendList}
+            />
+          )}
           {onNotification && (
-            <Notification toggleNotification={setOnNotification} />
+            <Notification
+              toggleNotification={setOnNotification}
+              notificationType={notificationType}
+              targetItem={targetItem}
+            />
           )}
           {onFriendList && (
             <FriendList
@@ -91,7 +106,6 @@ function Town({ iceCount, onTownTransition }) {
             />
           )}
           {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}
-          {onShopOpen && <Shop onClose={setOnShopOpen} />}
         </ModalPortals>
       </TownDiv>
     </>

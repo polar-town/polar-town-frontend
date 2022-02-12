@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { TYPE } from "../../constants/notification";
 
 const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
@@ -95,10 +96,19 @@ const CashContainerDiv = styled.div`
     margin-top: 164px;
   }
 
-  button {
+  .purchaseButton {
+    all: unset;
+    margin-top: 157px;
+    margin-left: 8px;
+    z-index: 999;
+    cursor: pointer;
+  }
+
+  .giftButton {
     all: unset;
     margin-top: 157px;
     margin-left: 15px;
+    cursor: pointer;
   }
 `;
 
@@ -109,6 +119,8 @@ function Item({
   shouldOverlaid,
   toggleNotification,
   moveToOutBox,
+  onTargetItem,
+  onNotificationType,
 }) {
   return (
     <ItemContainerDiv
@@ -135,7 +147,17 @@ function Item({
             <img src="/images/coke.png" />
             <p>{content}</p>
           </>
-          <button>
+          <button
+            className="purchaseButton"
+            onClick={() => {
+              onNotificationType(TYPE.CONFIRM_PURCHASE);
+              onTargetItem(imageName);
+              toggleNotification(true);
+            }}
+          >
+            구매하기
+          </button>
+          <button className="giftButton">
             <i className="fas fa-solid fa-gift" />
           </button>
         </CashContainerDiv>
@@ -157,4 +179,6 @@ Item.propTypes = {
   shouldOverlaid: PropTypes.bool,
   toggleNotification: PropTypes.func,
   moveToOutBox: PropTypes.func,
+  onTargetItem: PropTypes.func,
+  onNotificationType: PropTypes.func,
 };

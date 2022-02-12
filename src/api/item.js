@@ -36,10 +36,11 @@ export async function changeStorage(userId, itemId, from, to) {
     console.error(err);
   }
 }
+
 export async function addItem(userId, name, price) {
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/items/present`,
+      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/items`,
       { name, price }
     );
 
