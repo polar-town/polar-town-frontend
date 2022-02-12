@@ -113,11 +113,13 @@ function Item({
   return (
     <ItemContainerDiv
       onClick={(e) => {
-        {
-          toggleNotification && toggleNotification(true);
-        }
-        {
-          moveToOutBox && moveToOutBox(e.target.id);
+        if (e.target == e.currentTarget) {
+          {
+            toggleNotification && toggleNotification(true);
+          }
+          {
+            moveToOutBox && moveToOutBox(e.target.id);
+          }
         }
       }}
     >

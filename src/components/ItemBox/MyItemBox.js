@@ -9,6 +9,7 @@ import { countItem, itemCounter } from "../../utils/item";
 import { ITEM_LIST } from "../../constants/item";
 import {
   selectItemCount,
+  selectUser,
   updateItemCount,
 } from "../../features/user/userSlice";
 
@@ -26,6 +27,8 @@ function MyItemBox({ onClose }) {
   const [myItemList, setMyItemList] = useState([]);
   const [iceCount, setIceCount] = useState([]);
   const itemCount = useSelector(selectItemCount);
+  const aa = useSelector(selectUser);
+  console.log(aa);
 
   useEffect(async () => {
     setIsMounted(true);

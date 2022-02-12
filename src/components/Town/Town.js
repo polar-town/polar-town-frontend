@@ -90,7 +90,7 @@ function Town({ iceCount, onTownTransition }) {
               visitFriend={onTownTransition}
             />
           )}
-          {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
+          {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}
           {onShopOpen && <Shop onClose={setOnShopOpen} />}
         </ModalPortals>
       </TownDiv>

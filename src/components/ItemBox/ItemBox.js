@@ -7,7 +7,11 @@ import MyItemBox from "./MyItemBox";
 
 function ItemBox({ toggleItemBox }) {
   return (
-    <GameModal onClose={toggleItemBox}>
+    <GameModal
+      onClose={() => {
+        toggleItemBox(false);
+      }}
+    >
       <HalfModal category={["내 아이템", "선물함"]}>
         <MyItemBox onClose={toggleItemBox} />
         <PresentBox onClose={toggleItemBox} />
