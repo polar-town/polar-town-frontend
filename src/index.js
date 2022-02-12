@@ -6,12 +6,15 @@ import App from "./App";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
+import SocketService from "./api/socket";
+
+const socketService = new SocketService();
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <App socketService={socketService} />
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

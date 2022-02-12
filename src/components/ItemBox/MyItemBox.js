@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
 import Item from "../Item/Item";
-import { getInItemBox } from "../../api/item";
+import { changeStorage, getInItemBox } from "../../api/item";
 import { countItem, itemCounter } from "../../utils/item";
 import { ITEM_LIST } from "../../constants/item";
 import {
@@ -11,14 +12,14 @@ import {
   updateItemCount,
 } from "../../features/user/userSlice";
 
-const StyledDiv = styled.div`
+const ItemContainerDiv = styled.div`
   display: flex;
   width: 450px;
   flex-wrap: wrap;
   justify-content: space-between;
 `;
 
-function MyItemBox() {
+function MyItemBox({ onClose }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
@@ -57,8 +58,18 @@ function MyItemBox() {
     countItem(null, true);
   }, [myItemList]);
 
+  const moveItemToOutBox = async (itemName) => {
+    const targetItem = myItemList.find((item) => {
+      return item.name === itemName;
+    });
+
+    await changeStorage(id, targetItem._id, "inItemBox", "outItemBox");
+
+    onClose(false);
+  };
+
   return (
-    <StyledDiv>
+    <ItemContainerDiv>
       {ITEM_LIST.map((item) => {
         return (
           <Item
@@ -67,11 +78,16 @@ function MyItemBox() {
             content={item === "Ice" ? iceCount : itemCount[item]}
             imageName={item}
             shouldOverlaid={itemCount[item] === 0 ? true : false}
+            moveToOutBox={moveItemToOutBox}
           />
         );
       })}
-    </StyledDiv>
+    </ItemContainerDiv>
   );
 }
 
 export default MyItemBox;
+
+MyItemBox.propTypes = {
+  onClose: PropTypes.func.isRequired,
+};

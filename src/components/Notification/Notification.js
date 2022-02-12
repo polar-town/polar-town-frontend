@@ -29,7 +29,7 @@ const ButtonContainer = styled.div`
 `;
 
 function Notification({ toggleNotification }) {
-  // const notificationType = useSelector(selectNotificationType);
+  const notificationType = useSelector(selectNotificationType);
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
 
@@ -50,7 +50,7 @@ function Notification({ toggleNotification }) {
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
       onClose={() => {
-        //
+        toggleNotification();
       }}
     >
       <NotificationContainer>
