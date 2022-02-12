@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { closeAll } from "../../features/modal/modalSlice";
 
 const ModalWrapper = styled.div`
   position: relative;
@@ -24,7 +22,7 @@ const ModalWrapper = styled.div`
     all: unset;
     z-index: 9;
     position: absolute;
-    top: 4px;
+    top: 10px;
     text-align: center;
     right: 15px;
     color: var(--mail-basic);
@@ -34,21 +32,19 @@ const ModalWrapper = styled.div`
   }
 `;
 
-function MailModal({ children }) {
-  const dispatch = useDispatch();
-
+function MailModal({ onClose, children }) {
   return (
     <ModalWrapper>
       <div className="modalBox">
         <button
           onClick={() => {
-            dispatch(closeAll());
+            onClose(false);
           }}
           className="modalCloseButton"
           type="button"
           title="닫기"
         >
-          x
+          <i className="fas fa-times" />
         </button>
         {children}
       </div>
@@ -60,4 +56,5 @@ export default MailModal;
 
 MailModal.propTypes = {
   children: PropTypes.node.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

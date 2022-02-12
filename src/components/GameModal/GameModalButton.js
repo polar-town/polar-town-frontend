@@ -15,12 +15,17 @@ const StyleGameModalBtn = styled.button`
   }
 `;
 
-function GameModalButton({ content }) {
-  return <StyleGameModalBtn type="submit">{content}</StyleGameModalBtn>;
+function GameModalButton({ content, onSelect }) {
+  return (
+    <StyleGameModalBtn type="submit" onClick={onSelect}>
+      {content}
+    </StyleGameModalBtn>
+  );
 }
 
 GameModalButton.propTypes = {
-  content: proptypes.string,
+  content: proptypes.string.isRequired,
+  onSelect: proptypes.func,
 };
 
 export default GameModalButton;

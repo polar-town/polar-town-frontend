@@ -4,6 +4,7 @@ export async function getMessageList(townId) {
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
+      { withCredentials: true },
     );
 
     return response;
@@ -17,6 +18,7 @@ export async function leaveNewMessage(townId, message) {
     const response = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
       { message },
+      { withCredentials: true },
     );
 
     return response;

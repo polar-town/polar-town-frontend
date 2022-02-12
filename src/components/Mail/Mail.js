@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MailDetail from "./MailDetail";
-import NavButton from "./NavButton";
 import MailRow from "./MailRow";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
+import proptypes from "prop-types";
+import { getMailList } from "../../api/mail";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../features/user/userSlice";
 
 const StyledMailDiv = styled.div`
-  position: relative;
   width: 80vh;
 `;
 
@@ -59,14 +61,14 @@ const StyledMailDetailDiv = styled.div`
   padding: 0 2vw;
   margin-top: 9vh;
   width: 42vw;
-  height: 81vh;
+  height: 82vh;
   overflow: auto;
 `;
 
 const StyledGmailLogoButton = styled.button`
   position: absolute;
-  bottom: 1vh;
-  right: 50px;
+  bottom: 30px;
+  right: 30px;
   width: 70px;
   height: 70px;
   border: none;
@@ -89,23 +91,78 @@ const StyledGmailLogoButton = styled.button`
   }
 `;
 
-function Mail() {
+const NavButton = styled.button`
+  all: unset;
+  color: var(--mail-basic);
+  font-size: 25px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &.selectPromotion {
+    color: red;
+  }
+
+  &.selectSpam {
+    color: blue;
+  }
+
+  &.selectTrash {
+    color: green;
+  }
+`;
+
+const EmptyEmail = styled.div`
+  width: 100%;
+  text-align: center;
+  margin-top: 100px;
+`;
+
+function Mail({ toggleMail }) {
+  const loginUser = useSelector(selectUserId);
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
+  const [isPromotionActive, setIsPromotionActive] = useState(false);
+  const [isSpamActive, setIsSpamActive] = useState(false);
+  const [isTrashActive, setIsTrashActive] = useState(false);
 
   useEffect(() => {
     async function getUserEmailList() {
-      const res = await fetch("/data.json");
-      const data = await res.json();
-      setUserEmailList(data);
+      const response = await getMailList(loginUser, "CATEGORY_PROMOTIONS");
+
+      setUserEmailList(response.result);
     }
 
     getUserEmailList();
   }, []);
 
+  const getCategoryEmails = async (e) => {
+    const inBoxId = e.target.id;
+
+    if (inBoxId === "CATEGORY_PROMOTIONS") {
+      setIsPromotionActive(true);
+      setIsSpamActive(false);
+      setIsTrashActive(false);
+    }
+
+    if (inBoxId === "SPAM") {
+      setIsSpamActive(true);
+      setIsPromotionActive(false);
+      setIsTrashActive(false);
+    }
+
+    if (inBoxId === "TRASH") {
+      setIsTrashActive(true);
+      setIsPromotionActive(false);
+      setIsSpamActive(false);
+    }
+    const response = await getMailList(loginUser, inBoxId);
+
+    setUserEmailList(response.result);
+  };
+
   return (
-    <MailModal>
+    <MailModal onClose={toggleMail}>
       {targetEmailId && (
         <MailDetail
           targetEmail={
@@ -117,47 +174,61 @@ function Mail() {
       {!targetEmailId && (
         <StyledMailDiv>
           <StyledNavDiv>
-            <NavButton category="Promotion" />
-            <NavButton category="Spam" />
-            <NavButton category="Trash" />
+            <NavButton
+              onClick={getCategoryEmails}
+              id="CATEGORY_PROMOTIONS"
+              className={isPromotionActive ? "selectPromotion" : null}
+            >
+              Promotion
+            </NavButton>
+            <NavButton
+              onClick={getCategoryEmails}
+              id="SPAM"
+              className={isSpamActive ? "selectSpam" : null}
+            >
+              Spam
+            </NavButton>
+            <NavButton
+              onClick={getCategoryEmails}
+              id="TRASH"
+              className={isTrashActive ? "selectTrash" : null}
+            >
+              Trash
+            </NavButton>
           </StyledNavDiv>
-          <StyledSubHeaderDiv>
-            <input
-              type="checkbox"
-              className="allCheckBox"
-              id="allCheckBox"
-              onChange={(e) => {
-                if (e.target.checked === true) {
-                  const mailIdsArray = [];
-                  userEmailList.forEach((mail) => mailIdsArray.push(mail.id));
-                  setCheckedIds(mailIdsArray);
-                } else {
-                  setCheckedIds([]);
-                }
-              }}
-              checked={checkedIds.length === userEmailList.length}
-            />
-            <label className="allCheckBoxLabel" htmlFor="allCheckBox">
-              전체 선택
-            </label>
-            <DeleteIconButton />
-          </StyledSubHeaderDiv>
+          {userEmailList.length ? (
+            <StyledSubHeaderDiv>
+              <input
+                type="checkbox"
+                className="allCheckBox"
+                id="allCheckBox"
+                onChange={(e) => {
+                  if (e.target.checked === true) {
+                    const mailIdsArray = [];
+                    userEmailList.forEach((mail) => mailIdsArray.push(mail.id));
+                    setCheckedIds(mailIdsArray);
+                  } else {
+                    setCheckedIds([]);
+                  }
+                }}
+                checked={checkedIds.length === userEmailList.length}
+              />
+              <label className="allCheckBoxLabel" htmlFor="allCheckBox">
+                전체 선택
+              </label>
+              <DeleteIconButton
+                deleteEmail={checkedIds}
+                isTrash={isTrashActive}
+              />
+            </StyledSubHeaderDiv>
+          ) : (
+            <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
+          )}
           <StyledMailDetailDiv>
             {userEmailList.map((mail) => (
               <MailRow
                 key={mail.id}
-                id={mail.id}
-                sender={
-                  mail.headers.filter((item) => item.name === "From")[0].value
-                }
-                title={
-                  mail.headers.filter((item) => item.name === "Subject")[0]
-                    .value
-                }
-                content={mail.snippet}
-                date={
-                  mail.headers.filter((item) => item.name === "Date")[0].value
-                }
+                mail={mail}
                 onCheckedId={setCheckedIds}
                 checkedIdList={checkedIds}
                 onTargetEmailId={setTargetEmailId}
@@ -183,3 +254,7 @@ function Mail() {
 }
 
 export default Mail;
+
+Mail.propTypes = {
+  toggleMail: proptypes.func.isRequired,
+};

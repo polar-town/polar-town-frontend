@@ -5,15 +5,9 @@ import DeleteIconButton from "./DeleteIconButton";
 import organizeDate from "../../utils/date";
 
 const StyledMailRowDiv = styled.div`
-  p {
-    margin: 0;
-    padding: 0;
-  }
-
   position: relative;
   width: 38vw;
-  height: 110px;
-  padding: 10px;
+  padding: 10px 5px;
   border-bottom: 1px solid #66666650;
   line-height: 23px;
   cursor: pointer;
@@ -64,7 +58,7 @@ const StyledMailDetailDiv = styled.div`
   .date {
     position: absolute;
     top: 0;
-    right: -2vw;
+    right: -3vw;
     font-size: 12px;
   }
 
@@ -86,6 +80,7 @@ const StyledMailDetailDiv = styled.div`
     -webkit-box-orient: vertical;
     font-size: 14px;
     color: #666666;
+    margin-top: 3px;
   }
 `;
 
@@ -95,17 +90,9 @@ const StyledDeleteButtonDiv = styled.div`
   top: 30px;
 `;
 
-function MailRow({
-  id,
-  sender,
-  title,
-  content,
-  date,
-  onCheckedId,
-  checkedIdList,
-  onTargetEmailId,
-}) {
+function MailRow({ mail, onCheckedId, checkedIdList, onTargetEmailId }) {
   const [isHover, setIsHover] = useState(false);
+  const { id, from, subject, snippet, date } = mail;
 
   return (
     <>
@@ -130,10 +117,10 @@ function MailRow({
           checked={checkedIdList.includes(id)}
         />
         <StyledMailDetailDiv>
-          <p className="sender">{sender}</p>
+          <p className="sender">{from}</p>
           <p className="date">{organizeDate(date, false)}</p>
-          <p className="title">{title}</p>
-          <p className="content">{` - ${content}`}</p>
+          <p className="title">{subject}</p>
+          <p className="content">{snippet}</p>
           <StyledDeleteButtonDiv>
             {isHover && <DeleteIconButton />}
           </StyledDeleteButtonDiv>
@@ -146,11 +133,7 @@ function MailRow({
 export default MailRow;
 
 MailRow.propTypes = {
-  id: PropTypes.string.isRequired,
-  sender: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  mail: PropTypes.object,
   onCheckedId: PropTypes.func.isRequired,
   checkedIdList: PropTypes.arrayOf(PropTypes.string).isRequired,
   onTargetEmailId: PropTypes.func,

@@ -12,45 +12,32 @@ const StyledGoBackButton = styled.button`
 `;
 
 const StyledInnerDiv = styled.div`
-  position: relative;
-  left: 0;
-  right: 0;
-  margin: 3vh auto 0;
+  margin: 1vh auto 0;
   width: 40vw;
 `;
 
 const StyledTitleDiv = styled.div`
   width: 40vw;
-  height: 5vh;
-  font-size: 20px;
+  line-height: 5vh;
+  font-size: 25px;
   font-weight: 700;
 `;
 
 const StyledSenderDiv = styled.div`
-  font-size: 14px;
-  margin-top: 4vh;
+  font-size: 15px;
+  margin-top: 1vh;
 `;
 
 const StyledDateDiv = styled.div`
-  font-size: 12px;
-`;
-
-const StyledDividerDiv = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  width: 40vw;
-  border-top: 1px solid black;
+  font-size: 15px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  border-bottom: 1px solid #eee;
 `;
 
 const StyledContentDiv = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  width: 35vw;
-  font-size: 16px;
+  height: 83vh;
+  overflow: auto;
 `;
 
 function MailDetail({ targetEmail, onToggleEmailView }) {
@@ -65,25 +52,12 @@ function MailDetail({ targetEmail, onToggleEmailView }) {
         <i className="fas fa-arrow-left"></i>
       </StyledGoBackButton>
       <StyledInnerDiv>
-        <StyledTitleDiv>
-          {
-            targetEmail.headers.filter((item) => item.name === "Subject")[0]
-              .value
-          }
-        </StyledTitleDiv>
-        <StyledSenderDiv>
-          {`보낸사람 - ${
-            targetEmail.headers.filter((item) => item.name === "From")[0].value
-          }`}
-        </StyledSenderDiv>
-        <StyledDateDiv>
-          {organizeDate(
-            targetEmail.headers.filter((item) => item.name === "Date")[0].value,
-            true,
-          )}
-        </StyledDateDiv>
-        <StyledDividerDiv />
-        <StyledContentDiv>{targetEmail.snippet}</StyledContentDiv>
+        <StyledTitleDiv>{targetEmail.subject}</StyledTitleDiv>
+        <StyledSenderDiv>{`보낸사람 : ${targetEmail.from}`}</StyledSenderDiv>
+        <StyledDateDiv>{organizeDate(targetEmail.date, true)}</StyledDateDiv>
+        <StyledContentDiv
+          dangerouslySetInnerHTML={{ __html: targetEmail.content }}
+        />
       </StyledInnerDiv>
     </>
   );

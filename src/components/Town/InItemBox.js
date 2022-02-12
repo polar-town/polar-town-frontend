@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
 
 const ItemBoxDiv = styled.div`
   background-color: #013a4c;
@@ -21,12 +22,20 @@ const ItemBoxDiv = styled.div`
   }
 `;
 
-function InItemBox() {
+function InItemBox({ toggleItemBox }) {
   return (
-    <ItemBoxDiv>
+    <ItemBoxDiv
+      onClick={() => {
+        toggleItemBox(true);
+      }}
+    >
       <i className="fas fa-paw"></i>
     </ItemBoxDiv>
   );
 }
+
+InItemBox.propTypes = {
+  toggleItemBox: proptypes.func.isRequired,
+};
 
 export default InItemBox;

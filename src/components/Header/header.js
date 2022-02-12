@@ -2,13 +2,13 @@ import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import proptype from "prop-types";
 import {
   removeLogoutUser,
   selectUser,
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
-import { openMail } from "../../features/modal/modalSlice";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -39,7 +39,7 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header() {
+function Header({ toggleMail, onSignout, toggleFriendList, toggleShop }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
@@ -53,6 +53,7 @@ function Header() {
     });
 
     dispatch(removeLogoutUser());
+    onSignout("");
 
     await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
       email: user.email,
@@ -69,13 +70,22 @@ function Header() {
           <i
             className="fas fa-envelope"
             onClick={() => {
-              dispatch(openMail());
+              toggleMail(true);
             }}
           />
           <i className="fas fa-user-plus" />
-          <i className="fas fa-user-friends" />
-          {/* <i className="fas fa-store" /> */}
-          <i className="fas fa-star" />
+          <i
+            className="fas fa-user-friends"
+            onClick={() => {
+              toggleFriendList(true);
+            }}
+          />
+          <i
+            className="fas fa-star"
+            onClick={() => {
+              toggleShop(true);
+            }}
+          />
           <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>
       )}
@@ -84,3 +94,11 @@ function Header() {
 }
 
 export default Header;
+
+Header.propTypes = {
+  toggleMail: proptype.func,
+  toggleFindUser: proptype.func,
+  toggleFriendList: proptype.func,
+  toggleShop: proptype.func,
+  onSignout: proptype.func,
+};

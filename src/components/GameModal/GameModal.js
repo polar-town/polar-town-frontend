@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import { closeAll } from "../../features/modal/modalSlice";
-import { useDispatch } from "react-redux";
 
 const ModalWrapper = styled.div`
   box-sizing: border-box;
@@ -74,11 +72,9 @@ const CloseButton = styled.button`
 `;
 
 function GameModal({ onClose, children, maskClosable, className, subject }) {
-  const dispatch = useDispatch();
-
   const onMaskClick = (e) => {
     if (e.target === e.currentTarget) {
-      dispatch(closeAll());
+      onClose();
     }
   };
 
@@ -92,7 +88,7 @@ function GameModal({ onClose, children, maskClosable, className, subject }) {
       >
         <ModalInner tabIndex={0} className="modal-inner">
           <CloseButton className="modal-close" onClick={() => onClose()}>
-            <i className="fas fa-times"></i>
+            <i className="fas fa-times" />
           </CloseButton>
           {subject && <ModalInnerSubject>{subject}</ModalInnerSubject>}
           <ModalInnerContent>{children}</ModalInnerContent>
