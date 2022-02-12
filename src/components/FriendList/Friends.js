@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import protypes from "prop-types";
 import FriendRow from "./FriendRow";
 import { TYPE } from "../../constants/friendList";
-import { selectUserId } from "../../features/user/userSlice";
+import { selectUserId, updateFriendList } from "../../features/user/userSlice";
 import { getFriendList } from "../../api/friendlist";
 
 function Friends({ visitFriend, toggleFriendList }) {
   const [friends, setFriends] = useState([]);
+  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
 
   useEffect(async () => {
     const friendList = await getFriendList(userId);
     setFriends(friendList);
+    dispatch(updateFriendList(friendList));
   }, []);
 
   return (

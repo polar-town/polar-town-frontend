@@ -13,6 +13,7 @@ import { getTownHostInfo } from "../../api/user";
 import { currentCoke, selectUserId } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
+import FriendSearch from "../FriendSearch/FriendSearch";
 import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
@@ -44,6 +45,7 @@ function Town({ iceCount, onTownTransition }) {
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
+  const [onFriendSearch, setOnFriendSearch] = useState(false);
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
 
@@ -58,7 +60,7 @@ function Town({ iceCount, onTownTransition }) {
     <>
       <Header
         toggleMail={setOnMail}
-        toggleFindUser={() => {}}
+        toggleFriendSearch={setOnFriendSearch}
         toggleFriendList={setOnFriendList}
         toggleShop={setOnShopOpen}
         onSignout={onTownTransition}
@@ -82,9 +84,14 @@ function Town({ iceCount, onTownTransition }) {
               toggleFriendList={setOnFriendList}
             />
           )}
+          {onFriendSearch && (
+            <FriendSearch
+              toggleFriendSearch={setOnFriendSearch}
+              visitFriend={onTownTransition}
+            />
+          )}
           {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
           {onShopOpen && <Shop onClose={setOnShopOpen} />}
-
         </ModalPortals>
       </TownDiv>
     </>
