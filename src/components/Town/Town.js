@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import proptypes from "prop-types";
 import styled from "styled-components";
 import PostBox from "./PostBox";
@@ -61,7 +61,9 @@ function Town({ onTownTransition }) {
 }
 
 Town.propTypes = {
+  townId: proptypes.string.isRequired,
   onTownTransition: proptypes.func.isRequired,
+  socket: proptypes.object,
 };
 
 export default Town;
