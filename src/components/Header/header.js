@@ -44,7 +44,7 @@ function Header({
   toggleFriendSearch,
   toggleFriendList,
   toggleShop,
-  onSignout,
+  onTownTransition,
 }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
@@ -59,16 +59,20 @@ function Header({
     });
 
     dispatch(removeLogoutUser());
-    onSignout("", 1);
+    onTownTransition("", 1);
     await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
       email: user.email,
     });
   };
 
+  const goToMyTown = () => {
+    onTownTransition(user.id, user.iceCount);
+  };
+
   return (
     <StyledHeader>
       <StyledImgWrapperDiv>
-        <img src="/images/logo.png" alt="mailLogo" />
+        <img src="/images/logo.png" alt="mailLogo" onClick={goToMyTown} />
       </StyledImgWrapperDiv>
       {currentUserAccessToken && (
         <StyledNavWrapperNav>
@@ -110,5 +114,5 @@ Header.propTypes = {
   toggleFriendSearch: proptype.func,
   toggleFriendList: proptype.func,
   toggleShop: proptype.func,
-  onSignout: proptype.func,
+  onTownTransition: proptype.func,
 };

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   cokeCount: 0,
+  iceCount: 0,
   id: null,
   username: null,
   email: null,
@@ -30,6 +31,7 @@ export const userSlice = createSlice({
         accessToken,
         pendingFriendList,
         friendList,
+        iceCount,
       } = action.payload;
 
       return {
@@ -40,6 +42,7 @@ export const userSlice = createSlice({
         accessToken,
         pendingFriendList,
         friendList,
+        iceCount,
       };
     },
     removeLogoutUser: () => {

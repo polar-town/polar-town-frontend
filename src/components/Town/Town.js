@@ -63,7 +63,7 @@ function Town({ iceCount, onTownTransition }) {
         toggleFriendSearch={setOnFriendSearch}
         toggleFriendList={setOnFriendList}
         toggleShop={setOnShopOpen}
-        onSignout={onTownTransition}
+        onTownTransition={onTownTransition}
       />
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
