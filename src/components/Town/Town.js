@@ -84,6 +84,7 @@ function Town({ iceCount, onTownTransition }) {
           )}
           {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
           {onShopOpen && <Shop onClose={setOnShopOpen} />}
+
         </ModalPortals>
       </TownDiv>
     </>
@@ -92,7 +93,9 @@ function Town({ iceCount, onTownTransition }) {
 
 Town.propTypes = {
   iceCount: proptypes.string.isRequired,
+  townId: proptypes.string.isRequired,
   onTownTransition: proptypes.func.isRequired,
+  socket: proptypes.object,
 };
 
 export default Town;

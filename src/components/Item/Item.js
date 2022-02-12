@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const StyledItemOverlayDiv = styled.div`
+const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
   position: absolute;
   z-index: 999;
@@ -18,7 +18,7 @@ const StyledItemOverlayDiv = styled.div`
   }
 `;
 
-const StyledItemContainerDiv = styled.div`
+const ItemContainerDiv = styled.div`
   width: 49%;
   height: 220px;
   border: 10px solid #133a4d;
@@ -80,7 +80,7 @@ const StyledItemContainerDiv = styled.div`
   }
 `;
 
-const StyledCashContainerDiv = styled.div`
+const CashContainerDiv = styled.div`
   display: flex;
   justify-content: center;
   justify-content: space-between;
@@ -102,17 +102,33 @@ const StyledCashContainerDiv = styled.div`
   }
 `;
 
-function Item({ storageType, content, imageName, shouldOverlaid }) {
+function Item({
+  storageType,
+  content,
+  imageName,
+  shouldOverlaid,
+  toggleNotification,
+  moveToOutBox,
+}) {
   return (
-    <StyledItemContainerDiv>
-      <StyledItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
+    <ItemContainerDiv
+      onClick={(e) => {
+        {
+          toggleNotification && toggleNotification(true);
+        }
+        {
+          moveToOutBox && moveToOutBox(e.target.id);
+        }
+      }}
+    >
+      <ItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
         <i className="fas fa-solid fa-lock lock" />
-      </StyledItemOverlayDiv>
+      </ItemOverlayDiv>
       <img src={`/images/${imageName}.png`} id={imageName} />
       {storageType === "myItemBox" && <p>{`x ${content}`}</p>}
       {storageType === "presentBox" && <p>{`From ${content}`}</p>}
       {storageType === "shop" && (
-        <StyledCashContainerDiv>
+        <CashContainerDiv>
           <>
             <img src="/images/coke.png" />
             <p>{content}</p>
@@ -120,9 +136,9 @@ function Item({ storageType, content, imageName, shouldOverlaid }) {
           <button>
             <i className="fas fa-solid fa-gift" />
           </button>
-        </StyledCashContainerDiv>
+        </CashContainerDiv>
       )}
-    </StyledItemContainerDiv>
+    </ItemContainerDiv>
   );
 }
 
@@ -137,4 +153,6 @@ Item.propTypes = {
   ]),
   imageName: PropTypes.string.isRequired,
   shouldOverlaid: PropTypes.bool,
+  toggleNotification: PropTypes.func,
+  moveToOutBox: PropTypes.func,
 };

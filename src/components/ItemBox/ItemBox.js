@@ -5,12 +5,12 @@ import HalfModal from "../GameModal/HalfModal";
 import PresentBox from "./PresentBox";
 import MyItemBox from "./MyItemBox";
 
-function ItemBox({ onClose }) {
+function ItemBox({ toggleItemBox }) {
   return (
-    <GameModal onClose={onClose}>
+    <GameModal onClose={toggleItemBox}>
       <HalfModal category={["내 아이템", "선물함"]}>
-        <MyItemBox />
-        <PresentBox />
+        <MyItemBox onClose={toggleItemBox} />
+        <PresentBox onClose={toggleItemBox} />
       </HalfModal>
     </GameModal>
   );
@@ -19,5 +19,5 @@ function ItemBox({ onClose }) {
 export default ItemBox;
 
 ItemBox.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  toggleItemBox: PropTypes.func.isRequired,
 };

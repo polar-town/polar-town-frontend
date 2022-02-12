@@ -12,7 +12,7 @@ const StyledDiv = styled.div`
   justify-content: space-between;
 `;
 
-function Shop({ onClose }) {
+function Shop({ onClose, toggleNotification }) {
   return (
     <GameModal onClose={onClose} subject="상점">
       <StyledDiv>
@@ -23,6 +23,7 @@ function Shop({ onClose }) {
               storageType="shop"
               content={ITEM_PRICE_LIST[item]}
               imageName={item}
+              toggleNotification={toggleNotification}
             />
           );
         })}
@@ -35,4 +36,5 @@ export default Shop;
 
 Shop.propTypes = {
   onClose: PropTypes.func.isRequired,
+  toggleNotification: PropTypes.func,
 };
