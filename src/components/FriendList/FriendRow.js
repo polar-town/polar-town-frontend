@@ -44,7 +44,13 @@ const FriendRowButtonContainer = styled.section`
 const VISIT = 0;
 const ACCEPT = 0;
 
-function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
+function FriendRow({
+  friend,
+  type,
+  visitFriend,
+  toggleFriendList,
+  handleResponse,
+}) {
   const userId = useSelector(selectUserId);
   const prevFriendList = useSelector(selectFriendList);
   const prevPendingFriendList = useSelector(selectPendingFriendList);
@@ -58,9 +64,11 @@ function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
 
   async function onDeletion() {
     const newFriendList = prevFriendList.filter((friend) => friend.id !== id);
+    console.log(friend);
 
     await deleteFriend(userId, email);
     dispatch(updateFriendList(newFriendList));
+    handleResponse(newFriendList);
   }
 
   async function acceptFriendRequest() {
@@ -68,18 +76,21 @@ function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
+    console.log(friend);
     await addFriendList(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     dispatch(updateFriendList(newFriendList));
+    handleResponse(newPendingFriendList);
   }
 
   async function declineFriendRequest() {
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-
+    console.log(friend, newPendingFriendList, friend.id, id);
     await deletePendingFriend(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
+    handleResponse(newPendingFriendList);
   }
 
   return (
@@ -126,6 +137,7 @@ FriendRow.propTypes = {
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
+  handleResponse: proptypes.func,
 };
 
 export default FriendRow;
