@@ -54,7 +54,8 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch }) {
 
   async function sendFriendRequest(e) {
     await updateTargetPendingFriendList(userId, email);
-    e.target.textContent = OPTION.REQUEST_DONE;
+    e.target.textContent = OPTION.REQUEST_SENT;
+    e.target.setAttribute("disabled", true);
   }
 
   return (

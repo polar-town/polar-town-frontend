@@ -35,7 +35,7 @@ function MessageInput({ onMessageListUpdate }) {
     const messageValue = messageInput.current.value;
     const { newMessage } = await leaveNewMessage(id, messageValue);
 
-    onMessageListUpdate((prev) => [newMessage.data.result.newMessage, ...prev]);
+    onMessageListUpdate((prev) => [newMessage, ...prev]);
   }
 
   return (
