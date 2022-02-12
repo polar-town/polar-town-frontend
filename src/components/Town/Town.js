@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import proptypes from "prop-types";
 import styled from "styled-components";
 import PostBox from "./PostBox";
@@ -19,13 +19,27 @@ const StyledTownDiv = styled.div`
   background-position: center 90%;
 `;
 
-function Town({ onTownTransition }) {
+function Town({ townId, onTownTransition, socketService }) {
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
   const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    if (!townId) return;
+
+    console.log(process.env.REACT_APP_BASE_URL);
+
+    const connection = socketService.connect(process.env.REACT_APP_BASE_URL);
+    setSocket(connection);
+
+    return () => {
+      socketService.disconnect(connection);
+    };
+  }, [townId]);
 
   return (
     <>
@@ -59,7 +73,9 @@ function Town({ onTownTransition }) {
 }
 
 Town.propTypes = {
+  townId: proptypes.string.isRequired,
   onTownTransition: proptypes.func.isRequired,
+  socketService: proptypes.object,
 };
 
 export default Town;

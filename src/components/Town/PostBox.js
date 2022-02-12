@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import proptype from "prop-types";
-import { openGuestBook } from "../../features/modal/modalSlice";
 
 const PostBoxContainer = styled.div`
   width: 100vw;

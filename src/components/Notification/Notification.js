@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import GameModal from "../GameModal/GameModal";
-import {
-  selectNotificationType,
-  closeNotification,
-} from "../../features/modal/modalSlice";
 import GameModalButton from "../GameModal/GameModalButton";
 import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
