@@ -14,6 +14,7 @@ const initialState = {
     Igloo: 0,
     Flower: 0,
   },
+  socket: null,
 };
 
 export const userSlice = createSlice({
@@ -25,7 +26,7 @@ export const userSlice = createSlice({
         action.payload;
 
       return {
-        ...initialState,
+        ...state,
         id,
         username,
         email,
@@ -58,6 +59,9 @@ export const userSlice = createSlice({
         itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
       };
     },
+    setSocket: (state, action) => {
+      state.socket = action.payload;
+    },
   },
 });
 
@@ -68,6 +72,7 @@ export const {
   increseCoke,
   decreaseCoke,
   updateItemCount,
+  setSocket,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;

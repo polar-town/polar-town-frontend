@@ -19,27 +19,13 @@ const StyledTownDiv = styled.div`
   background-position: center 90%;
 `;
 
-function Town({ townId, onTownTransition, socketService }) {
+function Town({ onTownTransition }) {
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
   const [onFriendList, setOnFriendList] = useState(false);
   const [isItemBoxOpen, setIsItemBoxOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-    if (!townId) return;
-
-    console.log(process.env.REACT_APP_BASE_URL);
-
-    const connection = socketService.connect(process.env.REACT_APP_BASE_URL);
-    setSocket(connection);
-
-    return () => {
-      socketService.disconnect(connection);
-    };
-  }, [townId]);
 
   return (
     <>
@@ -75,7 +61,7 @@ function Town({ townId, onTownTransition, socketService }) {
 Town.propTypes = {
   townId: proptypes.string.isRequired,
   onTownTransition: proptypes.func.isRequired,
-  socketService: proptypes.object,
+  socket: proptypes.object,
 };
 
 export default Town;
