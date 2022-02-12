@@ -69,7 +69,7 @@ export const userSlice = createSlice({
       state.friendList = action.payload;
     },
     updatePendingFriendList: (state, action) => {
-      state.PendingFriendList = action.payload;
+      state.pendingFriendList = action.payload;
     },
     updateItemCount: (state, action) => {
       const { PolarBear, Penguin, Seal, Igloo, Flower } = action.payload;

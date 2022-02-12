@@ -76,9 +76,9 @@ function Login({ goTown }) {
       username,
       email,
       accessToken,
-      pendingFriendList,
-      friendList,
       iceCount,
+      friendList,
+      pendingFriendList,
     } = serverResponse.data.result;
 
     const currentUser = {
@@ -92,6 +92,7 @@ function Login({ goTown }) {
     };
 
     dispatch(saveLoginUser(currentUser));
+    console.log(iceCount);
     goTown(id, iceCount);
   }
 
