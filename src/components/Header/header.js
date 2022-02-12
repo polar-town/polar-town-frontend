@@ -90,7 +90,12 @@ function Header({
               toggleFriendList(true);
             }}
           />
-          <i className="fas fa-store" />
+          <i
+            className="fas fa-star"
+            onClick={() => {
+              toggleShop(true);
+            }}
+          />
           <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>
       )}

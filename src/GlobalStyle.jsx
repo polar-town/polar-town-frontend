@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: "Helvetica", "Arial", sans-serif;
+    font-family: 'Balsamiq Sans', cursive;
     line-height: 1.5;
     overflow-x: hidden;
     overflow-y: hidden;

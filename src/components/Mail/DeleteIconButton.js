@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
+import { deleteTrashEmail, moveEmailToTrash } from "../../api/mail";
+import { useDispatch, useSelector } from "react-redux";
+import { increseCoke, selectUserId } from "../../features/user/userSlice";
 
 const StyledDeleteButton = styled.button`
   background: none;
@@ -17,12 +21,41 @@ const StyledDeleteButton = styled.button`
   }
 `;
 
-function DeleteIconButton() {
+function DeleteIconButton({
+  deleteEmail,
+  isTrash,
+  checkedMails,
+  isRefreshMails,
+}) {
+  const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
+  const count = deleteEmail?.length;
+
+  const moveToTrash = async () => {
+    checkedMails([]);
+    isRefreshMails((check) => !check);
+    await moveEmailToTrash(userId, deleteEmail);
+  };
+
+  const deleteTrash = async () => {
+    checkedMails([]);
+    dispatch(increseCoke(count));
+    isRefreshMails((check) => !check);
+    await deleteTrashEmail(userId, deleteEmail, count);
+  };
+
   return (
-    <StyledDeleteButton>
+    <StyledDeleteButton onClick={isTrash ? deleteTrash : moveToTrash}>
       <i className="fas fa-trash-alt"></i>
     </StyledDeleteButton>
   );
 }
 
 export default DeleteIconButton;
+
+DeleteIconButton.propTypes = {
+  deleteEmail: proptypes.array,
+  isTrash: proptypes.bool,
+  checkedMails: proptypes.func,
+  isRefreshMails: proptypes.func,
+};

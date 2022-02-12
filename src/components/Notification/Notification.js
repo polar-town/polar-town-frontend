@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import GameModal from "../GameModal/GameModal";
 import GameModalButton from "../GameModal/GameModalButton";
@@ -29,7 +29,6 @@ const ButtonContainer = styled.div`
 `;
 
 function Notification({ toggleNotification }) {
-  const dispatch = useDispatch();
   const notificationType = useSelector(selectNotificationType);
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -51,7 +50,7 @@ function Notification({ toggleNotification }) {
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
       onClose={() => {
-        dispatch(closeNotification());
+        toggleNotification();
       }}
     >
       <NotificationContainer>

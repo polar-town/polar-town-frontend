@@ -9,6 +9,14 @@ const initialState = {
   googleLoginUser: null,
   friendList: [],
   pendingFriendList: [],
+  itemCount: {
+    PolarBear: 0,
+    Penguin: 0,
+    Seal: 0,
+    Igloo: 0,
+    Flower: 0,
+  },
+  socket: null,
 };
 
 export const userSlice = createSlice({
@@ -16,7 +24,26 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     saveLoginUser: (state, action) => {
-      Object.assign(state, action.payload);
+      const {
+        id,
+        username,
+        email,
+        accessToken,
+        googleLoginUser,
+        friendList,
+        pendingFriendList,
+      } = action.payload;
+
+      return {
+        ...state,
+        id,
+        username,
+        email,
+        accessToken,
+        friendList,
+        pendingFriendList,
+        googleLoginUser,
+      };
     },
     removeLogoutUser: () => {
       return initialState;
@@ -28,6 +55,9 @@ export const userSlice = createSlice({
         ...state,
         accessToken,
       };
+    },
+    currentCoke: (state, action) => {
+      state.cokeCount = action.payload;
     },
     increseCoke: (state, action) => {
       state.cokeCount += action.payload;
@@ -41,6 +71,17 @@ export const userSlice = createSlice({
     updatePendingFriendList: (state, action) => {
       state.PendingFriendList = action.payload;
     },
+    updateItemCount: (state, action) => {
+      const { PolarBear, Penguin, Seal, Igloo, Flower } = action.payload;
+
+      return {
+        ...state,
+        itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
+      };
+    },
+    setSocket: (state, action) => {
+      state.socket = action.payload;
+    },
   },
 });
 
@@ -48,10 +89,13 @@ export const {
   saveLoginUser,
   removeLogoutUser,
   exchangeAccessToken,
+  currentCoke,
   increseCoke,
   decreaseCoke,
   updateFriendList,
   updatePendingFriendList,
+  updateItemCount,
+  setSocket,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
@@ -60,5 +104,6 @@ export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
 export const selectFriendList = (state) => state.user.friendList;
 export const selectPendingFriendList = (state) => state.user.pendingFriendList;
+export const selectItemCount = (state) => state.user.itemCount;
 
 export default userSlice.reducer;

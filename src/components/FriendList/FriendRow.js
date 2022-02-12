@@ -26,9 +26,16 @@ const FriendRowContainer = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 20px;
   margin-bottom: 20px;
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
 `;
 
 const FriendRowButtonContainer = styled.section`
+  padding: 15px 0;
+
   button {
     margin-left: 10px;
   }

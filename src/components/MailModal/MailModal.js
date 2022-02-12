@@ -12,9 +12,9 @@ const ModalWrapper = styled.div`
     top: 0;
     width: 44vw;
     height: 100vh;
-    border-radius: 20px;
+    border-radius: 20px 0 0 20px;
     background-color: var(--white);
-    border: 1px solid black;
+    border: 1px solid #eee;
     z-index: 999;
   }
 
@@ -22,7 +22,7 @@ const ModalWrapper = styled.div`
     all: unset;
     z-index: 9;
     position: absolute;
-    top: 4px;
+    top: 10px;
     text-align: center;
     right: 15px;
     color: var(--mail-basic);
@@ -32,13 +32,13 @@ const ModalWrapper = styled.div`
   }
 `;
 
-function MailModal({ toggleMail, children }) {
+function MailModal({ onClose, children }) {
   return (
     <ModalWrapper>
       <div className="modalBox">
         <button
           onClick={() => {
-            toggleMail(false);
+            onClose(false);
           }}
           className="modalCloseButton"
           type="button"
@@ -57,5 +57,4 @@ export default MailModal;
 MailModal.propTypes = {
   children: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
-  toggleMail: PropTypes.func.isRequired,
 };

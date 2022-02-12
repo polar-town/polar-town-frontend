@@ -4,6 +4,7 @@ export async function getMessageList(townId) {
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
+      { withCredentials: true },
     );
 
     return response;

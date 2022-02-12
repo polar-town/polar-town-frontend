@@ -33,7 +33,6 @@ function GuestBook({ toggleGuestbook }) {
       console.error(error);
     }
   }, []);
-
   return (
     <GameModal
       subject="방명록"
@@ -46,7 +45,6 @@ function GuestBook({ toggleGuestbook }) {
         {!!messageList.length &&
           messageList.map((post) => {
             const uniqueId = nanoid();
-
             return (
               <MessageRow
                 key={uniqueId}
