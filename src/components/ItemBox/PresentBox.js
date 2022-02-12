@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { getPresentBox } from "../../api/item";
 import Item from "../Item/Item";
 
-const StyledItemContainerDiv = styled.div`
+const ItemContainerDiv = styled.div`
   display: flex;
   position: relative;
   width: 450px;
@@ -36,7 +36,7 @@ function PresentBox() {
   }, []);
 
   return (
-    <StyledItemContainerDiv>
+    <ItemContainerDiv>
       {presentList &&
         presentList.map((item) => {
           const key = nanoid();
@@ -52,7 +52,7 @@ function PresentBox() {
             />
           );
         })}
-    </StyledItemContainerDiv>
+    </ItemContainerDiv>
   );
 }
 

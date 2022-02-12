@@ -12,7 +12,7 @@ import {
   updateItemCount,
 } from "../../features/user/userSlice";
 
-const StyledDiv = styled.div`
+const ItemContainerDiv = styled.div`
   display: flex;
   width: 450px;
   flex-wrap: wrap;
@@ -70,7 +70,7 @@ function MyItemBox({ onClose }) {
   };
 
   return (
-    <StyledDiv>
+    <ItemContainerDiv>
       {ITEM_LIST.map((item) => {
         return (
           <Item
@@ -83,7 +83,7 @@ function MyItemBox({ onClose }) {
           />
         );
       })}
-    </StyledDiv>
+    </ItemContainerDiv>
   );
 }
 

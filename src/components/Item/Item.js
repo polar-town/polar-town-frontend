@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const StyledItemOverlayDiv = styled.div`
+const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
   position: absolute;
   z-index: 999;
@@ -18,7 +18,7 @@ const StyledItemOverlayDiv = styled.div`
   }
 `;
 
-const StyledItemContainerDiv = styled.div`
+const ItemContainerDiv = styled.div`
   width: 49%;
   height: 220px;
   border: 10px solid #133a4d;
@@ -80,7 +80,7 @@ const StyledItemContainerDiv = styled.div`
   }
 `;
 
-const StyledCashContainerDiv = styled.div`
+const CashContainerDiv = styled.div`
   display: flex;
   justify-content: center;
   justify-content: space-between;
@@ -111,7 +111,7 @@ function Item({
   moveToOutBox,
 }) {
   return (
-    <StyledItemContainerDiv
+    <ItemContainerDiv
       onClick={(e) => {
         {
           toggleNotification && toggleNotification(true);
@@ -121,14 +121,14 @@ function Item({
         }
       }}
     >
-      <StyledItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
+      <ItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
         <i className="fas fa-solid fa-lock lock" />
-      </StyledItemOverlayDiv>
+      </ItemOverlayDiv>
       <img src={`/images/${imageName}.png`} id={imageName} />
       {storageType === "myItemBox" && <p>{`x ${content}`}</p>}
       {storageType === "presentBox" && <p>{`From ${content}`}</p>}
       {storageType === "shop" && (
-        <StyledCashContainerDiv>
+        <CashContainerDiv>
           <>
             <img src="/images/coke.png" />
             <p>{content}</p>
@@ -136,9 +136,9 @@ function Item({
           <button>
             <i className="fas fa-solid fa-gift" />
           </button>
-        </StyledCashContainerDiv>
+        </CashContainerDiv>
       )}
-    </StyledItemContainerDiv>
+    </ItemContainerDiv>
   );
 }
 
