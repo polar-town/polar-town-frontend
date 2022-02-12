@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
-import { getPresentBox } from "../../api/item";
+import PropTypes from "prop-types";
+import { changeStorage, getPresentBox } from "../../api/item";
 import Item from "../Item/Item";
 
-const StyledItemContainerDiv = styled.div`
+const ItemContainerDiv = styled.div`
   display: flex;
   position: relative;
   width: 450px;
@@ -20,7 +21,7 @@ const StyledItemContainerDiv = styled.div`
   }
 `;
 
-function PresentBox() {
+function PresentBox({ onClose }) {
   const [presentList, setPresentList] = useState([]);
   const { id } = useParams();
   const GMAIL_ADDRESS = 10;
@@ -35,8 +36,18 @@ function PresentBox() {
     }
   }, []);
 
+  const moveItemToOutBox = async (itemName) => {
+    const targetItem = presentList.find((item) => {
+      return item.name === itemName;
+    });
+
+    await changeStorage(id, targetItem._id, "presentBox", "outItemBox");
+
+    onClose(false);
+  };
+
   return (
-    <StyledItemContainerDiv>
+    <ItemContainerDiv>
       {presentList &&
         presentList.map((item) => {
           const key = nanoid();
@@ -49,11 +60,16 @@ function PresentBox() {
                 item.purchasedBy.length - GMAIL_ADDRESS
               )}
               imageName={item.name}
+              moveToOutBox={moveItemToOutBox}
             />
           );
         })}
-    </StyledItemContainerDiv>
+    </ItemContainerDiv>
   );
 }
 
 export default PresentBox;
+
+PresentBox.propTypes = {
+  onClose: PropTypes.func.isRequired,
+};

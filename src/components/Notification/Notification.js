@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import GameModal from "../GameModal/GameModal";
-import {
-  selectNotificationType,
-  closeNotification,
-} from "../../features/modal/modalSlice";
 import GameModalButton from "../GameModal/GameModalButton";
 import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
@@ -33,7 +29,6 @@ const ButtonContainer = styled.div`
 `;
 
 function Notification({ toggleNotification }) {
-  const dispatch = useDispatch();
   const notificationType = useSelector(selectNotificationType);
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -55,7 +50,7 @@ function Notification({ toggleNotification }) {
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
       onClose={() => {
-        dispatch(closeNotification());
+        toggleNotification();
       }}
     >
       <NotificationContainer>
