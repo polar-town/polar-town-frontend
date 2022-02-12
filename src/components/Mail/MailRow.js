@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import DeleteIconButton from "./DeleteIconButton";
 import organizeDate from "../../utils/date";
 
 const StyledMailRowDiv = styled.div`
   position: relative;
-  width: 38vw;
+  width: 40vw;
   padding: 10px 5px;
   border-bottom: 1px solid #66666650;
   line-height: 23px;
@@ -18,10 +17,6 @@ const StyledMailRowDiv = styled.div`
 
   &:hover {
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.12), 0 6px 6px rgba(0, 0, 0, 0.18);
-  }
-
-  &:hover .content {
-    width: 30vw;
   }
 
   &:hover .title {
@@ -45,7 +40,7 @@ const StyledMailDetailDiv = styled.div`
   width: 31vw;
   margin-left: 50px;
 
-  .sender {
+  .title {
     width: 30vw;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -62,7 +57,7 @@ const StyledMailDetailDiv = styled.div`
     font-size: 12px;
   }
 
-  .title {
+  .sender {
     width: 33vw;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -84,21 +79,12 @@ const StyledMailDetailDiv = styled.div`
   }
 `;
 
-const StyledDeleteButtonDiv = styled.div`
-  position: absolute;
-  right: -2vw;
-  top: 30px;
-`;
-
 function MailRow({ mail, onCheckedId, checkedIdList, onTargetEmailId }) {
-  const [isHover, setIsHover] = useState(false);
   const { id, from, subject, snippet, date } = mail;
 
   return (
     <>
       <StyledMailRowDiv
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
         onClick={(e) => {
           if (e.target.tagName === "INPUT") return;
           onTargetEmailId(id);
@@ -117,13 +103,10 @@ function MailRow({ mail, onCheckedId, checkedIdList, onTargetEmailId }) {
           checked={checkedIdList.includes(id)}
         />
         <StyledMailDetailDiv>
+          <p className="title">{subject}</p>
           <p className="sender">{from}</p>
           <p className="date">{organizeDate(date, false)}</p>
-          <p className="title">{subject}</p>
           <p className="content">{snippet}</p>
-          <StyledDeleteButtonDiv>
-            {isHover && <DeleteIconButton />}
-          </StyledDeleteButtonDiv>
         </StyledMailDetailDiv>
       </StyledMailRowDiv>
     </>

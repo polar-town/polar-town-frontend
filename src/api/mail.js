@@ -7,7 +7,7 @@ export async function getMailList(userId, inboxId) {
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inboxId}`,
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM8_0QeLPATNN4O8wYMFqNrpN0gB-HnQiiR8r3O4ya6wmeyhexmK94RMzv7P0l3Y61c8_ioeKF1-f9LPp2csbgSvEDUZGuy46_FHT64SNf0G8Mi4zPxKcQBPlq41C22OtnUmhJ4k4Ch1fxTADUa-UJuh5g"`,
+          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
         },
         withCredentials: true,
       },
@@ -28,7 +28,7 @@ export async function moveEmailToTrash(userId, mailId) {
       },
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM8_0QeLPATNN4O8wYMFqNrpN0gB-HnQiiR8r3O4ya6wmeyhexmK94RMzv7P0l3Y61c8_ioeKF1-f9LPp2csbgSvEDUZGuy46_FHT64SNf0G8Mi4zPxKcQBPlq41C22OtnUmhJ4k4Ch1fxTADUa-UJuh5g"`,
+          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
           withCredentials: true,
         },
       },
@@ -45,7 +45,7 @@ export async function deleteTrashEmail(userId, mailId, count) {
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/trash`,
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM8_0QeLPATNN4O8wYMFqNrpN0gB-HnQiiR8r3O4ya6wmeyhexmK94RMzv7P0l3Y61c8_ioeKF1-f9LPp2csbgSvEDUZGuy46_FHT64SNf0G8Mi4zPxKcQBPlq41C22OtnUmhJ4k4Ch1fxTADUa-UJuh5g"`,
+          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
           withCredentials: true,
         },
         data: { mail: mailId, cokeCount: count },

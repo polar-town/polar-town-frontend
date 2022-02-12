@@ -19,10 +19,9 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 
 const TownDiv = styled.div`
-  /* background-image: url(${(props) => props.iceCount}),
+  background-image: url(${(props) => props.iceCount}),
     url("/images/town-background-image.jpg");
-  background-position: center 40px, center center; */
-  background-image: url("/images/town-background-image.jpg");
+  background-position: center 40px, center center;
   background-repeat: no-repeat;
   background-size: cover;
   image-rendering: pixelated;
@@ -36,39 +35,11 @@ const TownDiv = styled.div`
   }
 `;
 
-const TownIceBackgroundDiv = styled.div`
-  background-image: url(${(props) => props.iceCount});
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: 6vw 11vh;
-  image-rendering: pixelated;
-`;
-
-// const StyledTownDiv = styled.div`
-//   background-image: url("/images/town-background-image.jpg");
-//   background-repeat: no-repeat;
-//   background-size: 100%;
-//   background-position: center 90%;
-// `;
-
-function action_coords(event) {
-  var x1 = event.clientX;
-  var y1 = event.clientY;
-  var x2 = event.offsetX;
-  var y2 = event.offsetY;
-  var x3 = event.screenX;
-  var y3 = event.screenY;
-
-  console.log("client", x1, y1);
-  console.log("screen", x3, y3);
-}
-
 function Town({ iceCount, onTownTransition }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [townHost, setTownHost] = useState({});
   const isMe = useSelector(selectUserId) === id;
-  //
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
@@ -83,16 +54,6 @@ function Town({ iceCount, onTownTransition }) {
     dispatch(currentCoke(user.cokeCount));
   }, []);
 
-  function clickEvent(e) {
-    var rect = e.target.getBoundingClientRect();
-    console.log("브라우저 안쪽 height", document.body.offsetHeight);
-    console.log("브라우저 안쪽 width", document.body.offsetWidth);
-
-    console.log(123, e);
-    var x = e.clientX - rect.left; //x position within the element.
-    var y = e.clientY - rect.top; //y position within the element.
-  }
-
   return (
     <>
       <Header
@@ -104,29 +65,26 @@ function Town({ iceCount, onTownTransition }) {
       />
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
-        <TownIceBackgroundDiv iceCount={iceCount} onClick={clickEvent}>
-          {/* <img src="/images/ice-background/10.png" className="a" /> */}
-          {townHost.outItemBox?.map((item) => (
-            <OutItem key={item._id} name={item.name} />
-          ))}
-          <PostBox toggleGuestbook={setOnPostBox} />
-          {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
-          <ModalPortals>
-            {onMail && <Mail toggleMail={setOnMail} />}
-            {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
-            {onNotification && (
-              <Notification toggleNotification={setOnNotification} />
-            )}
-            {onFriendList && (
-              <FriendList
-                visitFriend={onTownTransition}
-                toggleFriendList={setOnFriendList}
-              />
-            )}
-            {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
-            {onShopOpen && <Shop onClose={setOnShopOpen} />}
-          </ModalPortals>
-        </TownIceBackgroundDiv>
+        {townHost.outItemBox?.map((item) => (
+          <OutItem key={item._id} name={item.name} />
+        ))}
+        <PostBox toggleGuestbook={setOnPostBox} />
+        {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
+        <ModalPortals>
+          {onMail && <Mail toggleMail={setOnMail} />}
+          {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onNotification && (
+            <Notification toggleNotification={setOnNotification} />
+          )}
+          {onFriendList && (
+            <FriendList
+              visitFriend={onTownTransition}
+              toggleFriendList={setOnFriendList}
+            />
+          )}
+          {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
+          {onShopOpen && <Shop onClose={setOnShopOpen} />}
+        </ModalPortals>
       </TownDiv>
     </>
   );

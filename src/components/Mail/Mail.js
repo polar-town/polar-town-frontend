@@ -112,9 +112,8 @@ const NavButton = styled.button`
 `;
 
 const EmptyEmail = styled.div`
-  width: 100%;
   text-align: center;
-  margin-top: 100px;
+  margin: 100px auto;
 `;
 
 function Mail({ toggleMail }) {
@@ -122,19 +121,30 @@ function Mail({ toggleMail }) {
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
-  const [isPromotionActive, setIsPromotionActive] = useState(false);
+  const [isPromotionActive, setIsPromotionActive] = useState(true);
   const [isSpamActive, setIsSpamActive] = useState(false);
   const [isTrashActive, setIsTrashActive] = useState(false);
+  const [isRefreshMails, setIsRefreshMails] = useState(false);
 
   useEffect(() => {
     async function getUserEmailList() {
-      const response = await getMailList(loginUser, "CATEGORY_PROMOTIONS");
+      let inBoxId;
 
-      setUserEmailList(response.result);
+      if (isPromotionActive) {
+        inBoxId = "CATEGORY_PROMOTIONS";
+      } else if (isSpamActive) {
+        inBoxId = "SPAM";
+      } else {
+        inBoxId = "TRASH";
+      }
+
+      const response = await getMailList(loginUser, inBoxId);
+
+      setUserEmailList(response?.result);
     }
 
     getUserEmailList();
-  }, []);
+  }, [isRefreshMails]);
 
   const getCategoryEmails = async (e) => {
     const inBoxId = e.target.id;
@@ -196,7 +206,7 @@ function Mail({ toggleMail }) {
               Trash
             </NavButton>
           </StyledNavDiv>
-          {userEmailList.length ? (
+          {userEmailList?.length ? (
             <StyledSubHeaderDiv>
               <input
                 type="checkbox"
@@ -219,13 +229,15 @@ function Mail({ toggleMail }) {
               <DeleteIconButton
                 deleteEmail={checkedIds}
                 isTrash={isTrashActive}
+                checkedMails={setCheckedIds}
+                isRefreshMails={setIsRefreshMails}
               />
             </StyledSubHeaderDiv>
           ) : (
             <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
           )}
           <StyledMailDetailDiv>
-            {userEmailList.map((mail) => (
+            {userEmailList?.map((mail) => (
               <MailRow
                 key={mail.id}
                 mail={mail}
