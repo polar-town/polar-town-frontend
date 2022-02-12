@@ -9,7 +9,12 @@ function useGapi() {
 
     script.onload = handleLoad;
     script.src = "https://apis.google.com/js/platform.js";
+    script.async = true;
     document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   async function handleLoad() {

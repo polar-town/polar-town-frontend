@@ -21,7 +21,7 @@ export async function leaveNewMessage(townId, message) {
       { withCredentials: true },
     );
 
-    return response;
+    return response.data.result;
   } catch (error) {
     console.error(error);
   }

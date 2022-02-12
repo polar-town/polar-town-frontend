@@ -7,14 +7,14 @@ import { useDispatch } from "react-redux";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
 
-const StyledLoginOverlay = styled.div`
+const LoginOverlay = styled.div`
   background: linear-gradient(to top, #03bcf6, #89fff1);
   display: grid;
   place-items: center;
   min-height: 100vh;
 `;
 
-const StyledLoginContent = styled.div`
+const LoginContent = styled.div`
   background-color: #f2f2f2;
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@ const StyledLoginContent = styled.div`
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 `;
 
-const StyledLogoImage = styled.img`
+const LogoImage = styled.img`
   image-rendering: pixelated;
   margin-bottom: 30px;
   margin-top: 10px;
@@ -35,7 +35,7 @@ const StyledLogoImage = styled.img`
   margin-right: auto;
 `;
 
-const StyledFailureMessage = styled.span`
+const FailureMessage = styled.span`
   color: #ff0000;
   font-weight: 700;
   margin-top: 10px;
@@ -71,20 +71,28 @@ function Login({ goTown }) {
       { withCredentials: true },
     );
 
-    const { id, username, email, accessToken, pendingFriendList, friendList } =
-      serverResponse.data.result;
-
-    const currentUser = {
+    const {
       id,
       username,
       email,
       accessToken,
       pendingFriendList,
       friendList,
+      iceCount,
+    } = serverResponse.data.result;
+
+    const currentUser = {
+      id,
+      username,
+      email,
+      iceCount,
+      accessToken,
+      pendingFriendList,
+      friendList,
     };
 
     dispatch(saveLoginUser(currentUser));
-    goTown(id);
+    goTown(id, iceCount);
   }
 
   function responseError() {
@@ -98,16 +106,16 @@ function Login({ goTown }) {
   return (
     <>
       <Header />
-      <StyledLoginOverlay>
-        <StyledLoginContent>
-          <StyledLogoImage
+      <LoginOverlay>
+        <LoginContent>
+          <LogoImage
             src="images/polar-town-logo.png"
             alt="game logo with bear paw"
           />
           <div id="google-login-button"></div>
-          {error && <StyledFailureMessage>{error}</StyledFailureMessage>}
-        </StyledLoginContent>
-      </StyledLoginOverlay>
+          {error && <FailureMessage>{error}</FailureMessage>}
+        </LoginContent>
+      </LoginOverlay>
     </>
   );
 }

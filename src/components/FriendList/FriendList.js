@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import Friends from "./Friends";

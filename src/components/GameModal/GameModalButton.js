@@ -7,7 +7,7 @@ const StyleGameModalBtn = styled.button`
   height: 40px;
   border-radius: 5px;
   border: none;
-  background-color: #edd5cb;
+  background-color: ${(props) => (props.disabled ? "#e7c2b8" : "#edd5cb")};
   cursor: pointer;
 
   &:hover {
@@ -15,17 +15,22 @@ const StyleGameModalBtn = styled.button`
   }
 `;
 
-function GameModalButton({ content, onSelect }) {
+function GameModalButton({ content, onSelect, disabled }) {
   return (
-    <StyleGameModalBtn type="submit" onClick={onSelect}>
+    <StyleGameModalBtn type="submit" onClick={onSelect} disabled={disabled}>
       {content}
     </StyleGameModalBtn>
   );
 }
 
+GameModalButton.defaultProps = {
+  disabled: false,
+};
+
 GameModalButton.propTypes = {
   content: proptypes.string.isRequired,
   onSelect: proptypes.func,
+  disabled: proptypes.bool,
 };
 
 export default GameModalButton;

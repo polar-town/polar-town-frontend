@@ -6,8 +6,8 @@ const initialState = {
   username: null,
   email: null,
   accessToken: null,
-  pendingFriendList: null,
-  friendList: null,
+  friendList: [],
+  pendingFriendList: [],
   itemCount: {
     PolarBear: 0,
     Penguin: 0,
@@ -62,6 +62,12 @@ export const userSlice = createSlice({
     decreaseCoke: (state, action) => {
       state.cokeCount -= action.payload;
     },
+    updateFriendList: (state, action) => {
+      state.friendList = action.payload;
+    },
+    updatePendingFriendList: (state, action) => {
+      state.PendingFriendList = action.payload;
+    },
     updateItemCount: (state, action) => {
       const { PolarBear, Penguin, Seal, Igloo, Flower } = action.payload;
 
@@ -83,6 +89,8 @@ export const {
   currentCoke,
   increseCoke,
   decreaseCoke,
+  updateFriendList,
+  updatePendingFriendList,
   updateItemCount,
   setSocket,
 } = userSlice.actions;
@@ -91,6 +99,8 @@ export const selectUser = (state) => state.user;
 export const selectUserId = (state) => state.user.id;
 export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
+export const selectFriendList = (state) => state.user.friendList;
+export const selectPendingFriendList = (state) => state.user.pendingFriendList;
 export const selectItemCount = (state) => state.user.itemCount;
 
 export default userSlice.reducer;

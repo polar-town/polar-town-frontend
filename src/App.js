@@ -9,9 +9,13 @@ import { setSocket } from "./features/user/userSlice";
 
 function App({ socketService }) {
   const [townId, setTownId] = useState("");
-  const dispatch = useDispatch();
+  const [townIceCount, setTownIceCount] = useState(1);
   const navigate = useNavigate();
-  const townIceCount = 10;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    townId ? navigate(`users/${townId}`) : navigate("/login");
+  }, [townId]);
 
   useEffect(() => {
     const connection = socketService.connect(process.env.REACT_APP_BASE_URL);
@@ -22,9 +26,10 @@ function App({ socketService }) {
     };
   }, []);
 
-  useEffect(() => {
-    townId ? navigate(`users/${townId}`) : navigate("/login");
-  }, [townId]);
+  function onTownTransition(id, iceCount) {
+    setTownId(id);
+    setTownIceCount(iceCount);
+  }
 
   return (
     <>
@@ -35,11 +40,11 @@ function App({ socketService }) {
           element={
             <Town
               iceCount={`/images/ice-background/${townIceCount}.png`}
-              onTownTransition={setTownId}
+              onTownTransition={onTownTransition}
             />
           }
         />
-        <Route path="/login" element={<Login goTown={setTownId} />} />
+        <Route path="/login" element={<Login goTown={onTownTransition} />} />
       </Routes>
     </>
   );
