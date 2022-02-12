@@ -7,7 +7,7 @@ export async function getSearchedFriendList(userId, query, page = 1) {
     );
 
     const users = response.data.result.users.map((user) => {
-      const { _id, name, photo, iceCount, email } = user;
+      const { _id, name, photo, iceCount, email, pendingFriendList } = user;
 
       return {
         id: _id,
@@ -15,6 +15,7 @@ export async function getSearchedFriendList(userId, query, page = 1) {
         photo,
         iceCount,
         email,
+        pendingFriendList,
       };
     });
 

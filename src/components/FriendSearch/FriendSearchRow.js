@@ -4,7 +4,11 @@ import proptypes from "prop-types";
 import { useSelector } from "react-redux";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import GameModalButton from "../GameModal/GameModalButton";
-import { selectUserId, selectFriendList } from "../../features/user/userSlice";
+import {
+  selectUserId,
+  selectFriendList,
+  selectPendingFriendList,
+} from "../../features/user/userSlice";
 import { updateTargetPendingFriendList } from "../../api/friendSearch";
 import { TYPE, OPTION } from "../../constants/searchFriend";
 
@@ -23,11 +27,24 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch }) {
   const userId = useSelector(selectUserId);
   const { name, email, photo, id, iceCount } = friend;
   const userFriendList = useSelector(selectFriendList);
+  const userPendingFriendList = useSelector(selectPendingFriendList);
 
   function checkFriendType(searchedId) {
     const isFriend = userFriendList.some((friend) => friend.id === searchedId);
+    const isSent = friend.pendingFriendList.some(
+      (friend) => friend.userId === userId,
+    );
+    const isPendingFriend = userPendingFriendList.some(
+      (friend) => friend.id === searchedId,
+    );
 
-    return isFriend ? TYPE.MY_FRIEND : TYPE.NOT_FRIEND;
+    return isFriend
+      ? TYPE.MY_FRIEND
+      : isSent
+      ? TYPE.REQUEST_SENT
+      : isPendingFriend
+      ? TYPE.REQUEST_RECEIVED
+      : TYPE.NOT_FRIEND;
   }
 
   function visitFriendTown() {
@@ -48,6 +65,12 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch }) {
           content={OPTION.MY_FRIEND}
           onSelect={visitFriendTown}
         />
+      )}
+      {checkFriendType(id) === TYPE.REQUEST_SENT && (
+        <GameModalButton content={OPTION.REQUEST_SENT} disabled={true} />
+      )}
+      {checkFriendType(id) === TYPE.REQUEST_RECEIVED && (
+        <GameModalButton content={OPTION.REQUEST_RECEIVED} disabled={true} />
       )}
       {checkFriendType(id) === TYPE.NOT_FRIEND && (
         <GameModalButton

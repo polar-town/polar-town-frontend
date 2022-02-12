@@ -1,12 +1,15 @@
 export const TYPE = {
   MY_FRIEND: "Friend",
-  NOT_FRIEND: "Potential Friend",
+  REQUEST_SENT: "Friend Request Sent by User",
+  REQUEST_RECEIVED: "Has Target in Pending Friend List",
+  NOT_FRIEND: "Not Friend",
 };
 
 export const OPTION = {
   MY_FRIEND: "놀러가기",
+  REQUEST_SENT: "요청 완료",
+  REQUEST_RECEIVED: "요청 받음",
   NOT_FRIEND: "친구 요청",
-  REQUEST_DONE: "전송 완료",
 };
 
 export const PAGE_OPTION = ["이전", "다음"];
