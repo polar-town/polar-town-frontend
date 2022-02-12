@@ -17,17 +17,17 @@ const ProfileContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+  padding: 15px 0;
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
 `;
 
 const ProfileRigntSection = styled.section`
   display: flex;
   align-items: center;
-
-  span {
-    font-size: 18px;
-  }
 `;
 
 const ProfileLeftSection = styled.section`
@@ -63,18 +63,21 @@ function FriendRow({
     visitFriend(id);
     toggleFriendList(false);
   };
+
   const onDeletion = async () => {
     await deleteFriend(userId, email);
     handleDeletion((prev) => {
       return prev.filter((friend) => friend.id !== id);
     });
   };
+
   const acceptFriendRequest = async () => {
     await addFriendList(userId, email);
     handleResponse((prev) => {
       return prev.filter((pendingFriend) => pendingFriend.id !== id);
     });
   };
+
   const declineFriendRequest = async () => {
     await deletePendingFriend(userId, email);
     handleResponse((prev) => {

@@ -47,10 +47,9 @@ function MyItemBox({ onClose }) {
   }, [isMounted]);
 
   useEffect(() => {
-    if (!myItemList.length) {
+    if (!myItemList?.length) {
       return;
     }
-
     myItemList.forEach((item) => {
       countItem(item);
     });

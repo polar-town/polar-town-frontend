@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import GameModal from "../GameModal/GameModal";
 import GameModalButton from "../GameModal/GameModalButton";

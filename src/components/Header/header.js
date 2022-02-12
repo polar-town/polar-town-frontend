@@ -39,7 +39,7 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
+function Header({ toggleMail, onSignout, toggleFriendList, toggleShop }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
@@ -53,6 +53,7 @@ function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
     });
 
     dispatch(removeLogoutUser());
+    onSignout("");
 
     await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
       email: user.email,
@@ -79,7 +80,12 @@ function Header({ toggleMail, toggleFindUser, toggleFriendList, toggleShop }) {
               toggleFriendList(true);
             }}
           />
-          <i className="fas fa-store" onClick={toggleShop} />
+          <i
+            className="fas fa-star"
+            onClick={() => {
+              toggleShop(true);
+            }}
+          />
           <i className="fas fa-sign-out-alt" onClick={logout} />
         </StyledNavWrapperNav>
       )}
@@ -94,4 +100,5 @@ Header.propTypes = {
   toggleFindUser: proptype.func,
   toggleFriendList: proptype.func,
   toggleShop: proptype.func,
+  onSignout: proptype.func,
 };

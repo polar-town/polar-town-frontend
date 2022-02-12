@@ -11,10 +11,9 @@ function App({ socketService }) {
   const [townId, setTownId] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const townIceCount = 10;
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_BASE_URL);
-
     const connection = socketService.connect(process.env.REACT_APP_BASE_URL);
     dispatch(setSocket(connection));
 
@@ -33,7 +32,12 @@ function App({ socketService }) {
       <Routes>
         <Route
           path="/users/:id"
-          element={<Town townId={townId} onTownTransition={setTownId} />}
+          element={
+            <Town
+              iceCount={`/images/ice-background/${townIceCount}.png`}
+              onTownTransition={setTownId}
+            />
+          }
         />
         <Route path="/login" element={<Login goTown={setTownId} />} />
       </Routes>
