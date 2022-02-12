@@ -6,7 +6,8 @@ const initialState = {
   username: null,
   email: null,
   accessToken: null,
-  googleLoginUser: null,
+  pendingFriendList: null,
+  friendList: null,
   itemCount: {
     PolarBear: 0,
     Penguin: 0,
@@ -21,8 +22,14 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     saveLoginUser: (state, action) => {
-      const { id, username, email, accessToken, googleLoginUser } =
-        action.payload;
+      const {
+        id,
+        username,
+        email,
+        accessToken,
+        pendingFriendList,
+        friendList,
+      } = action.payload;
 
       return {
         ...initialState,
@@ -30,7 +37,8 @@ export const userSlice = createSlice({
         username,
         email,
         accessToken,
-        googleLoginUser,
+        pendingFriendList,
+        friendList,
       };
     },
     removeLogoutUser: () => {

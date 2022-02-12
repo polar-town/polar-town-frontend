@@ -1,13 +1,13 @@
 import axios from "axios";
 // import instance from "./interceptor";
 
-export async function getMailList(userId, inboxId) {
+export async function getMailList(at, userId, inboxId) {
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inboxId}`,
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
+          gapiauthorization: `Bearer ${at}`,
         },
         withCredentials: true,
       },
@@ -19,7 +19,7 @@ export async function getMailList(userId, inboxId) {
   }
 }
 
-export async function moveEmailToTrash(userId, mailId) {
+export async function moveEmailToTrash(at, userId, mailId) {
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/trash`,
@@ -28,7 +28,7 @@ export async function moveEmailToTrash(userId, mailId) {
       },
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
+          gapiauthorization: `Bearer ${at}`,
           withCredentials: true,
         },
       },
@@ -39,13 +39,13 @@ export async function moveEmailToTrash(userId, mailId) {
   }
 }
 
-export async function deleteTrashEmail(userId, mailId, count) {
+export async function deleteTrashEmail(at, userId, mailId, count) {
   try {
     const response = await axios.delete(
       `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/trash`,
       {
         headers: {
-          gapiauthorization: `Bearer "ya29.A0ARrdaM9E9p7vjKGGvSA69AiijiA_KrB_deWJo7rGw9eFC8VlkAtmSBIzNRrr1LheNfOFWLXL9rTESOAmPQOCLbGMp63BbDogDtww0xv9p7WbepsE2KrOG4IFjyWG03v6hs-Ib4YyNSursOTH5hRDBLTdHqgelg"`,
+          gapiauthorization: `Bearer ${at}`,
           withCredentials: true,
         },
         data: { mail: mailId, cokeCount: count },

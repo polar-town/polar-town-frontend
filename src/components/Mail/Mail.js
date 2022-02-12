@@ -7,7 +7,8 @@ import DeleteIconButton from "./DeleteIconButton";
 import proptypes from "prop-types";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
-import { selectUserId } from "../../features/user/userSlice";
+import { selectUser, selectUserId } from "../../features/user/userSlice";
+import useGapi from "../../hooks/useGapi";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -117,7 +118,22 @@ const EmptyEmail = styled.div`
 `;
 
 function Mail({ toggleMail }) {
+  const gapi = useGapi();
   const loginUser = useSelector(selectUserId);
+  const [at, setAt] = useState("");
+
+  //토큰문제 해결 시 나중에 지워질 useEffect
+  useEffect(async () => {
+    if (!gapi) return;
+
+    const { access_token } = await gapi.auth2
+      .getAuthInstance()
+      .currentUser.get()
+      .reloadAuthResponse();
+
+    setAt(access_token);
+  }, [gapi]);
+
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
@@ -138,7 +154,7 @@ function Mail({ toggleMail }) {
         inBoxId = "TRASH";
       }
 
-      const response = await getMailList(loginUser, inBoxId);
+      const response = await getMailList(at, loginUser, inBoxId);
 
       setUserEmailList(response?.result);
     }
@@ -166,7 +182,7 @@ function Mail({ toggleMail }) {
       setIsPromotionActive(false);
       setIsSpamActive(false);
     }
-    const response = await getMailList(loginUser, inBoxId);
+    const response = await getMailList(at, loginUser, inBoxId);
 
     setUserEmailList(response.result);
   };
@@ -231,6 +247,7 @@ function Mail({ toggleMail }) {
                 isTrash={isTrashActive}
                 checkedMails={setCheckedIds}
                 isRefreshMails={setIsRefreshMails}
+                at={at}
               />
             </StyledSubHeaderDiv>
           ) : (

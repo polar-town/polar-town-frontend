@@ -26,6 +26,7 @@ function DeleteIconButton({
   isTrash,
   checkedMails,
   isRefreshMails,
+  at,
 }) {
   const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
@@ -34,14 +35,14 @@ function DeleteIconButton({
   const moveToTrash = async () => {
     checkedMails([]);
     isRefreshMails((check) => !check);
-    await moveEmailToTrash(userId, deleteEmail);
+    await moveEmailToTrash(at, userId, deleteEmail);
   };
 
   const deleteTrash = async () => {
     checkedMails([]);
     dispatch(increseCoke(count));
     isRefreshMails((check) => !check);
-    await deleteTrashEmail(userId, deleteEmail, count);
+    await deleteTrashEmail(at, userId, deleteEmail, count);
   };
 
   return (
@@ -58,4 +59,5 @@ DeleteIconButton.propTypes = {
   isTrash: proptypes.bool,
   checkedMails: proptypes.func,
   isRefreshMails: proptypes.func,
+  at: proptypes.string,
 };
