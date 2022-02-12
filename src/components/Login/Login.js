@@ -72,8 +72,15 @@ function Login({ goTown }) {
       { withCredentials: true },
     );
 
-    const { id, username, email, accessToken, iceCount } =
-      serverResponse.data.result;
+    const {
+      id,
+      username,
+      email,
+      accessToken,
+      iceCount,
+      friendList,
+      pendingFriendList,
+    } = serverResponse.data.result;
 
     const currentUser = {
       id,
@@ -81,10 +88,13 @@ function Login({ goTown }) {
       email,
       iceCount,
       accessToken,
+      friendList,
+      pendingFriendList,
       googleLoginUser,
     };
 
     dispatch(saveLoginUser(currentUser));
+    console.log(iceCount);
     goTown(id, iceCount);
   }
 

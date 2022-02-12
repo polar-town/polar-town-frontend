@@ -46,6 +46,8 @@ const ACCEPT = 0;
 
 function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
   const userId = useSelector(selectUserId);
+  const prevFriendList = useSelector(selectFriendList);
+  const prevPendingFriendList = useSelector(selectPendingFriendList);
   const dispatch = useDispatch();
   const { name, email, photo, id, iceCount } = friend;
 
@@ -55,7 +57,6 @@ function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
   }
 
   async function onDeletion() {
-    const prevFriendList = useSelector(selectFriendList);
     const newFriendList = prevFriendList.filter((friend) => friend.id !== id);
 
     await deleteFriend(userId, email);
@@ -63,20 +64,16 @@ function FriendRow({ friend, type, visitFriend, toggleFriendList }) {
   }
 
   async function acceptFriendRequest() {
-    const prevFriendList = useSelector(selectFriendList);
-    const newFriendList = prevFriendList.push(friend);
-    const prevPendingFriendList = useSelector(selectPendingFriendList);
+    const newFriendList = [...prevFriendList].push(friend);
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-
     await addFriendList(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     dispatch(updateFriendList(newFriendList));
   }
 
   async function declineFriendRequest() {
-    const prevPendingFriendList = useSelector(selectPendingFriendList);
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
