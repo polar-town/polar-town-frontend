@@ -39,8 +39,9 @@ const TownDiv = styled.div`
 function Town({ iceCount, onTownTransition }) {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [townHost, setTownHost] = useState({});
   const isMe = useSelector(selectUserId) === id;
+  const [townHost, setTownHost] = useState({});
+  const [outItems, setOutItems] = useState([]);
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
@@ -53,6 +54,7 @@ function Town({ iceCount, onTownTransition }) {
     const user = await getTownHostInfo(id);
 
     setTownHost(user);
+    setOutItems(user.outItemBox);
     dispatch(currentCoke(user.cokeCount));
   }, []);
 
@@ -67,8 +69,14 @@ function Town({ iceCount, onTownTransition }) {
       />
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
-        {townHost.outItemBox?.map((item) => (
-          <OutItem key={item._id} name={item.name} />
+        {outItems?.map((item) => (
+          <OutItem
+            key={item._id}
+            name={item.name}
+            isMe={isMe}
+            itemId={item._id}
+            setOutItems={setOutItems}
+          />
         ))}
         <PostBox toggleGuestbook={setOnPostBox} />
         {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
@@ -90,7 +98,9 @@ function Town({ iceCount, onTownTransition }) {
               visitFriend={onTownTransition}
             />
           )}
-          {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
+          {onItemBoxOpen && (
+            <ItemBox onClose={setOnItemBoxOpen} setOutItems={setOutItems} />
+          )}
           {onShopOpen && <Shop onClose={setOnShopOpen} />}
         </ModalPortals>
       </TownDiv>

@@ -60,6 +60,7 @@ function Login({ goTown }) {
   }, [gapi]);
 
   async function responseGoogle(result) {
+    console.log(result);
     const profile = result.getBasicProfile();
     const name = profile.getName();
     const userEmail = profile.getEmail();
@@ -92,7 +93,6 @@ function Login({ goTown }) {
     };
 
     dispatch(saveLoginUser(currentUser));
-    console.log(iceCount);
     goTown(id, iceCount);
   }
 

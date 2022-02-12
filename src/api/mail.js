@@ -33,6 +33,7 @@ export async function moveEmailToTrash(at, userId, mailId) {
         },
       },
     );
+
     return response.data;
   } catch (err) {
     console.error(err);

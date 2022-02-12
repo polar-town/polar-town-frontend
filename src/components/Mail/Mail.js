@@ -7,8 +7,7 @@ import DeleteIconButton from "./DeleteIconButton";
 import proptypes from "prop-types";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
-import { selectUser, selectUserId } from "../../features/user/userSlice";
-import useGapi from "../../hooks/useGapi";
+import { selectUserId } from "../../features/user/userSlice";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -118,21 +117,11 @@ const EmptyEmail = styled.div`
 `;
 
 function Mail({ toggleMail }) {
-  const gapi = useGapi();
+  // const gapi = useGapi();
+  // const [at, setAt] = useState("");
   const loginUser = useSelector(selectUserId);
-  const [at, setAt] = useState("");
-
-  //토큰문제 해결 시 나중에 지워질 useEffect
-  useEffect(async () => {
-    if (!gapi) return;
-
-    const { access_token } = await gapi.auth2
-      .getAuthInstance()
-      .currentUser.get()
-      .reloadAuthResponse();
-
-    setAt(access_token);
-  }, [gapi]);
+  const at =
+    "ya29.A0ARrdaM8jGJ16AvshhVWFMy-3tLaOuc9m_XHAbu2-2yEzpOWaJRnKBL3Y-_JjotizBkypbOrb6geGdv1zOd_xtNGyGnOWcoFy2GNuurGjIWgXTICO639-1jxBybUqnODgztmZ7AnaYnNZxtZXQKqZzbucyR7Ibw";
 
   const [userEmailList, setUserEmailList] = useState([]);
   const [checkedIds, setCheckedIds] = useState([]);
@@ -140,9 +129,18 @@ function Mail({ toggleMail }) {
   const [isPromotionActive, setIsPromotionActive] = useState(true);
   const [isSpamActive, setIsSpamActive] = useState(false);
   const [isTrashActive, setIsTrashActive] = useState(false);
-  const [isRefreshMails, setIsRefreshMails] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
+    //토큰문제 해결 시 나중에 지워질 useEffect
+    // if (!gapi) return;
+
+    // const user = await gapi.auth2
+    //   .getAuthInstance()
+    //   .currentUser.get()
+    //   .reloadAuthResponse();
+
+    // setAt(user.access_token);
+
     async function getUserEmailList() {
       let inBoxId;
 
@@ -160,7 +158,7 @@ function Mail({ toggleMail }) {
     }
 
     getUserEmailList();
-  }, [isRefreshMails]);
+  }, []);
 
   const getCategoryEmails = async (e) => {
     const inBoxId = e.target.id;
@@ -246,7 +244,8 @@ function Mail({ toggleMail }) {
                 deleteEmail={checkedIds}
                 isTrash={isTrashActive}
                 checkedMails={setCheckedIds}
-                isRefreshMails={setIsRefreshMails}
+                // isRefreshMails={setIsRefreshMails}
+                setUserEmailList={setUserEmailList}
                 at={at}
               />
             </StyledSubHeaderDiv>

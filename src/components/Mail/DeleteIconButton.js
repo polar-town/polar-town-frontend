@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import { deleteTrashEmail, moveEmailToTrash } from "../../api/mail";
+import {
+  deleteTrashEmail,
+  getMailList,
+  moveEmailToTrash,
+} from "../../api/mail";
 import { useDispatch, useSelector } from "react-redux";
 import { increseCoke, selectUserId } from "../../features/user/userSlice";
 
@@ -25,7 +29,7 @@ function DeleteIconButton({
   deleteEmail,
   isTrash,
   checkedMails,
-  isRefreshMails,
+  setUserEmailList,
   at,
 }) {
   const dispatch = useDispatch();
@@ -33,16 +37,20 @@ function DeleteIconButton({
   const count = deleteEmail?.length;
 
   const moveToTrash = async () => {
-    checkedMails([]);
-    isRefreshMails((check) => !check);
     await moveEmailToTrash(at, userId, deleteEmail);
+    const { result } = await getMailList(at, userId, "CATEGORY_PROMOTIONS");
+
+    checkedMails([]);
+    setUserEmailList(result);
   };
 
   const deleteTrash = async () => {
+    await deleteTrashEmail(at, userId, deleteEmail, count);
+    const { result } = await getMailList(at, userId, "TRASH");
+
     checkedMails([]);
     dispatch(increseCoke(count));
-    isRefreshMails((check) => !check);
-    await deleteTrashEmail(at, userId, deleteEmail, count);
+    setUserEmailList(result);
   };
 
   return (
@@ -58,6 +66,6 @@ DeleteIconButton.propTypes = {
   deleteEmail: proptypes.array,
   isTrash: proptypes.bool,
   checkedMails: proptypes.func,
-  isRefreshMails: proptypes.func,
+  setUserEmailList: proptypes.func,
   at: proptypes.string,
 };
