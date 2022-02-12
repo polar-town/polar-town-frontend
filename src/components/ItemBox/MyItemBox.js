@@ -25,10 +25,8 @@ function MyItemBox({ onClose }) {
   const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
   const [myItemList, setMyItemList] = useState([]);
-  const [iceCount, setIceCount] = useState([]);
   const itemCount = useSelector(selectItemCount);
-  const aa = useSelector(selectUser);
-  console.log(aa);
+  const iceCount = useSelector(selectUser).iceCount;
 
   useEffect(async () => {
     setIsMounted(true);
@@ -38,7 +36,6 @@ function MyItemBox({ onClose }) {
         const myItemBox = await getInItemBox(id);
 
         setMyItemList(myItemBox.result.inItemBox);
-        setIceCount(myItemBox.result.iceCount);
       }
     } catch (err) {
       console.error(err);
