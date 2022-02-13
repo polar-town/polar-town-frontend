@@ -53,7 +53,8 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
   const handlePurchase = async (e) => {
     if (e.target.textContent === "예") {
       try {
-        await addItem(id, targetItem, 200);
+        await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
+
         dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
         toggleNotification(false);
       } catch (err) {

@@ -110,8 +110,6 @@ const CashContainerDiv = styled.div`
     margin-top: 157px;
     margin-left: 15px;
     cursor: pointer;
-
-\ */
   }
 `;
 
