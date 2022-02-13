@@ -85,7 +85,7 @@ function Town({ iceCount, onTownTransition }) {
         setVisitors(data.visitors);
       }
     });
-  }, [id]);
+  }, [loginUser, id]);
 
   return (
     <>
