@@ -15,8 +15,8 @@ const initialState = {
     Seal: 0,
     Igloo: 0,
     Flower: 0,
+    photo: null,
   },
-  socket: null,
 };
 
 export const userSlice = createSlice({
@@ -32,6 +32,7 @@ export const userSlice = createSlice({
         googleLoginUser,
         friendList,
         pendingFriendList,
+        photo,
       } = action.payload;
 
       return {
@@ -43,6 +44,7 @@ export const userSlice = createSlice({
         friendList,
         pendingFriendList,
         googleLoginUser,
+        photo,
       };
     },
     removeLogoutUser: () => {
@@ -79,9 +81,6 @@ export const userSlice = createSlice({
         itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
       };
     },
-    setSocket: (state, action) => {
-      state.socket = action.payload;
-    },
   },
 });
 
@@ -95,7 +94,6 @@ export const {
   updateFriendList,
   updatePendingFriendList,
   updateItemCount,
-  setSocket,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;

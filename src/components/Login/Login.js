@@ -91,10 +91,10 @@ function Login({ goTown }) {
       friendList,
       pendingFriendList,
       googleLoginUser,
+      photo,
     };
 
     dispatch(saveLoginUser(currentUser));
-    console.log(iceCount);
     goTown(id, iceCount);
   }
 
