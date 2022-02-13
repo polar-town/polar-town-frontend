@@ -8,6 +8,7 @@ import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
 import proptype from "prop-types";
 import { addItem } from "../../api/item";
 import { decreaseCoke, selectUserId } from "../../features/user/userSlice";
+import { ITEM_PRICE_LIST } from "../../constants/item";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -53,7 +54,7 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
     if (e.target.textContent === "예") {
       try {
         await addItem(id, targetItem, 200);
-        dispatch(decreaseCoke(200));
+        dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
         toggleNotification(false);
       } catch (err) {
         console.error(err);

@@ -12,6 +12,7 @@ import {
   selectPendingFriendList,
   updateFriendList,
   updatePendingFriendList,
+  decreaseCoke,
 } from "../../features/user/userSlice";
 import {
   deleteFriend,
@@ -141,6 +142,7 @@ function FriendRow({
                 ITEM_PRICE_LIST[targetItem]
               );
               toggleShopFriendList(false);
+              dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
             };
 
             return (
