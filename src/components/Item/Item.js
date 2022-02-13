@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { TYPE } from "../../constants/notification";
+import GameModalButton from "../GameModal/GameModalButton";
 
 const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
@@ -109,6 +110,8 @@ const CashContainerDiv = styled.div`
     margin-top: 157px;
     margin-left: 15px;
     cursor: pointer;
+
+\ */
   }
 `;
 
@@ -121,6 +124,7 @@ function Item({
   moveToOutBox,
   onTargetItem,
   onNotificationType,
+  toggleShopFriendList,
 }) {
   return (
     <ItemContainerDiv
@@ -157,9 +161,17 @@ function Item({
           >
             구매하기
           </button>
-          <button className="giftButton">
-            <i className="fas fa-solid fa-gift" />
-          </button>
+          {imageName !== "Ice" && (
+            <button
+              className="giftButton"
+              onClick={() => {
+                toggleShopFriendList(true);
+                onTargetItem(imageName);
+              }}
+            >
+              <i className="fas fa-solid fa-gift" />
+            </button>
+          )}
         </CashContainerDiv>
       )}
     </ItemContainerDiv>
@@ -181,4 +193,5 @@ Item.propTypes = {
   moveToOutBox: PropTypes.func,
   onTargetItem: PropTypes.func,
   onNotificationType: PropTypes.func,
+  toggleShopFriendList: PropTypes.func,
 };

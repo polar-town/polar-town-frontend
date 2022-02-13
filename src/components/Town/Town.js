@@ -18,6 +18,7 @@ import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
+import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -50,6 +51,7 @@ function Town({ iceCount, onTownTransition }) {
   const [onShopOpen, setOnShopOpen] = useState(false);
   const [notificationType, setNotificationType] = useState("");
   const [targetItem, setTargetItem] = useState("");
+  const [onShopFriendList, setOnShopFriendList] = useState(false);
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
@@ -83,7 +85,7 @@ function Town({ iceCount, onTownTransition }) {
               toggleNotification={setOnNotification}
               getTargetItem={setTargetItem}
               getNotificationType={setNotificationType}
-              onFriendList={setOnFriendList}
+              toggleShopFriendList={setOnShopFriendList}
             />
           )}
           {onNotification && (
@@ -103,6 +105,12 @@ function Town({ iceCount, onTownTransition }) {
             <FriendSearch
               toggleFriendSearch={setOnFriendSearch}
               visitFriend={onTownTransition}
+            />
+          )}
+          {onShopFriendList && (
+            <ShopFriendList
+              toggleShopFriendList={setOnShopFriendList}
+              targetItem={targetItem}
             />
           )}
           {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}

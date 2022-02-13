@@ -17,7 +17,7 @@ function Shop({
   toggleNotification,
   getTargetItem,
   getNotificationType,
-  onFriendList,
+  toggleShopFriendList,
 }) {
   return (
     <GameModal onClose={onClose} subject="상점">
@@ -32,7 +32,7 @@ function Shop({
               toggleNotification={toggleNotification}
               onTargetItem={getTargetItem}
               onNotificationType={getNotificationType}
-              onFriendList={onFriendList}
+              toggleShopFriendList={toggleShopFriendList}
             />
           );
         })}
@@ -48,5 +48,5 @@ Shop.propTypes = {
   toggleNotification: PropTypes.func,
   getTargetItem: PropTypes.func,
   getNotificationType: PropTypes.func,
-  onFriendList: PropTypes.func,
+  toggleShopFriendList: PropTypes.func,
 };
