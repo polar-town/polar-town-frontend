@@ -18,6 +18,7 @@ import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
+import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -48,6 +49,9 @@ function Town({ iceCount, onTownTransition }) {
   const [onFriendSearch, setOnFriendSearch] = useState(false);
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
+  const [notificationType, setNotificationType] = useState("");
+  const [targetItem, setTargetItem] = useState("");
+  const [onShopFriendList, setOnShopFriendList] = useState(false);
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
@@ -75,8 +79,21 @@ function Town({ iceCount, onTownTransition }) {
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
           {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onShopOpen && (
+            <Shop
+              onClose={setOnShopOpen}
+              toggleNotification={setOnNotification}
+              getTargetItem={setTargetItem}
+              getNotificationType={setNotificationType}
+              toggleShopFriendList={setOnShopFriendList}
+            />
+          )}
           {onNotification && (
-            <Notification toggleNotification={setOnNotification} />
+            <Notification
+              toggleNotification={setOnNotification}
+              notificationType={notificationType}
+              targetItem={targetItem}
+            />
           )}
           {onFriendList && (
             <FriendList
@@ -90,8 +107,13 @@ function Town({ iceCount, onTownTransition }) {
               visitFriend={onTownTransition}
             />
           )}
-          {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
-          {onShopOpen && <Shop onClose={setOnShopOpen} />}
+          {onShopFriendList && (
+            <ShopFriendList
+              toggleShopFriendList={setOnShopFriendList}
+              targetItem={targetItem}
+            />
+          )}
+          {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}
         </ModalPortals>
       </TownDiv>
     </>

@@ -94,7 +94,6 @@ function Login({ goTown }) {
     };
 
     dispatch(saveLoginUser(currentUser));
-    console.log(iceCount);
     goTown(id, iceCount);
   }
 

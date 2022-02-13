@@ -12,12 +12,15 @@ import {
   selectPendingFriendList,
   updateFriendList,
   updatePendingFriendList,
+  decreaseCoke,
 } from "../../features/user/userSlice";
 import {
   deleteFriend,
   addFriendList,
   deletePendingFriend,
 } from "../../api/friendlist";
+import { sendItem } from "../../api/item";
+import { ITEM_PRICE_LIST } from "../../constants/item";
 
 const FriendRowContainer = styled.div`
   display: flex;
@@ -50,6 +53,8 @@ function FriendRow({
   visitFriend,
   toggleFriendList,
   handleResponse,
+  targetItem,
+  toggleShopFriendList,
 }) {
   const userId = useSelector(selectUserId);
   const prevFriendList = useSelector(selectFriendList);
@@ -64,7 +69,6 @@ function FriendRow({
 
   async function onDeletion() {
     const newFriendList = prevFriendList.filter((friend) => friend.id !== id);
-    console.log(friend);
 
     await deleteFriend(userId, email);
     dispatch(updateFriendList(newFriendList));
@@ -76,7 +80,7 @@ function FriendRow({
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-    console.log(friend);
+
     await addFriendList(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     dispatch(updateFriendList(newFriendList));
@@ -87,7 +91,7 @@ function FriendRow({
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-    console.log(friend, newPendingFriendList, friend.id, id);
+
     await deletePendingFriend(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     handleResponse(newPendingFriendList);
@@ -127,6 +131,28 @@ function FriendRow({
               />
             );
           })}
+        {type === TYPE.SHOP_MY_FRIEND &&
+          OPTION.SHOP_MY_FRIEND.map((option) => {
+            const key = nanoid();
+            const handleSelect = async () => {
+              await sendItem(
+                userId,
+                id,
+                targetItem,
+                ITEM_PRICE_LIST[targetItem],
+              );
+              toggleShopFriendList(false);
+              dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+            };
+
+            return (
+              <GameModalButton
+                key={key}
+                content={option}
+                onSelect={handleSelect}
+              />
+            );
+          })}
       </FriendRowButtonContainer>
     </FriendRowContainer>
   );
@@ -138,6 +164,8 @@ FriendRow.propTypes = {
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
   handleResponse: proptypes.func,
+  targetItem: proptypes.string,
+  toggleShopFriendList: proptypes.func,
 };
 
 export default FriendRow;
