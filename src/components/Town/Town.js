@@ -4,14 +4,17 @@ import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
 import { io } from "socket.io-client";
+import { nanoid } from "nanoid";
+
+import { getTownHostInfo } from "../../api/user";
+import { currentCoke, selectUser } from "../../features/user/userSlice";
+
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
 import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
-import { getTownHostInfo } from "../../api/user";
-import { currentCoke, selectUser } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
@@ -20,7 +23,7 @@ import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
-import { nanoid } from "nanoid";
+import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -53,6 +56,9 @@ function Town({ iceCount, onTownTransition }) {
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
   const [visitors, setVisitors] = useState([]);
+  const [notificationType, setNotificationType] = useState("");
+  const [targetItem, setTargetItem] = useState("");
+  const [onShopFriendList, setOnShopFriendList] = useState(false);
   const socket = useRef();
 
   useEffect(async () => {
@@ -107,8 +113,21 @@ function Town({ iceCount, onTownTransition }) {
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
           {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onShopOpen && (
+            <Shop
+              onClose={setOnShopOpen}
+              toggleNotification={setOnNotification}
+              getTargetItem={setTargetItem}
+              getNotificationType={setNotificationType}
+              toggleShopFriendList={setOnShopFriendList}
+            />
+          )}
           {onNotification && (
-            <Notification toggleNotification={setOnNotification} />
+            <Notification
+              toggleNotification={setOnNotification}
+              notificationType={notificationType}
+              targetItem={targetItem}
+            />
           )}
           {onFriendList && (
             <FriendList
@@ -122,8 +141,13 @@ function Town({ iceCount, onTownTransition }) {
               visitFriend={onTownTransition}
             />
           )}
-          {onItemBoxOpen && <ItemBox onClose={setOnItemBoxOpen} />}
-          {onShopOpen && <Shop onClose={setOnShopOpen} />}
+          {onShopFriendList && (
+            <ShopFriendList
+              toggleShopFriendList={setOnShopFriendList}
+              targetItem={targetItem}
+            />
+          )}
+          {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}
         </ModalPortals>
       </TownDiv>
     </>

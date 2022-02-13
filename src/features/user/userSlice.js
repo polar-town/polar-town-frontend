@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   cokeCount: 0,
+  iceCount: 1,
   id: null,
   username: null,
   email: null,
@@ -28,6 +29,8 @@ export const userSlice = createSlice({
         id,
         username,
         email,
+        iceCount,
+        cokeCount,
         accessToken,
         googleLoginUser,
         friendList,
@@ -40,6 +43,8 @@ export const userSlice = createSlice({
         id,
         username,
         email,
+        iceCount,
+        cokeCount,
         accessToken,
         friendList,
         pendingFriendList,
@@ -100,6 +105,7 @@ export const selectUser = (state) => state.user;
 export const selectUserId = (state) => state.user.id;
 export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
+export const selectIceCount = (state) => state.user.iceCount;
 export const selectFriendList = (state) => state.user.friendList;
 export const selectPendingFriendList = (state) => state.user.pendingFriendList;
 export const selectItemCount = (state) => state.user.itemCount;
