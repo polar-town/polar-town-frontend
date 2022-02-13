@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
+import { throttle } from "lodash";
 import MailDetail from "./MailDetail";
 import MailRow from "./MailRow";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
-import proptypes from "prop-types";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
+import { nanoid } from "nanoid";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -117,44 +119,32 @@ const EmptyEmail = styled.div`
 `;
 
 function Mail({ toggleMail }) {
-  // const gapi = useGapi();
-  // const [at, setAt] = useState("");
-  const loginUser = useSelector(selectUserId);
   const at =
-    "ya29.A0ARrdaM8jGJ16AvshhVWFMy-3tLaOuc9m_XHAbu2-2yEzpOWaJRnKBL3Y-_JjotizBkypbOrb6geGdv1zOd_xtNGyGnOWcoFy2GNuurGjIWgXTICO639-1jxBybUqnODgztmZ7AnaYnNZxtZXQKqZzbucyR7Ibw";
-
+    "ya29.A0ARrdaM8s_SOVcrM-OFlOe3-462ycSv6s_DRQAfvOMgE0AfxW-wzUmUfxAEfDm4O-SD_tHpIKXuCBt9zQH_-50AbKaIqgWwZpAGVNMGeRmzmYvEo_joZROiRpGki8KIkSQYYSA_8mzpVFBrIYPK5c2fB9eaklPg";
+  const loginUser = useSelector(selectUserId);
   const [userEmailList, setUserEmailList] = useState([]);
+  const [nextPageToken, setNextPageToken] = useState("");
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
   const [isPromotionActive, setIsPromotionActive] = useState(true);
   const [isSpamActive, setIsSpamActive] = useState(false);
   const [isTrashActive, setIsTrashActive] = useState(false);
+  let inBoxId;
+
+  if (isPromotionActive) {
+    inBoxId = "CATEGORY_PROMOTIONS";
+  } else if (isSpamActive) {
+    inBoxId = "SPAM";
+  } else {
+    inBoxId = "TRASH";
+  }
 
   useEffect(async () => {
-    //토큰문제 해결 시 나중에 지워질 useEffect
-    // if (!gapi) return;
-
-    // const user = await gapi.auth2
-    //   .getAuthInstance()
-    //   .currentUser.get()
-    //   .reloadAuthResponse();
-
-    // setAt(user.access_token);
-
     async function getUserEmailList() {
-      let inBoxId;
-
-      if (isPromotionActive) {
-        inBoxId = "CATEGORY_PROMOTIONS";
-      } else if (isSpamActive) {
-        inBoxId = "SPAM";
-      } else {
-        inBoxId = "TRASH";
-      }
-
       const response = await getMailList(at, loginUser, inBoxId);
 
       setUserEmailList(response?.result);
+      setNextPageToken(response?.nextPageToken);
     }
 
     getUserEmailList();
@@ -180,10 +170,26 @@ function Mail({ toggleMail }) {
       setIsPromotionActive(false);
       setIsSpamActive(false);
     }
+
     const response = await getMailList(at, loginUser, inBoxId);
 
     setUserEmailList(response.result);
+    setNextPageToken(response?.nextPageToken);
+    document.querySelector(".emails").scrollTo(0, 0);
   };
+
+  const handleScroll = throttle(async (e) => {
+    const bodyHeight = e.target.scrollHeight;
+    const showContentHeight = e.target.clientHeight;
+    const scrolledHeight = e.target.scrollTop;
+
+    if (bodyHeight === showContentHeight + scrolledHeight) {
+      const response = await getMailList(at, loginUser, inBoxId, nextPageToken);
+
+      setUserEmailList([...userEmailList, ...response.result]);
+      setNextPageToken(response.nextPageToken);
+    }
+  }, 500);
 
   return (
     <MailModal onClose={toggleMail}>
@@ -244,7 +250,6 @@ function Mail({ toggleMail }) {
                 deleteEmail={checkedIds}
                 isTrash={isTrashActive}
                 checkedMails={setCheckedIds}
-                // isRefreshMails={setIsRefreshMails}
                 setUserEmailList={setUserEmailList}
                 at={at}
               />
@@ -252,16 +257,19 @@ function Mail({ toggleMail }) {
           ) : (
             <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
           )}
-          <StyledMailDetailDiv>
-            {userEmailList?.map((mail) => (
-              <MailRow
-                key={mail.id}
-                mail={mail}
-                onCheckedId={setCheckedIds}
-                checkedIdList={checkedIds}
-                onTargetEmailId={setTargetEmailId}
-              />
-            ))}
+          <StyledMailDetailDiv onScroll={handleScroll} className="emails">
+            {userEmailList?.map((mail) => {
+              const key = nanoid();
+              return (
+                <MailRow
+                  key={key}
+                  mail={mail}
+                  onCheckedId={setCheckedIds}
+                  checkedIdList={checkedIds}
+                  onTargetEmailId={setTargetEmailId}
+                />
+              );
+            })}
           </StyledMailDetailDiv>
           <StyledGmailLogoButton
             onClick={() => {

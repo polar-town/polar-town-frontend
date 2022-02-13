@@ -1,10 +1,10 @@
 import axios from "axios";
 // import instance from "./interceptor";
 
-export async function getMailList(at, userId, inboxId) {
+export async function getMailList(at, userId, inboxId, pageToken = null) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inboxId}`,
+      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inboxId}/${pageToken}`,
       {
         headers: {
           gapiauthorization: `Bearer ${at}`,
