@@ -69,7 +69,7 @@ function Login({ goTown }) {
     const serverResponse = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/auth/login`,
       { name, email: userEmail, photo },
-      { withCredentials: true }
+      { withCredentials: true },
     );
 
     const {

@@ -78,7 +78,7 @@ function FriendRow({
   async function acceptFriendRequest() {
     const newFriendList = [...prevFriendList].push(friend);
     const newPendingFriendList = prevPendingFriendList.filter(
-      (friend) => friend.id !== id
+      (friend) => friend.id !== id,
     );
 
     await addFriendList(userId, email);
@@ -89,7 +89,7 @@ function FriendRow({
 
   async function declineFriendRequest() {
     const newPendingFriendList = prevPendingFriendList.filter(
-      (friend) => friend.id !== id
+      (friend) => friend.id !== id,
     );
 
     await deletePendingFriend(userId, email);
@@ -139,7 +139,7 @@ function FriendRow({
                 userId,
                 id,
                 targetItem,
-                ITEM_PRICE_LIST[targetItem]
+                ITEM_PRICE_LIST[targetItem],
               );
               toggleShopFriendList(false);
               dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
