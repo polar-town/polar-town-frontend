@@ -129,13 +129,11 @@ function Item({
   return (
     <ItemContainerDiv
       onClick={(e) => {
-        if (e.target == e.currentTarget) {
-          {
-            toggleNotification && toggleNotification(true);
-          }
-          {
-            moveToOutBox && moveToOutBox(e.target.id);
-          }
+        {
+          moveToOutBox &&
+            e.target.id &&
+            e.target.id !== "Ice" &&
+            moveToOutBox(e.target.id);
         }
       }}
     >
