@@ -5,7 +5,7 @@ import Friends from "./Friends";
 import PendingFriends from "./PendingFriends";
 import proptypes from "prop-types";
 
-function FriendList({ toggleFriendList, visitFriend }) {
+function FriendList({ toggleFriendList, visitFriend, socket }) {
   return (
     <GameModal
       onClose={() => {
@@ -16,6 +16,7 @@ function FriendList({ toggleFriendList, visitFriend }) {
         <Friends
           visitFriend={visitFriend}
           toggleFriendList={toggleFriendList}
+          socket={socket}
         />
         <PendingFriends />
       </HalfModal>
@@ -28,4 +29,5 @@ export default FriendList;
 FriendList.propTypes = {
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func.isRequired,
+  socket: proptypes.object,
 };

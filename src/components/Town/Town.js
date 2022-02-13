@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 
 import { getTownHostInfo } from "../../api/user";
 import { currentCoke, selectUser } from "../../features/user/userSlice";
+import { EVENTS } from "../../constants/socketEvents";
 
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -59,7 +60,7 @@ function Town({ iceCount, onTownTransition }) {
   const [notificationType, setNotificationType] = useState("");
   const [targetItem, setTargetItem] = useState("");
   const [onShopFriendList, setOnShopFriendList] = useState(false);
-  const socket = useRef();
+  const socketRef = useRef(null);
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
@@ -71,21 +72,30 @@ function Town({ iceCount, onTownTransition }) {
   useEffect(() => {
     if (!loginUser.id) return;
 
-    socket.current = io.connect(process.env.REACT_APP_BASE_URL);
-    socket.current.on("newVisitor", (data) => {
-      if (data.visitors.some((visitor) => visitor.id === loginUser.id)) {
-        setVisitors(data.visitors);
-      }
+    const socket = getSocketIO();
+
+    socket.on(EVENTS.JOIN, (data) => {
+      setVisitors(data.visitors);
     });
 
-    socket.current.emit("newVisitor", { townId: id, user: loginUser });
+    socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
 
-    socket.current.on("visitorLeft", (data) => {
-      if (data.visitors.some((visitor) => visitor.id === loginUser.id)) {
-        setVisitors(data.visitors);
-      }
+    socket.on(EVENTS.LEFT, (data) => {
+      setVisitors(data.visitors);
     });
-  }, [loginUser, id]);
+
+    return () => {
+      socket.off(EVENTS.JOIN);
+      socket.off(EVENTS.LEFT);
+    };
+  }, [id, loginUser.id]);
+
+  function getSocketIO() {
+    if (socketRef.current === null) {
+      socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
+    }
+    return socketRef.current;
+  }
 
   return (
     <>
@@ -95,6 +105,7 @@ function Town({ iceCount, onTownTransition }) {
         toggleFriendList={setOnFriendList}
         toggleShop={setOnShopOpen}
         onSignout={onTownTransition}
+        socket={getSocketIO()}
       />
       <VisitorsContainer>
         {!!visitors.length &&
@@ -133,12 +144,14 @@ function Town({ iceCount, onTownTransition }) {
             <FriendList
               visitFriend={onTownTransition}
               toggleFriendList={setOnFriendList}
+              socket={getSocketIO()}
             />
           )}
           {onFriendSearch && (
             <FriendSearch
               toggleFriendSearch={setOnFriendSearch}
               visitFriend={onTownTransition}
+              socket={getSocketIO()}
             />
           )}
           {onShopFriendList && (

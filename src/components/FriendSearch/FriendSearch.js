@@ -24,7 +24,7 @@ const PaginationButtonContainer = styled.div`
 
 const PREV = 0;
 
-function FriendSearch({ toggleFriendSearch, visitFriend }) {
+function FriendSearch({ toggleFriendSearch, visitFriend, socket }) {
   const [searchedFriends, setSearchedFriends] = useState([]);
   const [hasResult, setHasResult] = useState(true);
   const [page, setPage] = useState(1);
@@ -68,6 +68,7 @@ function FriendSearch({ toggleFriendSearch, visitFriend }) {
                 friend={friend}
                 visitFriend={visitFriend}
                 toggleFriendSearch={toggleFriendSearch}
+                socket={socket}
               />
             )
           );
@@ -97,4 +98,5 @@ export default FriendSearch;
 FriendSearch.propTypes = {
   toggleFriendSearch: proptypes.func.isRequired,
   visitFriend: proptypes.func.isRequired,
+  socket: proptypes.func,
 };
