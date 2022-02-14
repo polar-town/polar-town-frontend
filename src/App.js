@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import proptyoes from "prop-types";
 import GlobalStyle from "./GlobalStyle";
 import Login from "./components/Login/Login";
 import Town from "./components/Town/Town";

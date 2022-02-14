@@ -35,6 +35,11 @@ const TownDiv = styled.div`
   background-size: cover;
   image-rendering: pixelated;
   position: relative;
+
+  .a {
+    background-color: lemonchiffon;
+    position: absolute;
+  }
 `;
 
 const VisitorsContainer = styled.div`
@@ -90,9 +95,17 @@ function Town({ iceCount, onTownTransition }) {
       setVisitors(data.visitors);
     });
 
+    socket.on(EVENTS.FRIEND_REQUEST, (data) => {
+      const { userName, email } = data;
+      setFrom([userName, email]);
+      setOnNotification(true);
+      setNotificationType(TYPE.FRIEND_REQUEST);
+    });
+
     return () => {
       socket.off(EVENTS.JOIN);
       socket.off(EVENTS.LEFT);
+      socket.off(EVENTS.FRIEND_REQUEST);
     };
   }, [id, loginUser.id]);
 
@@ -100,6 +113,7 @@ function Town({ iceCount, onTownTransition }) {
     if (socketRef.current === null) {
       socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
     }
+
     return socketRef.current;
   }
 
@@ -122,6 +136,7 @@ function Town({ iceCount, onTownTransition }) {
           })}
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
+        <div className="a">{id}</div>
         <CokeCounter />
         {outItems?.map((item) => (
           <OutItem
@@ -132,11 +147,17 @@ function Town({ iceCount, onTownTransition }) {
             setOutItems={setOutItems}
           />
         ))}
-        <PostBox toggleGuestbook={setOnPostBox} />
+        <PostBox toggleGuestbook={setOnPostBox} socket={getSocketIO()} />
         {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
-          {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onPostBox && (
+            <GuestBook
+              isOpen={onPostBox}
+              toggleGuestbook={setOnPostBox}
+              socket={getSocketIO()}
+            />
+          )}
           {onShopOpen && (
             <Shop
               onClose={setOnShopOpen}
@@ -146,6 +167,13 @@ function Town({ iceCount, onTownTransition }) {
               toggleShopFriendList={setOnShopFriendList}
             />
           )}
+          {onFriendList && (
+            <FriendList
+              visitFriend={onTownTransition}
+              toggleFriendList={setOnFriendList}
+              socket={getSocketIO()}
+            />
+          )}
           {onNotification && (
             <Notification
               toggleNotification={setOnNotification}
@@ -153,13 +181,6 @@ function Town({ iceCount, onTownTransition }) {
               targetItem={targetItem}
               toggleItemBox={setOnItemBoxOpen}
               from={from}
-            />
-          )}
-          {onFriendList && (
-            <FriendList
-              visitFriend={onTownTransition}
-              toggleFriendList={setOnFriendList}
-              socket={getSocketIO()}
             />
           )}
           {onFriendSearch && (

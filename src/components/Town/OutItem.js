@@ -19,7 +19,6 @@ function OutItem({ name, isMe, itemId, setOutItems }) {
   const goToOutBox = async () => {
     const response = await changeStorage(id, itemId, "outItemBox", "inItemBox");
     const { outBox } = response.result;
-
     setOutItems(outBox);
   };
 

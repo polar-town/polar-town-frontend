@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
 import proptype from "prop-types";
 import { addItem } from "../../api/item";
+import { addFriendList, deletePendingFriend } from "../../api/friendlist";
 import {
   decreaseCoke,
   selectCokeCount,
@@ -55,7 +56,9 @@ function Notification({
       setNotificationMessage(MESSAGE.CONFIRM_PURCHASE);
     } else if (notificationType === TYPE.FRIEND_REQUEST) {
       setButtonContent(OPTION.FRIEND_REQUEST);
-      setNotificationMessage(MESSAGE.FRIEND_REQUEST);
+      setNotificationMessage(
+        `${from[0]}(${from[1]})님으로부터 ${MESSAGE.FRIEND_REQUEST}`,
+      );
     } else {
       setButtonContent(OPTION.TYPE_PRESENT);
       setNotificationMessage(`"${from[0]}"님 으로부터 ${MESSAGE.TYPE_PRESENT}`);
@@ -89,6 +92,18 @@ function Notification({
   const openItemBox = () => {
     toggleNotification(false);
     toggleItemBox(true);
+  }
+  
+  const handleAcceptFriend = async () => {
+    await addFriendList(id, from[1], true);
+
+    toggleNotification(false);
+  };
+
+  const handleRejectFriend = async () => {
+    await deletePendingFriend(id, from[1]);
+
+    toggleNotification(false);
   };
 
   return (
@@ -104,6 +119,14 @@ function Notification({
           {buttonContent &&
             buttonContent.map((content) => {
               const key = nanoid();
+              let handleFriendRequest;
+
+              if (content === "수락") {
+                handleFriendRequest = handleAcceptFriend;
+              }
+              if (content === "거절") {
+                handleFriendRequest = handleRejectFriend;
+              }
               return (
                 <GameModalButton
                   key={key}

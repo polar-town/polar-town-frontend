@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import Friends from "./Friends";

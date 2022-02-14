@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { leaveNewMessage } from "../../api/guestbook";
+import { EVENTS } from "../../constants/socketEvents";
 
 const StyledInputContainer = styled.div`
   display: flex;
@@ -27,15 +28,20 @@ const StyledInputContainer = styled.div`
   }
 `;
 
-function MessageInput({ onMessageListUpdate }) {
+function MessageInput({ onMessageListUpdate, socket }) {
   const { id } = useParams();
   const messageInput = useRef();
 
   async function handleSendButtonClick() {
     const messageValue = messageInput.current.value;
-    const { newMessage } = await leaveNewMessage(id, messageValue);
 
-    onMessageListUpdate((prev) => [newMessage, ...prev]);
+    try {
+      const { newMessage } = await leaveNewMessage(id, messageValue);
+      socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
+      messageInput.current.value = "";
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -48,6 +54,7 @@ function MessageInput({ onMessageListUpdate }) {
 
 MessageInput.propTypes = {
   onMessageListUpdate: proptypes.func.isRequired,
+  socket: proptypes.object,
 };
 
 export default MessageInput;
