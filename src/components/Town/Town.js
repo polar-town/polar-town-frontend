@@ -47,9 +47,9 @@ function Town({ iceCount, onTownTransition }) {
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
-    console.log("🍄", id);
+
     setOutItems(user?.outItemBox);
-  }, []);
+  }, [id]);
 
   return (
     <>

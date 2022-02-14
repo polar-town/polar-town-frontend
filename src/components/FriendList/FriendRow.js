@@ -13,6 +13,7 @@ import {
   updateFriendList,
   updatePendingFriendList,
   decreaseCoke,
+  selectCokeCount,
 } from "../../features/user/userSlice";
 import {
   deleteFriend,
@@ -21,7 +22,6 @@ import {
 } from "../../api/friendlist";
 import { sendItem } from "../../api/item";
 import { ITEM_PRICE_LIST } from "../../constants/item";
-import { useNavigate } from "react-router-dom";
 
 const FriendRowContainer = styled.div`
   display: flex;
@@ -57,17 +57,14 @@ function FriendRow({
   targetItem,
   toggleShopFriendList,
 }) {
+  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
+  const cokeCount = useSelector(selectCokeCount);
   const prevFriendList = useSelector(selectFriendList);
   const prevPendingFriendList = useSelector(selectPendingFriendList);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { name, email, photo, id, iceCount } = friend;
 
   function visitFriendTown() {
-    console.log("☘️", id);
-    // navigate('/posts');
-    navigate(`users/${id}`);
     visitFriend(id, iceCount);
     toggleFriendList(false);
   }
@@ -138,6 +135,7 @@ function FriendRow({
           })}
         {type === TYPE.SHOP_MY_FRIEND &&
           OPTION.SHOP_MY_FRIEND.map((option) => {
+            const isAffordable = cokeCount >= ITEM_PRICE_LIST[targetItem];
             const key = nanoid();
             const handleSelect = async () => {
               await sendItem(
@@ -146,6 +144,7 @@ function FriendRow({
                 targetItem,
                 ITEM_PRICE_LIST[targetItem],
               );
+
               toggleShopFriendList(false);
               dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
             };
@@ -155,6 +154,7 @@ function FriendRow({
                 key={key}
                 content={option}
                 onSelect={handleSelect}
+                disabled={!isAffordable}
               />
             );
           })}
