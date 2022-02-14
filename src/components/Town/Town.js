@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 import { nanoid } from "nanoid";
 
 import { getTownHostInfo } from "../../api/user";
-import { currentCoke, selectUser } from "../../features/user/userSlice";
+import { selectUser } from "../../features/user/userSlice";
 import { EVENTS } from "../../constants/socketEvents";
 
 import PostBox from "./PostBox";
@@ -16,8 +16,6 @@ import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
-import { getTownHostInfo } from "../../api/user";
-import { selectUserId } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
@@ -67,7 +65,7 @@ function Town({ iceCount, onTownTransition }) {
     const user = await getTownHostInfo(id);
 
     setOutItems(user?.outItemBox);
-  }, [id]);
+  }, [id, iceCount]);
 
   useEffect(() => {
     if (!loginUser.id) return;
