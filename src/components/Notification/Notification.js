@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
 import proptype from "prop-types";
 import { addItem } from "../../api/item";
+import { addFriendList, deletePendingFriend } from "../../api/friendlist";
 import {
   decreaseCoke,
   selectCokeCount,
@@ -35,7 +36,12 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function Notification({ toggleNotification, notificationType, targetItem }) {
+function Notification({
+  toggleNotification,
+  notificationType,
+  targetItem,
+  from,
+}) {
   const dispatch = useDispatch();
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -48,10 +54,12 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
       setNotificationMessage(MESSAGE.CONFIRM_PURCHASE);
     } else if (notificationType === TYPE.FRIEND_REQUEST) {
       setButtonContent(OPTION.FRIEND_REQUEST);
-      setNotificationMessage(MESSAGE.FRIEND_REQUEST);
+      setNotificationMessage(
+        `${from[0]}(${from[1]})님으로부터 ${MESSAGE.FRIEND_REQUEST}`,
+      );
     } else {
       setButtonContent(OPTION.PRESENT);
-      setNotificationMessage(MESSAGE.PRESENT);
+      setNotificationMessage(MESSAGE.TYPE_PRESENT);
     }
   }, [notificationType]);
 
@@ -76,6 +84,18 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
     }
   };
 
+  const handleAcceptFriend = async () => {
+    await addFriendList(id, from[1], true);
+
+    toggleNotification(false);
+  };
+
+  const handleRejectFriend = async () => {
+    await deletePendingFriend(id, from[1]);
+
+    toggleNotification(false);
+  };
+
   return (
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
@@ -84,16 +104,30 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
       }}
     >
       <NotificationContainer>
-        <h3>{notificationMessage}</h3>
+        <div>{notificationMessage}</div>
         <ButtonContainer notificationType={notificationType}>
           {buttonContent &&
             buttonContent.map((content) => {
               const key = nanoid();
+              let handleFriendRequest;
+
+              if (content === "수락") {
+                handleFriendRequest = handleAcceptFriend;
+              }
+              if (content === "거절") {
+                handleFriendRequest = handleRejectFriend;
+              }
               return (
                 <GameModalButton
                   key={key}
                   content={content}
-                  onSelect={handlePurchase}
+                  onSelect={
+                    notificationType === TYPE.CONFIRM_PURCHASE
+                      ? handlePurchase
+                      : notificationType === TYPE.FRIEND_REQUEST
+                      ? handleFriendRequest
+                      : openItemBox
+                  }
                 />
               );
             })}
@@ -109,4 +143,5 @@ Notification.propTypes = {
   toggleNotification: proptype.func.isRequired,
   notificationType: proptype.string,
   targetItem: proptype.string,
+  from: proptype.array,
 };

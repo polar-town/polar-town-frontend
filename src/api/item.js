@@ -3,7 +3,7 @@ import axios from "axios";
 export async function getInItemBox(townId) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${townId}/items`,
+      `${process.env.REACT_APP_BASE_URL}/users/${townId}/items`,
     );
 
     return response.data;
@@ -15,7 +15,7 @@ export async function getInItemBox(townId) {
 export async function getPresentBox(townId) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${townId}/items/present`,
+      `${process.env.REACT_APP_BASE_URL}/users/${townId}/items/present`,
     );
 
     return response.data;
@@ -27,7 +27,7 @@ export async function getPresentBox(townId) {
 export async function changeStorage(userId, itemId, from, to) {
   try {
     const response = await axios.put(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/items/${itemId}`,
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/items/${itemId}`,
       { from, to },
     );
 
@@ -40,7 +40,7 @@ export async function changeStorage(userId, itemId, from, to) {
 export async function addItem(userId, name, price) {
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/items`,
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/items`,
       { name, price },
     );
 
@@ -53,7 +53,7 @@ export async function addItem(userId, name, price) {
 export async function sendItem(townId, presentTo, name, price) {
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/users/${townId}/items/present`,
+      `${process.env.REACT_APP_BASE_URL}/users/${townId}/items/present`,
       { presentTo, name, price },
     );
 
