@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
 import { getTownHostInfo } from "../../api/user";
-import { currentCoke, selectUserId } from "../../features/user/userSlice";
+import { selectUserId } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
@@ -18,6 +18,7 @@ import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
+import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -27,20 +28,11 @@ const TownDiv = styled.div`
   background-size: cover;
   image-rendering: pixelated;
   position: relative;
-
-  .a {
-    width: 1500px;
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-  }
 `;
 
 function Town({ iceCount, onTownTransition }) {
-  const dispatch = useDispatch();
   const { id } = useParams();
   const isMe = useSelector(selectUserId) === id;
-  const [townHost, setTownHost] = useState({});
   const [outItems, setOutItems] = useState([]);
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
@@ -49,13 +41,14 @@ function Town({ iceCount, onTownTransition }) {
   const [onFriendSearch, setOnFriendSearch] = useState(false);
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
+  const [notificationType, setNotificationType] = useState("");
+  const [targetItem, setTargetItem] = useState("");
+  const [onShopFriendList, setOnShopFriendList] = useState(false);
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
-
-    setTownHost(user);
-    setOutItems(user.outItemBox);
-    dispatch(currentCoke(user.cokeCount));
+    console.log("🍄", id);
+    setOutItems(user?.outItemBox);
   }, []);
 
   return (
@@ -83,8 +76,21 @@ function Town({ iceCount, onTownTransition }) {
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
           {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onShopOpen && (
+            <Shop
+              onClose={setOnShopOpen}
+              toggleNotification={setOnNotification}
+              getTargetItem={setTargetItem}
+              getNotificationType={setNotificationType}
+              toggleShopFriendList={setOnShopFriendList}
+            />
+          )}
           {onNotification && (
-            <Notification toggleNotification={setOnNotification} />
+            <Notification
+              toggleNotification={setOnNotification}
+              notificationType={notificationType}
+              targetItem={targetItem}
+            />
           )}
           {onFriendList && (
             <FriendList
@@ -98,10 +104,18 @@ function Town({ iceCount, onTownTransition }) {
               visitFriend={onTownTransition}
             />
           )}
-          {onItemBoxOpen && (
-            <ItemBox onClose={setOnItemBoxOpen} setOutItems={setOutItems} />
+          {onShopFriendList && (
+            <ShopFriendList
+              toggleShopFriendList={setOnShopFriendList}
+              targetItem={targetItem}
+            />
           )}
-          {onShopOpen && <Shop onClose={setOnShopOpen} />}
+          {onItemBoxOpen && (
+            <ItemBox
+              toggleItemBox={setOnItemBoxOpen}
+              setOutItems={setOutItems}
+            />
+          )}
         </ModalPortals>
       </TownDiv>
     </>

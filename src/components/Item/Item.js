@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { TYPE } from "../../constants/notification";
+import GameModalButton from "../GameModal/GameModalButton";
 
 const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
@@ -95,10 +97,20 @@ const CashContainerDiv = styled.div`
     margin-top: 164px;
   }
 
-  button {
+  .purchaseButton {
+    all: unset;
+    margin-top: 157px;
+    margin-left: 8px;
+    z-index: 999;
+    cursor: pointer;
+  }
+
+  .giftButton {
     all: unset;
     margin-top: 157px;
     margin-left: 15px;
+    z-index: 1;
+    cursor: pointer;
   }
 `;
 
@@ -109,15 +121,18 @@ function Item({
   shouldOverlaid,
   toggleNotification,
   moveToOutBox,
+  onTargetItem,
+  onNotificationType,
+  toggleShopFriendList,
 }) {
   return (
     <ItemContainerDiv
       onClick={(e) => {
         {
-          toggleNotification && toggleNotification(true);
-        }
-        {
-          moveToOutBox && moveToOutBox(e.target.id);
+          moveToOutBox &&
+            e.target.id &&
+            e.target.id !== "Ice" &&
+            moveToOutBox(e.target.id);
         }
       }}
     >
@@ -133,9 +148,27 @@ function Item({
             <img src="/images/coke.png" />
             <p>{content}</p>
           </>
-          <button>
-            <i className="fas fa-solid fa-gift" />
+          <button
+            className="purchaseButton"
+            onClick={() => {
+              onNotificationType(TYPE.CONFIRM_PURCHASE);
+              onTargetItem(imageName);
+              toggleNotification(true);
+            }}
+          >
+            구매하기
           </button>
+          {imageName !== "Ice" && (
+            <button
+              className="giftButton"
+              onClick={() => {
+                toggleShopFriendList(true);
+                onTargetItem(imageName);
+              }}
+            >
+              <i className="fas fa-solid fa-gift" />
+            </button>
+          )}
         </CashContainerDiv>
       )}
     </ItemContainerDiv>
@@ -155,4 +188,7 @@ Item.propTypes = {
   shouldOverlaid: PropTypes.bool,
   toggleNotification: PropTypes.func,
   moveToOutBox: PropTypes.func,
+  onTargetItem: PropTypes.func,
+  onNotificationType: PropTypes.func,
+  toggleShopFriendList: PropTypes.func,
 };

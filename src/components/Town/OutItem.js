@@ -25,7 +25,13 @@ function OutItem({ name, isMe, itemId, setOutItems }) {
 
   return (
     <OutItemDiv draggable>
-      <img src={imageSrc} alt="item" onDoubleClick={isMe && goToOutBox} />
+      <img
+        src={imageSrc}
+        alt="item"
+        onDoubleClick={() => {
+          isMe && goToOutBox();
+        }}
+      />
     </OutItemDiv>
   );
 }

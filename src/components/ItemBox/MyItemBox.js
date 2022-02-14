@@ -9,6 +9,7 @@ import { countItem, itemCounter } from "../../utils/item";
 import { ITEM_LIST } from "../../constants/item";
 import {
   selectItemCount,
+  selectUser,
   updateItemCount,
 } from "../../features/user/userSlice";
 
@@ -24,8 +25,8 @@ function MyItemBox({ onClose, setOutItems }) {
   const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
   const [myItemList, setMyItemList] = useState([]);
-  const [iceCount, setIceCount] = useState([]);
   const itemCount = useSelector(selectItemCount);
+  const iceCount = useSelector(selectUser).iceCount;
 
   useEffect(async () => {
     setIsMounted(true);
@@ -35,7 +36,6 @@ function MyItemBox({ onClose, setOutItems }) {
         const myItemBox = await getInItemBox(id);
 
         setMyItemList(myItemBox.result.inItemBox);
-        setIceCount(myItemBox.result.iceCount);
       }
     } catch (err) {
       console.error(err);

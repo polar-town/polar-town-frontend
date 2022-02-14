@@ -28,10 +28,11 @@ export const userSlice = createSlice({
         id,
         username,
         email,
+        iceCount,
+        cokeCount,
         accessToken,
         pendingFriendList,
         friendList,
-        iceCount,
       } = action.payload;
 
       return {
@@ -39,10 +40,11 @@ export const userSlice = createSlice({
         id,
         username,
         email,
+        iceCount,
+        cokeCount,
         accessToken,
         pendingFriendList,
         friendList,
-        iceCount,
       };
     },
     removeLogoutUser: () => {

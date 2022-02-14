@@ -57,7 +57,7 @@ function PresentBox({ onClose }) {
               storageType="presentBox"
               content={item.purchasedBy.slice(
                 0,
-                item.purchasedBy.length - GMAIL_ADDRESS
+                item.purchasedBy.length - GMAIL_ADDRESS,
               )}
               imageName={item.name}
               moveToOutBox={moveItemToOutBox}

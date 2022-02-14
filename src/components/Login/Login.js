@@ -78,6 +78,7 @@ function Login({ goTown }) {
       email,
       accessToken,
       iceCount,
+      cokeCount,
       friendList,
       pendingFriendList,
     } = serverResponse.data.result;
@@ -87,6 +88,7 @@ function Login({ goTown }) {
       username,
       email,
       iceCount,
+      cokeCount,
       accessToken,
       pendingFriendList,
       friendList,

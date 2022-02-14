@@ -26,6 +26,6 @@ function FriendList({ toggleFriendList, visitFriend }) {
 export default FriendList;
 
 FriendList.propTypes = {
-  toggleFriendList: proptypes.func.isRequired,
+  toggleFriendList: proptypes.func,
   visitFriend: proptypes.func.isRequired,
 };

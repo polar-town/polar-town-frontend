@@ -7,7 +7,13 @@ import { TYPE } from "../../constants/friendList";
 import { selectUserId, updateFriendList } from "../../features/user/userSlice";
 import { getFriendList } from "../../api/friendlist";
 
-function Friends({ visitFriend, toggleFriendList }) {
+function Friends({
+  visitFriend,
+  toggleFriendList,
+  type,
+  targetItem,
+  toggleShopFriendList,
+}) {
   const [friends, setFriends] = useState([]);
   const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
@@ -27,10 +33,12 @@ function Friends({ visitFriend, toggleFriendList }) {
             <FriendRow
               key={key}
               friend={friend}
-              type={TYPE.MY_FRIEND}
+              type={type ? type : TYPE.MY_FRIEND}
               visitFriend={visitFriend}
               toggleFriendList={toggleFriendList}
               handleDeletion={setFriends}
+              targetItem={targetItem}
+              toggleShopFriendList={toggleShopFriendList}
             />
           );
         })}
@@ -43,4 +51,7 @@ export default Friends;
 Friends.propTypes = {
   visitFriend: protypes.func.isRequired,
   toggleFriendList: protypes.func.isRequired,
+  type: protypes.string,
+  targetItem: protypes.string,
+  toggleShopFriendList: protypes.func,
 };

@@ -12,12 +12,16 @@ import {
   selectPendingFriendList,
   updateFriendList,
   updatePendingFriendList,
+  decreaseCoke,
 } from "../../features/user/userSlice";
 import {
   deleteFriend,
   addFriendList,
   deletePendingFriend,
 } from "../../api/friendlist";
+import { sendItem } from "../../api/item";
+import { ITEM_PRICE_LIST } from "../../constants/item";
+import { useNavigate } from "react-router-dom";
 
 const FriendRowContainer = styled.div`
   display: flex;
@@ -49,15 +53,21 @@ function FriendRow({
   type,
   visitFriend,
   toggleFriendList,
-  handleResponse,
+  handleDeletion,
+  targetItem,
+  toggleShopFriendList,
 }) {
   const userId = useSelector(selectUserId);
   const prevFriendList = useSelector(selectFriendList);
   const prevPendingFriendList = useSelector(selectPendingFriendList);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { name, email, photo, id, iceCount } = friend;
 
   function visitFriendTown() {
+    console.log("☘️", id);
+    // navigate('/posts');
+    navigate(`users/${id}`);
     visitFriend(id, iceCount);
     toggleFriendList(false);
   }
@@ -67,7 +77,7 @@ function FriendRow({
 
     await deleteFriend(userId, email);
     dispatch(updateFriendList(newFriendList));
-    handleResponse(newFriendList);
+    handleDeletion(newFriendList);
   }
 
   async function acceptFriendRequest() {
@@ -75,21 +85,21 @@ function FriendRow({
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-    console.log(friend);
+
     await addFriendList(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     dispatch(updateFriendList(newFriendList));
-    handleResponse(newPendingFriendList);
+    handleDeletion(newPendingFriendList);
   }
 
   async function declineFriendRequest() {
     const newPendingFriendList = prevPendingFriendList.filter(
       (friend) => friend.id !== id,
     );
-    console.log(friend, newPendingFriendList, friend.id, id);
+
     await deletePendingFriend(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
-    handleResponse(newPendingFriendList);
+    handleDeletion(newPendingFriendList);
   }
 
   return (
@@ -126,6 +136,28 @@ function FriendRow({
               />
             );
           })}
+        {type === TYPE.SHOP_MY_FRIEND &&
+          OPTION.SHOP_MY_FRIEND.map((option) => {
+            const key = nanoid();
+            const handleSelect = async () => {
+              await sendItem(
+                userId,
+                id,
+                targetItem,
+                ITEM_PRICE_LIST[targetItem],
+              );
+              toggleShopFriendList(false);
+              dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+            };
+
+            return (
+              <GameModalButton
+                key={key}
+                content={option}
+                onSelect={handleSelect}
+              />
+            );
+          })}
       </FriendRowButtonContainer>
     </FriendRowContainer>
   );
@@ -136,7 +168,9 @@ FriendRow.propTypes = {
   type: proptypes.string.isRequired,
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
-  handleResponse: proptypes.func,
+  handleDeletion: proptypes.func,
+  targetItem: proptypes.string,
+  toggleShopFriendList: proptypes.func,
 };
 
 export default FriendRow;
