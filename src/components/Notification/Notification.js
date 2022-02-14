@@ -12,6 +12,7 @@ import {
   decreaseCoke,
   selectCokeCount,
   selectUserId,
+  updateIceCount,
 } from "../../features/user/userSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
 
@@ -40,6 +41,7 @@ function Notification({
   toggleNotification,
   notificationType,
   targetItem,
+  toggleItemBox,
   from,
 }) {
   const dispatch = useDispatch();
@@ -58,8 +60,8 @@ function Notification({
         `${from[0]}(${from[1]})님으로부터 ${MESSAGE.FRIEND_REQUEST}`,
       );
     } else {
-      setButtonContent(OPTION.PRESENT);
-      setNotificationMessage(MESSAGE.TYPE_PRESENT);
+      setButtonContent(OPTION.TYPE_PRESENT);
+      setNotificationMessage(`"${from[0]}"님 으로부터 ${MESSAGE.TYPE_PRESENT}`);
     }
   }, [notificationType]);
 
@@ -67,6 +69,9 @@ function Notification({
     if (e.target.textContent === "예") {
       try {
         if (cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
+          if (targetItem === "Ice") {
+            dispatch(updateIceCount());
+          }
           await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
 
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
@@ -84,6 +89,11 @@ function Notification({
     }
   };
 
+  const openItemBox = () => {
+    toggleNotification(false);
+    toggleItemBox(true);
+  }
+  
   const handleAcceptFriend = async () => {
     await addFriendList(id, from[1], true);
 
@@ -143,5 +153,6 @@ Notification.propTypes = {
   toggleNotification: proptype.func.isRequired,
   notificationType: proptype.string,
   targetItem: proptype.string,
+  toggleItemBox: proptype.func,
   from: proptype.array,
 };

@@ -51,8 +51,8 @@ function Friends({
 export default Friends;
 
 Friends.propTypes = {
-  visitFriend: protypes.func.isRequired,
-  toggleFriendList: protypes.func.isRequired,
+  visitFriend: protypes.func,
+  toggleFriendList: protypes.func,
   type: protypes.string,
   targetItem: protypes.string,
   toggleShopFriendList: protypes.func,

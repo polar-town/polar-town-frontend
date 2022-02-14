@@ -83,6 +83,12 @@ function Town({ iceCount, onTownTransition }) {
       setVisitors(data.visitors);
     });
 
+    socket.on(EVENTS.GET_PRESENT, (data) => {
+      setFrom([data.from]);
+      setNotificationType(TYPE.TYPE_PRESENT);
+      setOnNotification(true);
+    });
+
     socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
 
     socket.on(EVENTS.LEFT, (data) => {
@@ -173,6 +179,7 @@ function Town({ iceCount, onTownTransition }) {
               toggleNotification={setOnNotification}
               notificationType={notificationType}
               targetItem={targetItem}
+              toggleItemBox={setOnItemBoxOpen}
               from={from}
             />
           )}
@@ -187,6 +194,7 @@ function Town({ iceCount, onTownTransition }) {
             <ShopFriendList
               toggleShopFriendList={setOnShopFriendList}
               targetItem={targetItem}
+              socket={getSocketIO()}
             />
           )}
           {onItemBoxOpen && (

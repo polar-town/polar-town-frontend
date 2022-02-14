@@ -1,8 +1,8 @@
 import React from "react";
 import proptypes from "prop-types";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { changeStorage } from "../../api/item";
-import { useParams } from "react-router-dom";
 
 const OutItemDiv = styled.div`
   position: absolute;
