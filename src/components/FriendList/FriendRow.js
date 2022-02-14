@@ -59,6 +59,7 @@ function FriendRow({
   visitFriend,
   toggleFriendList,
   handleDeletion,
+  handleResponse,
   targetItem,
   toggleShopFriendList,
   socket,
@@ -95,7 +96,7 @@ function FriendRow({
     await addFriendList(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
     dispatch(updateFriendList(newFriendList));
-    handleDeletion(newPendingFriendList);
+    handleResponse(newPendingFriendList);
   }
 
   async function declineFriendRequest() {
@@ -105,7 +106,7 @@ function FriendRow({
 
     await deletePendingFriend(userId, email);
     dispatch(updatePendingFriendList(newPendingFriendList));
-    handleDeletion(newPendingFriendList);
+    handleResponse(newPendingFriendList);
   }
 
   return (
@@ -178,6 +179,7 @@ FriendRow.propTypes = {
   toggleFriendList: proptypes.func,
   visitFriend: proptypes.func,
   handleDeletion: proptypes.func,
+  handleResponse: proptypes.func,
   targetItem: proptypes.string,
   toggleShopFriendList: proptypes.func,
   socket: proptypes.object,
