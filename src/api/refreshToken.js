@@ -13,7 +13,7 @@ async function verifyRefreshToken(email) {
   } catch (err) {
     if (err.response.status === 403) {
       try {
-        await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/logout`, {
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
           email,
         });
 

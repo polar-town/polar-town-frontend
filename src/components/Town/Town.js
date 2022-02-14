@@ -81,7 +81,6 @@ function Town({ iceCount, onTownTransition }) {
     socket.on(EVENTS.LEFT, (data) => {
       setVisitors(data.visitors);
     });
-
     return () => {
       socket.off(EVENTS.JOIN);
       socket.off(EVENTS.LEFT);
@@ -124,11 +123,17 @@ function Town({ iceCount, onTownTransition }) {
             setOutItems={setOutItems}
           />
         ))}
-        <PostBox toggleGuestbook={setOnPostBox} />
+        <PostBox toggleGuestbook={setOnPostBox} socket={getSocketIO()} />
         {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
-          {onPostBox && <GuestBook toggleGuestbook={setOnPostBox} />}
+          {onPostBox && (
+            <GuestBook
+              isOpen={onPostBox}
+              toggleGuestbook={setOnPostBox}
+              socket={getSocketIO()}
+            />
+          )}
           {onShopOpen && (
             <Shop
               onClose={setOnShopOpen}
