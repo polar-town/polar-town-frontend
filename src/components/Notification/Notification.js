@@ -11,6 +11,7 @@ import {
   decreaseCoke,
   selectCokeCount,
   selectUserId,
+  updateIceCount,
 } from "../../features/user/userSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
 
@@ -35,7 +36,13 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function Notification({ toggleNotification, notificationType, targetItem }) {
+function Notification({
+  toggleNotification,
+  notificationType,
+  targetItem,
+  toggleItemBox,
+  from,
+}) {
   const dispatch = useDispatch();
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -50,8 +57,8 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
       setButtonContent(OPTION.FRIEND_REQUEST);
       setNotificationMessage(MESSAGE.FRIEND_REQUEST);
     } else {
-      setButtonContent(OPTION.PRESENT);
-      setNotificationMessage(MESSAGE.PRESENT);
+      setButtonContent(OPTION.TYPE_PRESENT);
+      setNotificationMessage(`"${from[0]}"님 으로부터 ${MESSAGE.TYPE_PRESENT}`);
     }
   }, [notificationType]);
 
@@ -59,6 +66,9 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
     if (e.target.textContent === "예") {
       try {
         if (cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
+          if (targetItem === "Ice") {
+            dispatch(updateIceCount());
+          }
           await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
 
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
@@ -76,6 +86,11 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
     }
   };
 
+  const openItemBox = () => {
+    toggleNotification(false);
+    toggleItemBox(true);
+  };
+
   return (
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
@@ -84,7 +99,7 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
       }}
     >
       <NotificationContainer>
-        <h3>{notificationMessage}</h3>
+        <div>{notificationMessage}</div>
         <ButtonContainer notificationType={notificationType}>
           {buttonContent &&
             buttonContent.map((content) => {
@@ -93,7 +108,13 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
                 <GameModalButton
                   key={key}
                   content={content}
-                  onSelect={handlePurchase}
+                  onSelect={
+                    notificationType === TYPE.CONFIRM_PURCHASE
+                      ? handlePurchase
+                      : notificationType === TYPE.FRIEND_REQUEST
+                      ? handleFriendRequest
+                      : openItemBox
+                  }
                 />
               );
             })}
@@ -109,4 +130,6 @@ Notification.propTypes = {
   toggleNotification: proptype.func.isRequired,
   notificationType: proptype.string,
   targetItem: proptype.string,
+  toggleItemBox: proptype.func,
+  from: proptype.array,
 };

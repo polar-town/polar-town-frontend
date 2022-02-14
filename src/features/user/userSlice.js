@@ -83,6 +83,9 @@ export const userSlice = createSlice({
         itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
       };
     },
+    updateIceCount: (state, action) => {
+      state.iceCount = state.iceCount + 1;
+    },
   },
 });
 
@@ -96,6 +99,7 @@ export const {
   updateFriendList,
   updatePendingFriendList,
   updateItemCount,
+  updateIceCount,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;

@@ -4,7 +4,7 @@ import axios from "axios";
 export async function getMailList(at, userId, inboxId, pageToken = null) {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/${inboxId}/${pageToken}`,
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/${inboxId}/${pageToken}`,
       {
         headers: {
           gapiauthorization: `Bearer ${at}`,
@@ -22,7 +22,7 @@ export async function getMailList(at, userId, inboxId, pageToken = null) {
 export async function moveEmailToTrash(at, userId, mailId) {
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/trash`,
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/trash`,
       {
         mailId,
       },
@@ -43,7 +43,7 @@ export async function moveEmailToTrash(at, userId, mailId) {
 export async function deleteTrashEmail(at, userId, mailId, count) {
   try {
     const response = await axios.delete(
-      `${process.env.REACT_APP_SERVER_URL}/users/${userId}/mails/trash`,
+      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/trash`,
       {
         headers: {
           gapiauthorization: `Bearer ${at}`,

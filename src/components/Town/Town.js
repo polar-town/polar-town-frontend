@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
@@ -25,6 +25,7 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
+import { TYPE } from "../../constants/notification";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -59,6 +60,7 @@ function Town({ iceCount, onTownTransition }) {
   const [notificationType, setNotificationType] = useState("");
   const [targetItem, setTargetItem] = useState("");
   const [onShopFriendList, setOnShopFriendList] = useState(false);
+  const [from, setFrom] = useState([]);
   const socketRef = useRef(null);
 
   useEffect(async () => {
@@ -74,6 +76,12 @@ function Town({ iceCount, onTownTransition }) {
 
     socket.on(EVENTS.JOIN, (data) => {
       setVisitors(data.visitors);
+    });
+
+    socket.on(EVENTS.GET_PRESENT, (data) => {
+      setFrom([data.from]);
+      setNotificationType(TYPE.TYPE_PRESENT);
+      setOnNotification(true);
     });
 
     socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
@@ -143,6 +151,8 @@ function Town({ iceCount, onTownTransition }) {
               toggleNotification={setOnNotification}
               notificationType={notificationType}
               targetItem={targetItem}
+              toggleItemBox={setOnItemBoxOpen}
+              from={from}
             />
           )}
           {onFriendList && (
@@ -163,6 +173,7 @@ function Town({ iceCount, onTownTransition }) {
             <ShopFriendList
               toggleShopFriendList={setOnShopFriendList}
               targetItem={targetItem}
+              socket={getSocketIO()}
             />
           )}
           {onItemBoxOpen && (

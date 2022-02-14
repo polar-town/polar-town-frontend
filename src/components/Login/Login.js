@@ -60,7 +60,6 @@ function Login({ goTown }) {
   }, [gapi]);
 
   async function responseGoogle(result) {
-    console.log(result);
     const profile = result.getBasicProfile();
     const name = profile.getName();
     const userEmail = profile.getEmail();
