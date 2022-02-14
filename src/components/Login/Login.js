@@ -74,12 +74,13 @@ function Login({ goTown }) {
 
     const {
       id,
+      accessToken,
       username,
       email,
-      accessToken,
-      iceCount,
-      friendList,
       pendingFriendList,
+      friendList,
+      iceCount,
+      cokeCount,
     } = serverResponse.data.result;
 
     const currentUser = {
@@ -91,6 +92,8 @@ function Login({ goTown }) {
       friendList,
       pendingFriendList,
       googleLoginUser,
+      cokeCount,
+      photo,
     };
 
     dispatch(saveLoginUser(currentUser));

@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
+import { io } from "socket.io-client";
+import { nanoid } from "nanoid";
+
+import { getTownHostInfo } from "../../api/user";
+import { currentCoke, selectUser } from "../../features/user/userSlice";
+import { EVENTS } from "../../constants/socketEvents";
+
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
 import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
-import { getTownHostInfo } from "../../api/user";
-import { currentCoke, selectUserId } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
@@ -18,6 +23,7 @@ import Header from "../Header/header";
 import CokeCounter from "../CokeCounter/CokeCounter";
 import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
+import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
@@ -28,20 +34,21 @@ const TownDiv = styled.div`
   background-size: cover;
   image-rendering: pixelated;
   position: relative;
+`;
 
-  .a {
-    width: 1500px;
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-  }
+const VisitorsContainer = styled.div`
+  display: flex;
+  position: fixed;
+  bottom: 10px;
+  z-index: 1;
 `;
 
 function Town({ iceCount, onTownTransition }) {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const loginUser = useSelector(selectUser);
+  const isMe = loginUser.id === id;
   const [townHost, setTownHost] = useState({});
-  const isMe = useSelector(selectUserId) === id;
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
@@ -49,9 +56,11 @@ function Town({ iceCount, onTownTransition }) {
   const [onFriendSearch, setOnFriendSearch] = useState(false);
   const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
   const [onShopOpen, setOnShopOpen] = useState(false);
+  const [visitors, setVisitors] = useState([]);
   const [notificationType, setNotificationType] = useState("");
   const [targetItem, setTargetItem] = useState("");
   const [onShopFriendList, setOnShopFriendList] = useState(false);
+  const socketRef = useRef(null);
 
   useEffect(async () => {
     const user = await getTownHostInfo(id);
@@ -59,6 +68,34 @@ function Town({ iceCount, onTownTransition }) {
     setTownHost(user);
     dispatch(currentCoke(user.cokeCount));
   }, []);
+
+  useEffect(() => {
+    if (!loginUser.id) return;
+
+    const socket = getSocketIO();
+
+    socket.on(EVENTS.JOIN, (data) => {
+      setVisitors(data.visitors);
+    });
+
+    socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
+
+    socket.on(EVENTS.LEFT, (data) => {
+      setVisitors(data.visitors);
+    });
+
+    return () => {
+      socket.off(EVENTS.JOIN);
+      socket.off(EVENTS.LEFT);
+    };
+  }, [id, loginUser.id]);
+
+  function getSocketIO() {
+    if (socketRef.current === null) {
+      socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
+    }
+    return socketRef.current;
+  }
 
   return (
     <>
@@ -68,7 +105,15 @@ function Town({ iceCount, onTownTransition }) {
         toggleFriendList={setOnFriendList}
         toggleShop={setOnShopOpen}
         onSignout={onTownTransition}
+        socket={getSocketIO()}
       />
+      <VisitorsContainer>
+        {!!visitors.length &&
+          visitors.map((visitor) => {
+            const key = nanoid();
+            return <FriendProfile key={key} photo={visitor.photo} />;
+          })}
+      </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
         {townHost.outItemBox?.map((item) => (
@@ -99,12 +144,14 @@ function Town({ iceCount, onTownTransition }) {
             <FriendList
               visitFriend={onTownTransition}
               toggleFriendList={setOnFriendList}
+              socket={getSocketIO()}
             />
           )}
           {onFriendSearch && (
             <FriendSearch
               toggleFriendSearch={setOnFriendSearch}
               visitFriend={onTownTransition}
+              socket={getSocketIO()}
             />
           )}
           {onShopFriendList && (
@@ -121,10 +168,9 @@ function Town({ iceCount, onTownTransition }) {
 }
 
 Town.propTypes = {
-  iceCount: proptypes.string.isRequired,
   townId: proptypes.string.isRequired,
+  iceCount: proptypes.string.isRequired,
   onTownTransition: proptypes.func.isRequired,
-  socket: proptypes.object,
 };
 
 export default Town;
