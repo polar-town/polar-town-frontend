@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { TYPE } from "../../constants/notification";
-import GameModalButton from "../GameModal/GameModalButton";
 
 const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
@@ -109,6 +108,7 @@ const CashContainerDiv = styled.div`
     all: unset;
     margin-top: 157px;
     margin-left: 15px;
+    z-index: 1;
     cursor: pointer;
   }
 `;

@@ -60,8 +60,8 @@ function Login({ goTown }) {
   }, [gapi]);
 
   async function responseGoogle(result) {
-    const googleLoginUser = result;
-    const profile = googleLoginUser.getBasicProfile();
+    console.log(result);
+    const profile = result.getBasicProfile();
     const name = profile.getName();
     const userEmail = profile.getEmail();
     const photo = profile.getImageUrl();
@@ -85,13 +85,12 @@ function Login({ goTown }) {
 
     const currentUser = {
       id,
+      accessToken,
       username,
       email,
-      iceCount,
-      accessToken,
-      friendList,
       pendingFriendList,
-      googleLoginUser,
+      friendList,
+      iceCount,
       cokeCount,
       photo,
     };

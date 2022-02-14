@@ -20,7 +20,7 @@ const ItemContainerDiv = styled.div`
   justify-content: space-between;
 `;
 
-function MyItemBox({ onClose }) {
+function MyItemBox({ onClose, setOutItems }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
@@ -50,6 +50,7 @@ function MyItemBox({ onClose }) {
     if (!myItemList?.length) {
       return;
     }
+
     myItemList.forEach((item) => {
       countItem(item);
     });
@@ -63,8 +64,14 @@ function MyItemBox({ onClose }) {
       return item.name === itemName;
     });
 
-    await changeStorage(id, targetItem._id, "inItemBox", "outItemBox");
+    const response = await changeStorage(
+      id,
+      targetItem._id,
+      "inItemBox",
+      "outItemBox",
+    );
 
+    setOutItems(response.result.outBox);
     onClose(false);
   };
 
@@ -90,4 +97,5 @@ export default MyItemBox;
 
 MyItemBox.propTypes = {
   onClose: PropTypes.func.isRequired,
+  setOutItems: PropTypes.func,
 };

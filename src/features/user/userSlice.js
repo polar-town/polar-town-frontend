@@ -7,7 +7,6 @@ const initialState = {
   username: null,
   email: null,
   accessToken: null,
-  googleLoginUser: null,
   friendList: [],
   pendingFriendList: [],
   itemCount: {
@@ -32,9 +31,8 @@ export const userSlice = createSlice({
         iceCount,
         cokeCount,
         accessToken,
-        googleLoginUser,
-        friendList,
         pendingFriendList,
+        friendList,
         photo,
       } = action.payload;
 
@@ -46,9 +44,8 @@ export const userSlice = createSlice({
         iceCount,
         cokeCount,
         accessToken,
-        friendList,
         pendingFriendList,
-        googleLoginUser,
+        friendList,
         photo,
       };
     },

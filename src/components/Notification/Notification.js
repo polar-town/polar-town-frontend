@@ -7,7 +7,11 @@ import { nanoid } from "nanoid";
 import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
 import proptype from "prop-types";
 import { addItem } from "../../api/item";
-import { decreaseCoke, selectUserId } from "../../features/user/userSlice";
+import {
+  decreaseCoke,
+  selectCokeCount,
+  selectUserId,
+} from "../../features/user/userSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
 
 const NotificationContainer = styled.div`
@@ -36,6 +40,7 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
   const id = useSelector(selectUserId);
+  const cokeCount = useSelector(selectCokeCount);
 
   useEffect(() => {
     if (notificationType === TYPE.CONFIRM_PURCHASE) {
@@ -53,10 +58,15 @@ function Notification({ toggleNotification, notificationType, targetItem }) {
   const handlePurchase = async (e) => {
     if (e.target.textContent === "예") {
       try {
-        await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
+        if (cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
+          await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
 
-        dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
-        toggleNotification(false);
+          dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+          return toggleNotification(false);
+        }
+
+        setNotificationMessage("콜라가 부족합니다🥲");
+        setButtonContent([]);
       } catch (err) {
         console.error(err);
       }

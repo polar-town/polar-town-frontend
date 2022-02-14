@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import proptypes from "prop-types";
+import { throttle } from "lodash";
 import MailDetail from "./MailDetail";
 import MailRow from "./MailRow";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
-import proptypes from "prop-types";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
+import { nanoid } from "nanoid";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -117,34 +119,36 @@ const EmptyEmail = styled.div`
 `;
 
 function Mail({ toggleMail }) {
+  const at =
+    "ya29.A0ARrdaM_zk9sa4YV1C9mDfhev1l9C3LZQgT7Byv2y13nL0CWRqQlJUUZaYPJ3rvJ9CJiRXVz4cYA6FbvDzoXgDYubmS43CViqHOzo0TbeALCRR0-SqWokxyD4W5Dkb4l-3grAXHequsjnlJajcJWI-pF3kgFP";
   const loginUser = useSelector(selectUserId);
   const [userEmailList, setUserEmailList] = useState([]);
+  const [nextPageToken, setNextPageToken] = useState("");
   const [checkedIds, setCheckedIds] = useState([]);
   const [targetEmailId, setTargetEmailId] = useState("");
   const [isPromotionActive, setIsPromotionActive] = useState(true);
   const [isSpamActive, setIsSpamActive] = useState(false);
   const [isTrashActive, setIsTrashActive] = useState(false);
-  const [isRefreshMails, setIsRefreshMails] = useState(false);
+  let inBoxId;
 
-  useEffect(() => {
+  if (isPromotionActive) {
+    inBoxId = "CATEGORY_PROMOTIONS";
+  } else if (isSpamActive) {
+    inBoxId = "SPAM";
+  } else {
+    inBoxId = "TRASH";
+  }
+
+  useEffect(async () => {
     async function getUserEmailList() {
-      let inBoxId;
-
-      if (isPromotionActive) {
-        inBoxId = "CATEGORY_PROMOTIONS";
-      } else if (isSpamActive) {
-        inBoxId = "SPAM";
-      } else {
-        inBoxId = "TRASH";
-      }
-
-      const response = await getMailList(loginUser, inBoxId);
+      const response = await getMailList(at, loginUser, inBoxId);
 
       setUserEmailList(response?.result);
+      setNextPageToken(response?.nextPageToken);
     }
 
     getUserEmailList();
-  }, [isRefreshMails]);
+  }, []);
 
   const getCategoryEmails = async (e) => {
     const inBoxId = e.target.id;
@@ -166,10 +170,26 @@ function Mail({ toggleMail }) {
       setIsPromotionActive(false);
       setIsSpamActive(false);
     }
-    const response = await getMailList(loginUser, inBoxId);
+
+    const response = await getMailList(at, loginUser, inBoxId);
 
     setUserEmailList(response.result);
+    setNextPageToken(response?.nextPageToken);
+    document.querySelector(".emails").scrollTo(0, 0);
   };
+
+  const handleScroll = throttle(async (e) => {
+    const bodyHeight = e.target.scrollHeight;
+    const showContentHeight = e.target.clientHeight;
+    const scrolledHeight = e.target.scrollTop;
+
+    if (bodyHeight === showContentHeight + scrolledHeight) {
+      const response = await getMailList(at, loginUser, inBoxId, nextPageToken);
+
+      setUserEmailList([...userEmailList, ...response.result]);
+      setNextPageToken(response.nextPageToken);
+    }
+  }, 500);
 
   return (
     <MailModal onClose={toggleMail}>
@@ -230,22 +250,26 @@ function Mail({ toggleMail }) {
                 deleteEmail={checkedIds}
                 isTrash={isTrashActive}
                 checkedMails={setCheckedIds}
-                isRefreshMails={setIsRefreshMails}
+                setUserEmailList={setUserEmailList}
+                at={at}
               />
             </StyledSubHeaderDiv>
           ) : (
             <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
           )}
-          <StyledMailDetailDiv>
-            {userEmailList?.map((mail) => (
-              <MailRow
-                key={mail.id}
-                mail={mail}
-                onCheckedId={setCheckedIds}
-                checkedIdList={checkedIds}
-                onTargetEmailId={setTargetEmailId}
-              />
-            ))}
+          <StyledMailDetailDiv onScroll={handleScroll} className="emails">
+            {userEmailList?.map((mail) => {
+              const key = nanoid();
+              return (
+                <MailRow
+                  key={key}
+                  mail={mail}
+                  onCheckedId={setCheckedIds}
+                  checkedIdList={checkedIds}
+                  onTargetEmailId={setTargetEmailId}
+                />
+              );
+            })}
           </StyledMailDetailDiv>
           <StyledGmailLogoButton
             onClick={() => {

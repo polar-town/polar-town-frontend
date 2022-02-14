@@ -16,6 +16,8 @@ import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
+import { getTownHostInfo } from "../../api/user";
+import { selectUserId } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
@@ -44,11 +46,10 @@ const VisitorsContainer = styled.div`
 `;
 
 function Town({ iceCount, onTownTransition }) {
-  const dispatch = useDispatch();
   const { id } = useParams();
+  const [outItems, setOutItems] = useState([]);
   const loginUser = useSelector(selectUser);
   const isMe = loginUser.id === id;
-  const [townHost, setTownHost] = useState({});
   const [onMail, setOnMail] = useState(false);
   const [onPostBox, setOnPostBox] = useState(false);
   const [onNotification, setOnNotification] = useState(false);
@@ -65,9 +66,8 @@ function Town({ iceCount, onTownTransition }) {
   useEffect(async () => {
     const user = await getTownHostInfo(id);
 
-    setTownHost(user);
-    dispatch(currentCoke(user.cokeCount));
-  }, []);
+    setOutItems(user?.outItemBox);
+  }, [id]);
 
   useEffect(() => {
     if (!loginUser.id) return;
@@ -104,6 +104,7 @@ function Town({ iceCount, onTownTransition }) {
         toggleFriendSearch={setOnFriendSearch}
         toggleFriendList={setOnFriendList}
         toggleShop={setOnShopOpen}
+        onTownTransition={onTownTransition}
         onSignout={onTownTransition}
         socket={getSocketIO()}
       />
@@ -116,8 +117,14 @@ function Town({ iceCount, onTownTransition }) {
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
-        {townHost.outItemBox?.map((item) => (
-          <OutItem key={item._id} name={item.name} />
+        {outItems?.map((item) => (
+          <OutItem
+            key={item._id}
+            name={item.name}
+            isMe={isMe}
+            itemId={item._id}
+            setOutItems={setOutItems}
+          />
         ))}
         <PostBox toggleGuestbook={setOnPostBox} />
         {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
@@ -160,7 +167,12 @@ function Town({ iceCount, onTownTransition }) {
               targetItem={targetItem}
             />
           )}
-          {onItemBoxOpen && <ItemBox toggleItemBox={setOnItemBoxOpen} />}
+          {onItemBoxOpen && (
+            <ItemBox
+              toggleItemBox={setOnItemBoxOpen}
+              setOutItems={setOutItems}
+            />
+          )}
         </ModalPortals>
       </TownDiv>
     </>
