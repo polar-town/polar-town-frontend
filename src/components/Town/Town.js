@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
@@ -25,6 +25,7 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
+import { TYPE } from "../../constants/notification";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -34,6 +35,11 @@ const TownDiv = styled.div`
   background-size: cover;
   image-rendering: pixelated;
   position: relative;
+
+  .a {
+    background-color: lemonchiffon;
+    position: absolute;
+  }
 `;
 
 const VisitorsContainer = styled.div`
@@ -59,6 +65,7 @@ function Town({ iceCount, onTownTransition }) {
   const [notificationType, setNotificationType] = useState("");
   const [targetItem, setTargetItem] = useState("");
   const [onShopFriendList, setOnShopFriendList] = useState(false);
+  const [from, setFrom] = useState([]);
   const socketRef = useRef(null);
 
   useEffect(async () => {
@@ -81,9 +88,18 @@ function Town({ iceCount, onTownTransition }) {
     socket.on(EVENTS.LEFT, (data) => {
       setVisitors(data.visitors);
     });
+
+    socket.on(EVENTS.FRIEND_REQUEST, (data) => {
+      const { userName, email } = data;
+      setFrom([userName, email]);
+      setOnNotification(true);
+      setNotificationType(TYPE.FRIEND_REQUEST);
+    });
+
     return () => {
       socket.off(EVENTS.JOIN);
       socket.off(EVENTS.LEFT);
+      socket.off(EVENTS.FRIEND_REQUEST);
     };
   }, [id, loginUser.id]);
 
@@ -91,6 +107,7 @@ function Town({ iceCount, onTownTransition }) {
     if (socketRef.current === null) {
       socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
     }
+
     return socketRef.current;
   }
 
@@ -113,6 +130,7 @@ function Town({ iceCount, onTownTransition }) {
           })}
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
+        <div className="a">{id}</div>
         <CokeCounter />
         {outItems?.map((item) => (
           <OutItem
@@ -143,18 +161,19 @@ function Town({ iceCount, onTownTransition }) {
               toggleShopFriendList={setOnShopFriendList}
             />
           )}
-          {onNotification && (
-            <Notification
-              toggleNotification={setOnNotification}
-              notificationType={notificationType}
-              targetItem={targetItem}
-            />
-          )}
           {onFriendList && (
             <FriendList
               visitFriend={onTownTransition}
               toggleFriendList={setOnFriendList}
               socket={getSocketIO()}
+            />
+          )}
+          {onNotification && (
+            <Notification
+              toggleNotification={setOnNotification}
+              notificationType={notificationType}
+              targetItem={targetItem}
+              from={from}
             />
           )}
           {onFriendSearch && (

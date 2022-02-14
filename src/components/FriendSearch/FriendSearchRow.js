@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { useSelector } from "react-redux";
@@ -64,6 +64,12 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch, socket }) {
     await updateTargetPendingFriendList(userId, email);
     e.target.textContent = OPTION.REQUEST_SENT;
     e.target.setAttribute("disabled", true);
+
+    socket.emit(EVENTS.FRIEND_REQUEST, {
+      to: email,
+      userName: user.username,
+      email: user.email,
+    });
   }
 
   return (

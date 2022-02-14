@@ -52,6 +52,7 @@ export async function getPendingFriendList(userId) {
         photo,
         iceCount,
         email,
+        isChecked: res.isChecked,
       };
     });
 
@@ -61,13 +62,15 @@ export async function getPendingFriendList(userId) {
   }
 }
 
-export async function addFriendList(userId, email) {
+export async function addFriendList(userId, email, isAlarm = false) {
   try {
-    await axios.post(
+    const response = await axios.post(
       `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends`,
-      { email },
+      { email, isAlarm },
       { withCredentials: true },
     );
+
+    return response.data;
   } catch (error) {
     console.error(error);
   }
