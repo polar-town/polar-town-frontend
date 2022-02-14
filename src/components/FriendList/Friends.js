@@ -13,6 +13,7 @@ function Friends({
   type,
   targetItem,
   toggleShopFriendList,
+  socket,
 }) {
   const [friends, setFriends] = useState([]);
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ function Friends({
               handleDeletion={setFriends}
               targetItem={targetItem}
               toggleShopFriendList={toggleShopFriendList}
+              socket={socket}
             />
           );
         })}
@@ -54,4 +56,5 @@ Friends.propTypes = {
   type: protypes.string,
   targetItem: protypes.string,
   toggleShopFriendList: protypes.func,
+  socket: protypes.object,
 };

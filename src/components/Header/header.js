@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import proptype from "prop-types";
 import styled from "styled-components";
@@ -9,6 +10,7 @@ import {
   selectUserToken,
 } from "../../features/user/userSlice";
 import useGapi from "../../hooks/useGapi";
+import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -45,11 +47,14 @@ function Header({
   toggleFriendList,
   toggleShop,
   onTownTransition,
+  onSignout,
+  socket,
 }) {
   const dispatch = useDispatch();
   const gapi = useGapi();
   const user = useSelector(selectUser);
   const currentUserAccessToken = useSelector(selectUserToken);
+  const { id: prevTownId } = useParams();
 
   const logout = async () => {
     const auth2 = gapi.auth2.getAuthInstance();
@@ -63,6 +68,7 @@ function Header({
     await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
       email: user.email,
     });
+    socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
   };
 
   const goToMyTown = () => {
@@ -115,4 +121,6 @@ Header.propTypes = {
   toggleFriendList: proptype.func,
   toggleShop: proptype.func,
   onTownTransition: proptype.func,
+  onSignout: proptype.func,
+  socket: proptype.object,
 };

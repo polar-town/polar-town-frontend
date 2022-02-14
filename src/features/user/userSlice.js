@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   cokeCount: 0,
-  iceCount: 0,
+  iceCount: 1,
   id: null,
   username: null,
   email: null,
@@ -15,8 +15,8 @@ const initialState = {
     Seal: 0,
     Igloo: 0,
     Flower: 0,
+    photo: null,
   },
-  socket: null,
 };
 
 export const userSlice = createSlice({
@@ -33,6 +33,7 @@ export const userSlice = createSlice({
         accessToken,
         pendingFriendList,
         friendList,
+        photo,
       } = action.payload;
 
       return {
@@ -45,6 +46,7 @@ export const userSlice = createSlice({
         accessToken,
         pendingFriendList,
         friendList,
+        photo,
       };
     },
     removeLogoutUser: () => {
@@ -81,9 +83,6 @@ export const userSlice = createSlice({
         itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
       };
     },
-    setSocket: (state, action) => {
-      state.socket = action.payload;
-    },
   },
 });
 
@@ -97,13 +96,13 @@ export const {
   updateFriendList,
   updatePendingFriendList,
   updateItemCount,
-  setSocket,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user;
 export const selectUserId = (state) => state.user.id;
 export const selectUserToken = (state) => state.user.accessToken;
 export const selectCokeCount = (state) => state.user.cokeCount;
+export const selectIceCount = (state) => state.user.iceCount;
 export const selectFriendList = (state) => state.user.friendList;
 export const selectPendingFriendList = (state) => state.user.pendingFriendList;
 export const selectItemCount = (state) => state.user.itemCount;

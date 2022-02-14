@@ -2,11 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { nanoid } from "nanoid";
-import GameModalButton from "../GameModal/GameModalButton";
-import FriendProfile from "../FriendProfile/FriendProfile";
-import { OPTION, TYPE } from "../../constants/friendList";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+
 import {
+  selectUser,
   selectUserId,
   selectFriendList,
   selectPendingFriendList,
@@ -22,6 +22,11 @@ import {
 } from "../../api/friendlist";
 import { sendItem } from "../../api/item";
 import { ITEM_PRICE_LIST } from "../../constants/item";
+import { OPTION, TYPE } from "../../constants/friendList";
+import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
+
+import GameModalButton from "../GameModal/GameModalButton";
+import FriendProfile from "../FriendProfile/FriendProfile";
 
 const FriendRowContainer = styled.div`
   display: flex;
@@ -56,8 +61,11 @@ function FriendRow({
   handleDeletion,
   targetItem,
   toggleShopFriendList,
+  socket,
 }) {
   const dispatch = useDispatch();
+  const { id: prevTownId } = useParams();
+  const user = useSelector(selectUser);
   const userId = useSelector(selectUserId);
   const cokeCount = useSelector(selectCokeCount);
   const prevFriendList = useSelector(selectFriendList);
@@ -67,6 +75,7 @@ function FriendRow({
   function visitFriendTown() {
     visitFriend(id, iceCount);
     toggleFriendList(false);
+    socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.TRANSITION });
   }
 
   async function onDeletion() {
@@ -171,6 +180,7 @@ FriendRow.propTypes = {
   handleDeletion: proptypes.func,
   targetItem: proptypes.string,
   toggleShopFriendList: proptypes.func,
+  socket: proptypes.object,
 };
 
 export default FriendRow;
