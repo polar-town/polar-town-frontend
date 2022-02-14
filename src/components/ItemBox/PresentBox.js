@@ -21,7 +21,7 @@ const ItemContainerDiv = styled.div`
   }
 `;
 
-function PresentBox({ onClose }) {
+function PresentBox({ onClose, setOutItems }) {
   const [presentList, setPresentList] = useState([]);
   const { id } = useParams();
   const GMAIL_ADDRESS = 10;
@@ -41,8 +41,16 @@ function PresentBox({ onClose }) {
       return item.name === itemName;
     });
 
-    await changeStorage(id, targetItem._id, "presentBox", "outItemBox");
+    const response = await changeStorage(
+      id,
+      targetItem._id,
+      "presentBox",
+      "outItemBox",
+    );
 
+    const { outBox } = response.result;
+
+    setOutItems(outBox);
     onClose(false);
   };
 
@@ -72,4 +80,5 @@ export default PresentBox;
 
 PresentBox.propTypes = {
   onClose: PropTypes.func.isRequired,
+  setOutItems: PropTypes.func,
 };

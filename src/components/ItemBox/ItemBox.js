@@ -14,7 +14,7 @@ function ItemBox({ toggleItemBox, setOutItems }) {
     >
       <HalfModal category={["내 아이템", "선물함"]}>
         <MyItemBox onClose={toggleItemBox} setOutItems={setOutItems} />
-        <PresentBox onClose={toggleItemBox} />
+        <PresentBox onClose={toggleItemBox} setOutItems={setOutItems} />
       </HalfModal>
     </GameModal>
   );

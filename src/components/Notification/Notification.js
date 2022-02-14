@@ -11,10 +11,12 @@ import { addFriendList, deletePendingFriend } from "../../api/friendlist";
 import {
   decreaseCoke,
   selectCokeCount,
+  selectIceCount,
   selectUserId,
   updateIceCount,
 } from "../../features/user/userSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
+import { useParams } from "react-router-dom";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -38,6 +40,7 @@ const ButtonContainer = styled.div`
 `;
 
 function Notification({
+  onTownTransition,
   toggleNotification,
   notificationType,
   targetItem,
@@ -49,6 +52,8 @@ function Notification({
   const [notificationMessage, setNotificationMessage] = useState("");
   const id = useSelector(selectUserId);
   const cokeCount = useSelector(selectCokeCount);
+  const townHost = useParams().id;
+  const iceCount = useSelector(selectIceCount);
 
   useEffect(() => {
     if (notificationType === TYPE.CONFIRM_PURCHASE) {
@@ -71,10 +76,12 @@ function Notification({
         if (cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
           if (targetItem === "Ice") {
             dispatch(updateIceCount());
+            onTownTransition(townHost, iceCount + 1);
           }
-          await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
 
+          await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+
           return toggleNotification(false);
         }
 
@@ -92,8 +99,8 @@ function Notification({
   const openItemBox = () => {
     toggleNotification(false);
     toggleItemBox(true);
-  }
-  
+  };
+
   const handleAcceptFriend = async () => {
     await addFriendList(id, from[1], true);
 
@@ -150,6 +157,7 @@ function Notification({
 export default Notification;
 
 Notification.propTypes = {
+  onTownTransition: proptype.func,
   toggleNotification: proptype.func.isRequired,
   notificationType: proptype.string,
   targetItem: proptype.string,

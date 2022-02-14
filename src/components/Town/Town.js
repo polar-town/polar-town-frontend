@@ -176,6 +176,7 @@ function Town({ iceCount, onTownTransition }) {
           )}
           {onNotification && (
             <Notification
+              onTownTransition={onTownTransition}
               toggleNotification={setOnNotification}
               notificationType={notificationType}
               targetItem={targetItem}
