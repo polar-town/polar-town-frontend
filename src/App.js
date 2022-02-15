@@ -9,9 +9,9 @@ function App() {
   const [townIceCount, setTownIceCount] = useState(1);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    townId ? navigate(`users/${townId}`) : navigate("/login");
-  }, [townId]);
+  // useEffect(() => {
+  //   townId ? navigate(`users/${townId}`) : navigate("/login");
+  // }, [townId]);
 
   function onTownTransition(id, iceCount) {
     setTownId(id);
@@ -22,6 +22,7 @@ function App() {
     <>
       <GlobalStyle />
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route
           path="/users/:id"
           element={

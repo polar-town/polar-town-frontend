@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import proptypes from "prop-types";
-import useGapi from "../../hooks/useGapi";
 import { useDispatch } from "react-redux";
+import useGapi from "../../hooks/useGapi";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
 
