@@ -68,6 +68,10 @@ function Town({ iceCount, onTownTransition }) {
   const [from, setFrom] = useState([]);
   const socketRef = useRef(null);
 
+  // configuration 에서 짠 코드, 로그인과 마찬가지로 로딩과 에러에 대한 핸들 필요
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   useEffect(async () => {
     const user = await getTownHostInfo(id);
 

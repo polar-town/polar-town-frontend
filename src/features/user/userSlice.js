@@ -1,53 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cokeCount: 0,
-  iceCount: 1,
-  id: null,
-  username: null,
-  email: null,
+  user: null,
   accessToken: null,
-  friendList: [],
-  pendingFriendList: [],
-  itemCount: {
-    PolarBear: 0,
-    Penguin: 0,
-    Seal: 0,
-    Igloo: 0,
-    Flower: 0,
-    photo: null,
-  },
+  // cokeCount: 0,
+  // iceCount: 1,
+  // id: null,
+  // username: null,
+  // email: null,
+  // accessToken: null,
+  // friendList: [],
+  // pendingFriendList: [],
+  // itemCount: {
+  //   PolarBear: 0,
+  //   Penguin: 0,
+  //   Seal: 0,
+  //   Igloo: 0,
+  //   Flower: 0,
+  //   photo: null,
+  // },
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    saveLoginUser: (state, action) => {
+    saveLoginUser: (state, { payload }) => {
       const {
-        id,
-        username,
+        _id: id,
+        name,
         email,
-        iceCount,
         cokeCount,
-        accessToken,
-        pendingFriendList,
+        iceCount,
         friendList,
+        inItemBox,
+        presentBox,
         photo,
-      } = action.payload;
+      } = payload.user;
 
-      return {
-        ...state,
+      state.user = {
         id,
-        username,
+        name,
         email,
-        iceCount,
         cokeCount,
-        accessToken,
-        pendingFriendList,
+        iceCount,
         friendList,
+        inItemBox,
+        presentBox,
         photo,
       };
+      state.accessToken = payload.accessToken;
     },
     removeLogoutUser: () => {
       return initialState;
