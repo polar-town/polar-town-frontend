@@ -30,7 +30,6 @@ export const userSlice = createSlice({
       } = payload.user;
 
       state.user = {
-        ...state,
         id,
         name,
         email,
@@ -42,7 +41,7 @@ export const userSlice = createSlice({
       state.accessToken = payload.accessToken;
       state.isAuth = true;
     },
-    removeLogoutUser: () => {
+    resetLoginUser: () => {
       return initialState;
     },
     exchangeAccessToken: (state, action) => {
@@ -89,7 +88,7 @@ export const {
   getUserSuccess,
   getUserFail,
   saveLoginUser,
-  removeLogoutUser,
+  resetLoginUser,
   exchangeAccessToken,
   currentCoke,
   increseCoke,

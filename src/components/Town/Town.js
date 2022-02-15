@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
-// import { io } from "socket.io-client";
 import { nanoid } from "nanoid";
 
-import { getTownHostInfo } from "../../api/user";
 import { EVENTS } from "../../constants/socketEvents";
+import { TYPE } from "../../constants/notification";
 import {
   openNotification,
   setNotificationType,
 } from "../../features/modal/modalSlice";
+import { getTownHostInfo } from "../../api/user";
 
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -28,7 +28,6 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
-import { TYPE } from "../../constants/notification";
 
 const TownDiv = styled.div`
   background-image: url(${(props) => props.iceCount}),
@@ -53,17 +52,6 @@ const VisitorsContainer = styled.div`
 `;
 
 function Town({ socket }) {
-  // const { id } = useParams();
-  // const [outItems, setOutItems] = useState([]);
-  // const loginUser = useSelector(selectUser);
-  // const isMe = loginUser.id === id;
-  // const [visitors, setVisitors] = useState([]);
-  // const [notificationType, setNotificationType] = useState("");
-  // const [targetItem, setTargetItem] = useState("");
-  // const [from, setFrom] = useState([]);
-  // const socketRef = useRef(null);
-
-  // configuration 에서 짠 코드, 로그인과 마찬가지로 로딩과 에러에 대한 핸들 필요
   const [isLoading, setIsLoading] = useState(false);
   const [iceCount, setIceCount] = useState(1);
   const [outItems, setOutItems] = useState([]);
@@ -106,9 +94,7 @@ function Town({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (!user.isAuth) return;
-
-    // const socket = socket;
+    if (isLoading) return;
 
     socket.on(EVENTS.JOIN, (data) => {
       setVisitors(data.visitors);
@@ -138,15 +124,7 @@ function Town({ socket }) {
       socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
     };
-  }, [id, loginUser.id]);
-
-  // function getSocketIO() {
-  //   if (socketRef.current === null) {
-  //     socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
-  //   }
-
-  //   return socketRef.current;
-  // }
+  }, [isLoading]);
 
   return (
     <>

@@ -76,7 +76,7 @@ function Login() {
       }
 
       dispatch(saveLoginUser(isAuth.result));
-      navigate(`users/${isAuth.result.user._id}`);
+      navigate(`/users/${isAuth.result.user._id}`);
     } catch (error) {
       console.error(error);
     }
