@@ -10,11 +10,11 @@ const StyledInputContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
   width: 100%;
-  background-color: #f5ecdb;
-  border-radius: 10px;
+  background-color: #eae3d5;
+  border-radius: 35px;
 
   input {
-    width: 90%;
+    width: 92%;
     height: 50px;
     font-size: 15px;
     border: 0;
@@ -24,11 +24,13 @@ const StyledInputContainer = styled.div`
   }
 
   .fa-envelope {
-    font-size: 25px;
+    font-size: 22px;
+    color: #c48679;
+    cursor: pointer;
   }
 `;
 
-function MessageInput({ onMessageListUpdate, socket }) {
+function MessageInput({ socket }) {
   const { id } = useParams();
   const messageInput = useRef();
 
@@ -36,9 +38,12 @@ function MessageInput({ onMessageListUpdate, socket }) {
     const messageValue = messageInput.current.value;
 
     try {
-      const { newMessage } = await leaveNewMessage(id, messageValue);
-      socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
-      messageInput.current.value = "";
+      if (messageValue) {
+        const { newMessage } = await leaveNewMessage(id, messageValue);
+
+        socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
+        messageInput.current.value = "";
+      }
     } catch (error) {
       console.error(error);
     }
@@ -53,7 +58,6 @@ function MessageInput({ onMessageListUpdate, socket }) {
 }
 
 MessageInput.propTypes = {
-  onMessageListUpdate: proptypes.func.isRequired,
   socket: proptypes.object,
 };
 

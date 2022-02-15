@@ -5,10 +5,10 @@ import styled from "styled-components";
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  z-index: 999;
+  z-index: 1;
 
   span {
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 

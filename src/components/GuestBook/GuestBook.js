@@ -9,7 +9,7 @@ import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
 import { EVENTS } from "../../constants/socketEvents";
-import { getMessageList } from "../../api/guestbook";
+import { changeCheckMessage, getMessageList } from "../../api/guestbook";
 
 const StyledGuestBookContainer = styled.div`
   height: 350px;
@@ -19,7 +19,7 @@ const StyledGuestBookContainer = styled.div`
   background-color: var(--game-modal-background);
 `;
 
-function GuestBook({ isOpen, toggleGuestbook, socket }) {
+function GuestBook({ isOpen, toggleGuestbook, socket, setIsReceiveGuestBook }) {
   const [messageList, setMessageList] = useState([]);
   const { id } = useParams();
   const userId = useSelector(selectUserId);
@@ -31,6 +31,11 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
       const sortedMessages = sortMessages(messages.data.result.guestBook);
 
       setMessageList(sortedMessages);
+
+      if (isMyTown) {
+        await changeCheckMessage(userId);
+        setIsReceiveGuestBook(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -57,7 +62,6 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
       if (a.date === b.date) return 0;
     });
   }
-
   return (
     <GameModal
       subject="방명록"
@@ -78,6 +82,7 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
                 name={post.name}
                 message={post.message}
                 date={post.date}
+                post={post}
               />
             );
           })}
@@ -92,4 +97,5 @@ GuestBook.propTypes = {
   isOpen: proptypes.bool.isRequired,
   toggleGuestbook: proptypes.func.isRequired,
   socket: proptypes.object,
+  setIsReceiveGuestBook: proptypes.func,
 };

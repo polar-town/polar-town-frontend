@@ -35,18 +35,20 @@ const StyledHalfContentDiv = styled.div`
   padding: 20px;
 `;
 
-function HalfModal({ category, children }) {
+function HalfModal({ category, children, setIsReceiveGift }) {
   const loginUserId = useSelector(selectUserId);
   const [hasNewPendingFriend, setHasNewPendingFriend] = useState(false);
   const [showFirstContent, setShowFirstContent] = useState(true);
 
   useEffect(async () => {
-    const pendingFriendList = await getPendingFriendList(loginUserId);
-    const isExistNewPendingFriend = pendingFriendList.some(
-      (friend) => !friend.isChecked,
-    );
+    if (category[1] === "친구 요청") {
+      const pendingFriendList = await getPendingFriendList(loginUserId);
+      const isExistNewPendingFriend = pendingFriendList.some(
+        (friend) => !friend.isChecked,
+      );
 
-    setHasNewPendingFriend(isExistNewPendingFriend);
+      setHasNewPendingFriend(isExistNewPendingFriend);
+    }
   });
 
   return (
@@ -60,7 +62,12 @@ function HalfModal({ category, children }) {
         </StyledHalfNavDiv>
         <StyledHalfNavDiv
           checked={!showFirstContent}
-          onClick={() => setShowFirstContent(false)}
+          onClick={() => {
+            if (setIsReceiveGift) {
+              setIsReceiveGift(false);
+            }
+            setShowFirstContent(false);
+          }}
         >
           {category?.[1]}
           {hasNewPendingFriend && <NotificationCircle />}
@@ -80,6 +87,7 @@ function HalfModal({ category, children }) {
 HalfModal.propTypes = {
   category: proptypes.array,
   children: proptypes.array,
+  setIsReceiveGift: proptypes.func,
 };
 
 export default HalfModal;
