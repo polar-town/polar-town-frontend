@@ -5,6 +5,8 @@ import { nanoid } from "nanoid";
 import PropTypes from "prop-types";
 import { changeStorage, getPresentBox } from "../../api/item";
 import Item from "../Item/Item";
+import { useDispatch } from "react-redux";
+import { toggleItemBox } from "../../features/modal/modalSlice";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -21,9 +23,10 @@ const ItemContainerDiv = styled.div`
   }
 `;
 
-function PresentBox({ onClose, setOutItems }) {
+function PresentBox({ setOutItems }) {
   const [presentList, setPresentList] = useState([]);
   const { id } = useParams();
+  const dispatch = useDispatch();
   const GMAIL_ADDRESS = 10;
 
   useEffect(async () => {
@@ -51,7 +54,7 @@ function PresentBox({ onClose, setOutItems }) {
     const { outBox } = response.result;
 
     setOutItems(outBox);
-    onClose(false);
+    dispatch(toggleItemBox());
   };
 
   return (
@@ -79,6 +82,5 @@ function PresentBox({ onClose, setOutItems }) {
 export default PresentBox;
 
 PresentBox.propTypes = {
-  onClose: PropTypes.func.isRequired,
   setOutItems: PropTypes.func,
 };

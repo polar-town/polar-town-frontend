@@ -36,12 +36,12 @@ const StyledHalfContentDiv = styled.div`
 `;
 
 function HalfModal({ category, children }) {
-  const loginUserId = useSelector(selectUserId);
+  const { user } = useSelector((state) => state.user);
   const [hasNewPendingFriend, setHasNewPendingFriend] = useState(false);
   const [showFirstContent, setShowFirstContent] = useState(true);
 
   useEffect(async () => {
-    const pendingFriendList = await getPendingFriendList(loginUserId);
+    const pendingFriendList = await getPendingFriendList(user.id);
     const isExistNewPendingFriend = pendingFriendList.some(
       (friend) => !friend.isChecked,
     );

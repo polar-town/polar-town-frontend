@@ -8,15 +8,12 @@ import { TYPE, MESSAGE, OPTION } from "../../constants/notification";
 import proptype from "prop-types";
 import { addItem } from "../../api/item";
 import { addFriendList, deletePendingFriend } from "../../api/friendlist";
+import { decreaseCoke, updateIceCount } from "../../features/user/userSlice";
 import {
-  decreaseCoke,
-  selectCokeCount,
-  selectIceCount,
-  selectUserId,
-  updateIceCount,
-} from "../../features/user/userSlice";
+  closeNotification,
+  toggleItemBox,
+} from "../../features/modal/modalSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
-import { useParams } from "react-router-dom";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -39,21 +36,11 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function Notification({
-  onTownTransition,
-  toggleNotification,
-  notificationType,
-  targetItem,
-  toggleItemBox,
-  from,
-}) {
+function Notification({ notificationType, targetItem, from }) {
   const dispatch = useDispatch();
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const id = useSelector(selectUserId);
-  const cokeCount = useSelector(selectCokeCount);
-  const townHost = useParams().id;
-  const iceCount = useSelector(selectIceCount);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (notificationType === TYPE.CONFIRM_PURCHASE) {
@@ -73,16 +60,15 @@ function Notification({
   const handlePurchase = async (e) => {
     if (e.target.textContent === "예") {
       try {
-        if (cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
+        if (user.cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
           if (targetItem === "Ice") {
             dispatch(updateIceCount());
-            onTownTransition(townHost, iceCount + 1);
           }
 
-          await addItem(id, targetItem, ITEM_PRICE_LIST[targetItem]);
+          await addItem(user.id, targetItem, ITEM_PRICE_LIST[targetItem]);
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
 
-          return toggleNotification(false);
+          return dispatch(closeNotification());
         }
 
         setNotificationMessage("콜라가 부족합니다🥲");
@@ -92,32 +78,30 @@ function Notification({
       }
     }
     if (e.target.textContent === "아니요") {
-      toggleNotification(false);
+      dispatch(closeNotification());
     }
   };
 
   const openItemBox = () => {
-    toggleNotification(false);
-    toggleItemBox(true);
+    dispatch(closeNotification());
+    dispatch(toggleItemBox());
   };
 
   const handleAcceptFriend = async () => {
-    await addFriendList(id, from[1], true);
-
-    toggleNotification(false);
+    await addFriendList(user.id, from[1], true);
+    dispatch(closeNotification());
   };
 
   const handleRejectFriend = async () => {
-    await deletePendingFriend(id, from[1]);
-
-    toggleNotification(false);
+    await deletePendingFriend(user.id, from[1]);
+    dispatch(closeNotification());
   };
 
   return (
     <GameModal
       subject={notificationType === "friendRequest" && "친구 요청"}
       onClose={() => {
-        toggleNotification();
+        dispatch(closeNotification());
       }}
     >
       <NotificationContainer>
@@ -157,10 +141,7 @@ function Notification({
 export default Notification;
 
 Notification.propTypes = {
-  onTownTransition: proptype.func,
-  toggleNotification: proptype.func.isRequired,
   notificationType: proptype.string,
   targetItem: proptype.string,
-  toggleItemBox: proptype.func,
   from: proptype.array,
 };

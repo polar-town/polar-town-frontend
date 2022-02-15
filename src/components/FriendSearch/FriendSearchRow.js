@@ -1,15 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import {
-  selectUser,
-  selectUserId,
-  selectFriendList,
-  selectPendingFriendList,
-} from "../../features/user/userSlice";
+import { selectUser, selectUserId } from "../../features/user/userSlice";
+import { closeAll } from "../../features/modal/modalSlice";
 import { updateTargetPendingFriendList } from "../../api/friendSearch";
 import { TYPE, OPTION } from "../../constants/searchFriend";
 import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
@@ -28,13 +24,18 @@ const FriendSearchRowContainer = styled.div`
   padding: 15px;
 `;
 
-function FriendSearchRow({ friend, visitFriend, toggleFriendSearch, socket }) {
-  const { id: prevTownId } = useParams();
+function FriendSearchRow({
+  friend,
+  socket,
+  userFriendList,
+  userPendingFriendList,
+}) {
+  const { id: townId } = useParams();
   const user = useSelector(selectUser);
   const userId = useSelector(selectUserId);
-  const { name, email, photo, id, iceCount } = friend;
-  const userFriendList = useSelector(selectFriendList);
-  const userPendingFriendList = useSelector(selectPendingFriendList);
+  const { name, email, photo, id } = friend;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function checkFriendType(searchedId) {
     const isFriend = userFriendList.some((friend) => friend.id === searchedId);
@@ -55,9 +56,13 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch, socket }) {
   }
 
   function visitFriendTown() {
-    visitFriend(id, iceCount);
-    toggleFriendSearch(false);
-    socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.TRANSITION });
+    socket.emit(EVENTS.LEFT, {
+      prevTownId: townId,
+      user,
+      type: LEFT_TYPE.TRANSITION,
+    });
+    dispatch(closeAll());
+    navigate(`/users/${id}`);
   }
 
   async function sendFriendRequest(e) {
@@ -79,6 +84,7 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch, socket }) {
         <GameModalButton
           content={OPTION.MY_FRIEND}
           onSelect={visitFriendTown}
+          disabled={townId === id}
         />
       )}
       {checkFriendType(id) === TYPE.REQUEST_SENT && (
@@ -99,9 +105,9 @@ function FriendSearchRow({ friend, visitFriend, toggleFriendSearch, socket }) {
 
 FriendSearchRow.propTypes = {
   friend: proptypes.object.isRequired,
-  visitFriend: proptypes.func,
-  toggleFriendSearch: proptypes.func,
   socket: proptypes.object,
+  userFriendList: proptypes.array,
+  userPendingFriendList: proptypes.array,
 };
 
 export default FriendSearchRow;

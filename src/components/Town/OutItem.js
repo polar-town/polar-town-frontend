@@ -1,6 +1,7 @@
 import React from "react";
 import proptypes from "prop-types";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { changeStorage } from "../../api/item";
 
@@ -12,9 +13,10 @@ const OutItemDiv = styled.div`
   z-index: 1;
 `;
 
-function OutItem({ name, isMe, itemId, setOutItems }) {
+function OutItem({ name, itemId, setOutItems }) {
   const imageSrc = `/images/items/${name}.png`;
   const { id } = useParams();
+  const { user } = useSelector((state) => state.user);
 
   const goToOutBox = async () => {
     const response = await changeStorage(id, itemId, "outItemBox", "inItemBox");
@@ -28,7 +30,7 @@ function OutItem({ name, isMe, itemId, setOutItems }) {
         src={imageSrc}
         alt="item"
         onDoubleClick={() => {
-          isMe && goToOutBox();
+          user.id === id && goToOutBox();
         }}
       />
     </OutItemDiv>
@@ -37,7 +39,6 @@ function OutItem({ name, isMe, itemId, setOutItems }) {
 
 OutItem.propTypes = {
   name: proptypes.string,
-  isMe: proptypes.bool,
   itemId: proptypes.string,
   setOutItems: proptypes.func,
 };

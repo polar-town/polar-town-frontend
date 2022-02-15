@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import proptype from "prop-types";
+import { useDispatch } from "react-redux";
+import { togglePostBox } from "../../features/modal/modalSlice";
 
 const PostBoxContainer = styled.div`
   width: 100vw;
@@ -17,12 +18,14 @@ const PostBoxContainer = styled.div`
   }
 `;
 
-function PostBox({ toggleGuestbook }) {
+function PostBox() {
+  const dispatch = useDispatch();
+
   return (
     <PostBoxContainer>
       <img
         onClick={() => {
-          toggleGuestbook(true);
+          dispatch(togglePostBox());
         }}
         src="/images/postbox.png"
       />
@@ -31,7 +34,3 @@ function PostBox({ toggleGuestbook }) {
 }
 
 export default PostBox;
-
-PostBox.propTypes = {
-  toggleGuestbook: proptype.func.isRequired,
-};

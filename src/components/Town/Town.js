@@ -55,7 +55,6 @@ function Town({ socket }) {
   const [isLoading, setIsLoading] = useState(false);
   const [iceCount, setIceCount] = useState(1);
   const [outItems, setOutItems] = useState([]);
-  const [guestbookMessages, setGuestbookMessages] = useState([]);
   const [visitors, setVisitors] = useState([]);
   const [from, setFrom] = useState([]);
   const [targetItem, setTargetItem] = useState("");
@@ -74,7 +73,6 @@ function Town({ socket }) {
     notificationType,
   } = useSelector((state) => state.modal);
   const { user: loginUser } = useSelector((state) => state.user);
-  const isMe = loginUser.id === id;
 
   useEffect(async () => {
     setIsLoading(true);
@@ -84,11 +82,10 @@ function Town({ socket }) {
       return navigate("/error");
     }
 
-    const { iceCount, outItemBox, inItemBox } = response.result.user;
+    const { iceCount, outItemBox } = response.result.user;
 
     setIceCount(iceCount);
     setOutItems([...outItemBox]);
-    setGuestbookMessages([inItemBox]);
 
     setIsLoading(false);
   }, []);
@@ -124,7 +121,7 @@ function Town({ socket }) {
       socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
     };
-  }, [isLoading]);
+  }, [id]);
 
   return (
     <>
@@ -143,13 +140,12 @@ function Town({ socket }) {
           <OutItem
             key={item._id}
             name={item.name}
-            isMe={isMe}
             itemId={item._id}
             setOutItems={setOutItems}
           />
         ))}
-        <PostBox socket={socket} />
-        {isMe && <InItemBox />}
+        <PostBox />
+        {loginUser.id === id && <InItemBox />}
         <ModalPortals>
           {isMailOpen && <Mail />}
           {isPostBoxOpen && <GuestBook socket={socket} />}

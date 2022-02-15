@@ -46,6 +46,9 @@ const modalSlice = createSlice({
     setNotificationType: (state, { payload }) => {
       state.notificationType = payload;
     },
+    closeAll: () => {
+      return initialState;
+    },
   },
 });
 
@@ -62,6 +65,7 @@ export const {
   openNotification,
   closeNotification,
   setNotificationType,
+  closeAll,
 } = actions;
 
 export default reducer;

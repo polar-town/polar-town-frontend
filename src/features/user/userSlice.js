@@ -27,6 +27,7 @@ export const userSlice = createSlice({
         cokeCount,
         friendList,
         pendingFriendList,
+        iceCount,
       } = payload.user;
 
       state.user = {
@@ -37,6 +38,7 @@ export const userSlice = createSlice({
         cokeCount,
         friendList,
         pendingFriendList,
+        iceCount,
       };
       state.accessToken = payload.accessToken;
       state.isAuth = true;
@@ -53,13 +55,13 @@ export const userSlice = createSlice({
       };
     },
     currentCoke: (state, action) => {
-      state.cokeCount = action.payload;
+      state.user.cokeCount = action.payload;
     },
     increseCoke: (state, action) => {
-      state.cokeCount += action.payload;
+      state.user.cokeCount += action.payload;
     },
     decreaseCoke: (state, action) => {
-      state.cokeCount -= action.payload;
+      state.user.cokeCount -= action.payload;
     },
     updateFriendList: (state, action) => {
       state.friendList = action.payload;
@@ -76,7 +78,7 @@ export const userSlice = createSlice({
       };
     },
     updateIceCount: (state, action) => {
-      state.iceCount = state.iceCount + 1;
+      state.user.iceCount = state.user.iceCount + 1;
     },
   },
 });

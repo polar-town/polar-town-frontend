@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import proptypes from "prop-types";
 import { throttle } from "lodash";
 import MailDetail from "./MailDetail";
 import MailRow from "./MailRow";
@@ -8,8 +7,8 @@ import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
-import { selectUserId } from "../../features/user/userSlice";
 import { nanoid } from "nanoid";
+import useGapi from "../../hooks/useGapi";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -118,10 +117,8 @@ const EmptyEmail = styled.div`
   margin: 100px auto;
 `;
 
-function Mail({ toggleMail }) {
-  const at =
-    "ya29.A0ARrdaM_zk9sa4YV1C9mDfhev1l9C3LZQgT7Byv2y13nL0CWRqQlJUUZaYPJ3rvJ9CJiRXVz4cYA6FbvDzoXgDYubmS43CViqHOzo0TbeALCRR0-SqWokxyD4W5Dkb4l-3grAXHequsjnlJajcJWI-pF3kgFP";
-  const loginUser = useSelector(selectUserId);
+function Mail() {
+  const { user: loginUser } = useSelector((state) => state.user);
   const [userEmailList, setUserEmailList] = useState([]);
   const [nextPageToken, setNextPageToken] = useState("");
   const [checkedIds, setCheckedIds] = useState([]);
@@ -129,6 +126,8 @@ function Mail({ toggleMail }) {
   const [isPromotionActive, setIsPromotionActive] = useState(true);
   const [isSpamActive, setIsSpamActive] = useState(false);
   const [isTrashActive, setIsTrashActive] = useState(false);
+  const [googleAt, setGoogleAt] = useState(null);
+  const gapi = useGapi();
   let inBoxId;
 
   if (isPromotionActive) {
@@ -140,15 +139,28 @@ function Mail({ toggleMail }) {
   }
 
   useEffect(async () => {
+    if (!gapi) return;
+
+    const googleAuth = gapi.auth2.getAuthInstance();
+    const { access_token } = await googleAuth.currentUser
+      .get()
+      .reloadAuthResponse();
+
+    setGoogleAt(access_token);
+  }, [gapi]);
+
+  useEffect(async () => {
+    if (!googleAt) return;
+
     async function getUserEmailList() {
-      const response = await getMailList(at, loginUser, inBoxId);
+      const response = await getMailList(googleAt, loginUser.id, inBoxId);
 
       setUserEmailList(response?.result);
       setNextPageToken(response?.nextPageToken);
     }
 
     getUserEmailList();
-  }, []);
+  }, [googleAt]);
 
   const getCategoryEmails = async (e) => {
     const inBoxId = e.target.id;
@@ -171,7 +183,7 @@ function Mail({ toggleMail }) {
       setIsSpamActive(false);
     }
 
-    const response = await getMailList(at, loginUser, inBoxId);
+    const response = await getMailList(googleAt, loginUser.id, inBoxId);
 
     setUserEmailList(response.result);
     setNextPageToken(response?.nextPageToken);
@@ -184,7 +196,12 @@ function Mail({ toggleMail }) {
     const scrolledHeight = e.target.scrollTop;
 
     if (bodyHeight === showContentHeight + scrolledHeight) {
-      const response = await getMailList(at, loginUser, inBoxId, nextPageToken);
+      const response = await getMailList(
+        googleAt,
+        loginUser.id,
+        inBoxId,
+        nextPageToken,
+      );
 
       setUserEmailList([...userEmailList, ...response.result]);
       setNextPageToken(response.nextPageToken);
@@ -192,7 +209,7 @@ function Mail({ toggleMail }) {
   }, 500);
 
   return (
-    <MailModal onClose={toggleMail}>
+    <MailModal>
       {targetEmailId && (
         <MailDetail
           targetEmail={
@@ -251,7 +268,7 @@ function Mail({ toggleMail }) {
                 isTrash={isTrashActive}
                 checkedMails={setCheckedIds}
                 setUserEmailList={setUserEmailList}
-                at={at}
+                at={googleAt}
               />
             </StyledSubHeaderDiv>
           ) : (
@@ -290,7 +307,3 @@ function Mail({ toggleMail }) {
 }
 
 export default Mail;
-
-Mail.propTypes = {
-  toggleMail: proptypes.func.isRequired,
-};

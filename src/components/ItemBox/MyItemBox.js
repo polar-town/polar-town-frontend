@@ -7,11 +7,8 @@ import Item from "../Item/Item";
 import { changeStorage, getInItemBox } from "../../api/item";
 import { countItem, itemCounter } from "../../utils/item";
 import { ITEM_LIST } from "../../constants/item";
-import {
-  selectItemCount,
-  selectUser,
-  updateItemCount,
-} from "../../features/user/userSlice";
+import { updateItemCount } from "../../features/user/userSlice";
+import { toggleItemBox } from "../../features/modal/modalSlice";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -20,13 +17,13 @@ const ItemContainerDiv = styled.div`
   justify-content: space-between;
 `;
 
-function MyItemBox({ onClose, setOutItems }) {
+function MyItemBox({ setOutItems }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [isMounted, setIsMounted] = useState(false);
   const [myItemList, setMyItemList] = useState([]);
-  const itemCount = useSelector(selectItemCount);
-  const iceCount = useSelector(selectUser).iceCount;
+  const { user, itemCount } = useSelector((state) => state.user);
+  const iceCount = user.iceCount;
 
   useEffect(async () => {
     setIsMounted(true);
@@ -72,7 +69,7 @@ function MyItemBox({ onClose, setOutItems }) {
     );
 
     setOutItems(response.result.outBox);
-    onClose(false);
+    dispatch(toggleItemBox());
   };
 
   return (
@@ -96,6 +93,5 @@ function MyItemBox({ onClose, setOutItems }) {
 export default MyItemBox;
 
 MyItemBox.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  setOutItems: PropTypes.func,
+  setOutItems: PropTypes.func.isRequired,
 };

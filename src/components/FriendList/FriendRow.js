@@ -3,18 +3,14 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 import { nanoid } from "nanoid";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { decreaseCoke } from "../../features/user/userSlice";
 import {
-  selectUser,
-  selectUserId,
-  selectFriendList,
-  selectPendingFriendList,
-  updateFriendList,
-  updatePendingFriendList,
-  decreaseCoke,
-  selectCokeCount,
-} from "../../features/user/userSlice";
+  closeAll,
+  togglePresentFriends,
+} from "../../features/modal/modalSlice";
+
 import {
   deleteFriend,
   addFriendList,
@@ -56,57 +52,40 @@ const ACCEPT = 0;
 function FriendRow({
   friend,
   type,
-  visitFriend,
-  toggleFriendList,
   handleDeletion,
   handleResponse,
   targetItem,
-  toggleShopFriendList,
   socket,
 }) {
   const dispatch = useDispatch();
-  const { id: prevTownId } = useParams();
-  const user = useSelector(selectUser);
-  const userId = useSelector(selectUserId);
-  const cokeCount = useSelector(selectCokeCount);
-  const prevFriendList = useSelector(selectFriendList);
-  const prevPendingFriendList = useSelector(selectPendingFriendList);
-  const { name, email, photo, id, iceCount } = friend;
+  const navigate = useNavigate();
+  const { id: townId } = useParams();
+  const { user } = useSelector((state) => state.user);
+  const { name, email, photo, id } = friend;
 
   function visitFriendTown() {
-    visitFriend(id, iceCount);
-    toggleFriendList(false);
-    socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.TRANSITION });
+    socket.emit(EVENTS.LEFT, {
+      prevTownId: townId,
+      user,
+      type: LEFT_TYPE.TRANSITION,
+    });
+    dispatch(closeAll());
+    navigate(`/users/${id}`);
   }
 
   async function onDeletion() {
-    const newFriendList = prevFriendList.filter((friend) => friend.id !== id);
-
-    await deleteFriend(userId, email);
-    dispatch(updateFriendList(newFriendList));
-    handleDeletion(newFriendList);
+    await deleteFriend(user.id, email);
+    handleDeletion((prev) => prev.filter((friend) => friend.id !== id));
   }
 
   async function acceptFriendRequest() {
-    const newFriendList = [...prevFriendList].push(friend);
-    const newPendingFriendList = prevPendingFriendList.filter(
-      (friend) => friend.id !== id,
-    );
-
-    await addFriendList(userId, email);
-    dispatch(updatePendingFriendList(newPendingFriendList));
-    dispatch(updateFriendList(newFriendList));
-    handleResponse(newPendingFriendList);
+    await addFriendList(user.id, email);
+    handleResponse((prev) => prev.filter((friend) => friend.id !== id));
   }
 
   async function declineFriendRequest() {
-    const newPendingFriendList = prevPendingFriendList.filter(
-      (friend) => friend.id !== id,
-    );
-
-    await deletePendingFriend(userId, email);
-    dispatch(updatePendingFriendList(newPendingFriendList));
-    handleResponse(newPendingFriendList);
+    await deletePendingFriend(user.id, email);
+    handleResponse((prev) => prev.filter((friend) => friend.id !== id));
   }
 
   return (
@@ -124,6 +103,7 @@ function FriendRow({
                 key={key}
                 content={option}
                 onSelect={handleSelect}
+                disabled={handleSelect === visitFriendTown && townId === id}
               />
             );
           })}
@@ -145,11 +125,11 @@ function FriendRow({
           })}
         {type === TYPE.SHOP_MY_FRIEND &&
           OPTION.SHOP_MY_FRIEND.map((option) => {
-            const isAffordable = cokeCount >= ITEM_PRICE_LIST[targetItem];
+            const isAffordable = user.cokeCount >= ITEM_PRICE_LIST[targetItem];
             const key = nanoid();
             const handleSelect = async () => {
               await sendItem(
-                userId,
+                user.id,
                 id,
                 targetItem,
                 ITEM_PRICE_LIST[targetItem],
@@ -159,7 +139,7 @@ function FriendRow({
                 to: email,
                 from: user.username,
               });
-              toggleShopFriendList(false);
+              dispatch(togglePresentFriends());
               dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
             };
 
@@ -180,12 +160,9 @@ function FriendRow({
 FriendRow.propTypes = {
   friend: proptypes.object.isRequired,
   type: proptypes.string.isRequired,
-  toggleFriendList: proptypes.func,
-  visitFriend: proptypes.func,
   handleDeletion: proptypes.func,
   handleResponse: proptypes.func,
   targetItem: proptypes.string,
-  toggleShopFriendList: proptypes.func,
   socket: proptypes.object,
 };
 

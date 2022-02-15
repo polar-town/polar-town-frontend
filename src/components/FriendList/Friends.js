@@ -4,23 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import protypes from "prop-types";
 import FriendRow from "./FriendRow";
 import { TYPE } from "../../constants/friendList";
-import { selectUserId, updateFriendList } from "../../features/user/userSlice";
+import { updateFriendList } from "../../features/user/userSlice";
 import { getFriendList } from "../../api/friendlist";
 
-function Friends({
-  visitFriend,
-  toggleFriendList,
-  type,
-  targetItem,
-  toggleShopFriendList,
-  socket,
-}) {
+function Friends({ type, targetItem, socket }) {
   const [friends, setFriends] = useState([]);
   const dispatch = useDispatch();
-  const userId = useSelector(selectUserId);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(async () => {
-    const friendList = await getFriendList(userId);
+    const friendList = await getFriendList(user.id);
     setFriends(friendList);
     dispatch(updateFriendList(friendList));
   }, []);
@@ -35,11 +28,8 @@ function Friends({
               key={key}
               friend={friend}
               type={type ? type : TYPE.MY_FRIEND}
-              visitFriend={visitFriend}
-              toggleFriendList={toggleFriendList}
               handleDeletion={setFriends}
               targetItem={targetItem}
-              toggleShopFriendList={toggleShopFriendList}
               socket={socket}
             />
           );
@@ -51,10 +41,7 @@ function Friends({
 export default Friends;
 
 Friends.propTypes = {
-  visitFriend: protypes.func,
-  toggleFriendList: protypes.func,
   type: protypes.string,
   targetItem: protypes.string,
-  toggleShopFriendList: protypes.func,
   socket: protypes.object,
 };

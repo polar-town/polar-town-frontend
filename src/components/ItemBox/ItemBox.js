@@ -4,17 +4,21 @@ import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import PresentBox from "./PresentBox";
 import MyItemBox from "./MyItemBox";
+import { useDispatch } from "react-redux";
+import { toggleItemBox } from "../../features/modal/modalSlice";
 
-function ItemBox({ toggleItemBox, setOutItems }) {
+function ItemBox({ setOutItems }) {
+  const dispatch = useDispatch();
+
   return (
     <GameModal
       onClose={() => {
-        toggleItemBox(false);
+        dispatch(toggleItemBox());
       }}
     >
       <HalfModal category={["내 아이템", "선물함"]}>
-        <MyItemBox onClose={toggleItemBox} setOutItems={setOutItems} />
-        <PresentBox onClose={toggleItemBox} setOutItems={setOutItems} />
+        <MyItemBox setOutItems={setOutItems} />
+        <PresentBox setOutItems={setOutItems} />
       </HalfModal>
     </GameModal>
   );
@@ -23,6 +27,5 @@ function ItemBox({ toggleItemBox, setOutItems }) {
 export default ItemBox;
 
 ItemBox.propTypes = {
-  toggleItemBox: PropTypes.func.isRequired,
-  setOutItems: PropTypes.func,
+  setOutItems: PropTypes.func.isRequired,
 };

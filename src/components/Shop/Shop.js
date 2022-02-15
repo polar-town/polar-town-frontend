@@ -1,9 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+
+import { ITEM_LIST, ITEM_PRICE_LIST } from "../../constants/item";
+import { toggleShop } from "../../features/modal/modalSlice";
+
 import Item from "../Item/Item";
 import GameModal from "../GameModal/GameModal";
-import { ITEM_LIST, ITEM_PRICE_LIST } from "../../constants/item";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -12,15 +16,16 @@ const StyledDiv = styled.div`
   justify-content: space-between;
 `;
 
-function Shop({
-  onClose,
-  toggleNotification,
-  getTargetItem,
-  getNotificationType,
-  toggleShopFriendList,
-}) {
+function Shop({ getTargetItem }) {
+  const dispatch = useDispatch();
+
   return (
-    <GameModal onClose={onClose} subject="상점">
+    <GameModal
+      onClose={() => {
+        dispatch(toggleShop());
+      }}
+      subject="상점"
+    >
       <StyledDiv>
         {ITEM_LIST.map((item) => {
           return (
@@ -29,10 +34,7 @@ function Shop({
               storageType="shop"
               content={ITEM_PRICE_LIST[item]}
               imageName={item}
-              toggleNotification={toggleNotification}
               onTargetItem={getTargetItem}
-              onNotificationType={getNotificationType}
-              toggleShopFriendList={toggleShopFriendList}
             />
           );
         })}
@@ -44,9 +46,5 @@ function Shop({
 export default Shop;
 
 Shop.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  toggleNotification: PropTypes.func,
   getTargetItem: PropTypes.func,
-  getNotificationType: PropTypes.func,
-  toggleShopFriendList: PropTypes.func,
 };

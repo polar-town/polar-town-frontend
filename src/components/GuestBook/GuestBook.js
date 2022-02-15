@@ -1,15 +1,17 @@
 import { nanoid } from "@reduxjs/toolkit";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import proptypes from "prop-types";
-import { selectUserId } from "../../features/user/userSlice";
+
+import { EVENTS } from "../../constants/socketEvents";
+import { getMessageList } from "../../api/guestbook";
+import { togglePostBox } from "../../features/modal/modalSlice";
+
 import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
-import { EVENTS } from "../../constants/socketEvents";
-import { getMessageList } from "../../api/guestbook";
 
 const StyledGuestBookContainer = styled.div`
   height: 350px;
@@ -19,11 +21,12 @@ const StyledGuestBookContainer = styled.div`
   background-color: var(--game-modal-background);
 `;
 
-function GuestBook({ isOpen, toggleGuestbook, socket }) {
+function GuestBook({ socket }) {
   const [messageList, setMessageList] = useState([]);
   const { id } = useParams();
-  const userId = useSelector(selectUserId);
-  const isMyTown = id === userId;
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+  const { isPostBoxOpen } = useSelector((state) => state.modal);
 
   useEffect(async () => {
     try {
@@ -37,7 +40,7 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isPostBoxOpen) return;
 
     socket.on(EVENTS.GET_MESSAGES, (messages) => {
       const sortedUpdatedMessages = sortMessages(messages);
@@ -48,7 +51,7 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
       socket.off(EVENTS.READ_MESSAGES);
       socket.off(EVENTS.GET_MESSAGES);
     };
-  }, [isOpen]);
+  }, [isPostBoxOpen]);
 
   function sortMessages(messages) {
     return messages.sort((a, b) => {
@@ -62,11 +65,11 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
     <GameModal
       subject="방명록"
       onClose={() => {
-        toggleGuestbook(false);
+        dispatch(togglePostBox());
       }}
     >
       <StyledGuestBookContainer>
-        {!isMyTown && (
+        {user.id !== id && (
           <MessageInput onMessageListUpdate={setMessageList} socket={socket} />
         )}
         {!!messageList.length &&
@@ -89,7 +92,5 @@ function GuestBook({ isOpen, toggleGuestbook, socket }) {
 export default GuestBook;
 
 GuestBook.propTypes = {
-  isOpen: proptypes.bool.isRequired,
-  toggleGuestbook: proptypes.func.isRequired,
   socket: proptypes.object,
 };
