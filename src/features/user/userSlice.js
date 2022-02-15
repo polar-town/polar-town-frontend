@@ -1,24 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,
+  user: {},
+  isAuth: false,
   accessToken: null,
-  // cokeCount: 0,
-  // iceCount: 1,
-  // id: null,
-  // username: null,
-  // email: null,
-  // accessToken: null,
-  // friendList: [],
-  // pendingFriendList: [],
-  // itemCount: {
-  //   PolarBear: 0,
-  //   Penguin: 0,
-  //   Seal: 0,
-  //   Igloo: 0,
-  //   Flower: 0,
-  //   photo: null,
-  // },
+  itemCount: {
+    PolarBear: 0,
+    Penguin: 0,
+    Seal: 0,
+    Igloo: 0,
+    Flower: 0,
+    photo: null,
+  },
 };
 
 export const userSlice = createSlice({
@@ -30,26 +23,24 @@ export const userSlice = createSlice({
         _id: id,
         name,
         email,
-        cokeCount,
-        iceCount,
-        friendList,
-        inItemBox,
-        presentBox,
         photo,
+        cokeCount,
+        friendList,
+        pendingFriendList,
       } = payload.user;
 
       state.user = {
+        ...state,
         id,
         name,
         email,
-        cokeCount,
-        iceCount,
-        friendList,
-        inItemBox,
-        presentBox,
         photo,
+        cokeCount,
+        friendList,
+        pendingFriendList,
       };
       state.accessToken = payload.accessToken;
+      state.isAuth = true;
     },
     removeLogoutUser: () => {
       return initialState;
@@ -91,7 +82,12 @@ export const userSlice = createSlice({
   },
 });
 
+const { reducer, actions } = userSlice;
+
 export const {
+  getUserPending,
+  getUserSuccess,
+  getUserFail,
   saveLoginUser,
   removeLogoutUser,
   exchangeAccessToken,
@@ -102,7 +98,7 @@ export const {
   updatePendingFriendList,
   updateItemCount,
   updateIceCount,
-} = userSlice.actions;
+} = actions;
 
 export const selectUser = (state) => state.user;
 export const selectUserId = (state) => state.user.id;
@@ -113,4 +109,4 @@ export const selectFriendList = (state) => state.user.friendList;
 export const selectPendingFriendList = (state) => state.user.pendingFriendList;
 export const selectItemCount = (state) => state.user.itemCount;
 
-export default userSlice.reducer;
+export default reducer;

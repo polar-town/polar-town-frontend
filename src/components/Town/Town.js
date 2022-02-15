@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import { nanoid } from "nanoid";
 
 import { getTownHostInfo } from "../../api/user";
-import { selectUser } from "../../features/user/userSlice";
 import { EVENTS } from "../../constants/socketEvents";
+import {
+  openNotification,
+  setNotificationType,
+} from "../../features/modal/modalSlice";
 
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -49,39 +52,63 @@ const VisitorsContainer = styled.div`
   z-index: 1;
 `;
 
-function Town({ iceCount, onTownTransition }) {
-  const { id } = useParams();
-  const [outItems, setOutItems] = useState([]);
-  const loginUser = useSelector(selectUser);
-  const isMe = loginUser.id === id;
-  const [onMail, setOnMail] = useState(false);
-  const [onPostBox, setOnPostBox] = useState(false);
-  const [onNotification, setOnNotification] = useState(false);
-  const [onFriendList, setOnFriendList] = useState(false);
-  const [onFriendSearch, setOnFriendSearch] = useState(false);
-  const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
-  const [onShopOpen, setOnShopOpen] = useState(false);
-  const [visitors, setVisitors] = useState([]);
-  const [notificationType, setNotificationType] = useState("");
-  const [targetItem, setTargetItem] = useState("");
-  const [onShopFriendList, setOnShopFriendList] = useState(false);
-  const [from, setFrom] = useState([]);
-  const socketRef = useRef(null);
+function Town({ socket }) {
+  // const { id } = useParams();
+  // const [outItems, setOutItems] = useState([]);
+  // const loginUser = useSelector(selectUser);
+  // const isMe = loginUser.id === id;
+  // const [visitors, setVisitors] = useState([]);
+  // const [notificationType, setNotificationType] = useState("");
+  // const [targetItem, setTargetItem] = useState("");
+  // const [from, setFrom] = useState([]);
+  // const socketRef = useRef(null);
 
   // configuration 에서 짠 코드, 로그인과 마찬가지로 로딩과 에러에 대한 핸들 필요
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [iceCount, setIceCount] = useState(1);
+  const [outItems, setOutItems] = useState([]);
+  const [guestbookMessages, setGuestbookMessages] = useState([]);
+  const [visitors, setVisitors] = useState([]);
+  const [from, setFrom] = useState([]);
+  const [targetItem, setTargetItem] = useState("");
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {
+    isMailOpen,
+    isPostBoxOpen,
+    isNotificatoinOpen,
+    isFriendListOpen,
+    isFriendSearchOpen,
+    isItemBoxOpen,
+    isShopOpen,
+    isPresentFriendsOpen,
+    notificationType,
+  } = useSelector((state) => state.modal);
+  const { user: loginUser } = useSelector((state) => state.user);
+  const isMe = loginUser.id === id;
 
   useEffect(async () => {
-    const user = await getTownHostInfo(id);
+    setIsLoading(true);
+    const response = await getTownHostInfo(id);
 
-    setOutItems(user?.outItemBox);
-  }, [id, iceCount]);
+    if (response.result === "error") {
+      return navigate("/error");
+    }
+
+    const { iceCount, outItemBox, inItemBox } = response.result.user;
+
+    setIceCount(iceCount);
+    setOutItems([...outItemBox]);
+    setGuestbookMessages([inItemBox]);
+
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    if (!loginUser.id) return;
+    if (!user.isAuth) return;
 
-    const socket = getSocketIO();
+    // const socket = socket;
 
     socket.on(EVENTS.JOIN, (data) => {
       setVisitors(data.visitors);
@@ -89,8 +116,8 @@ function Town({ iceCount, onTownTransition }) {
 
     socket.on(EVENTS.GET_PRESENT, (data) => {
       setFrom([data.from]);
-      setNotificationType(TYPE.TYPE_PRESENT);
-      setOnNotification(true);
+      dispatch(openNotification());
+      dispatch(setNotificationType(TYPE.TYPE_PRESENT));
     });
 
     socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
@@ -102,8 +129,8 @@ function Town({ iceCount, onTownTransition }) {
     socket.on(EVENTS.FRIEND_REQUEST, (data) => {
       const { userName, email } = data;
       setFrom([userName, email]);
-      setOnNotification(true);
-      setNotificationType(TYPE.FRIEND_REQUEST);
+      dispatch(openNotification());
+      dispatch(setNotificationType(TYPE.FRIEND_REQUEST));
     });
 
     return () => {
@@ -113,25 +140,17 @@ function Town({ iceCount, onTownTransition }) {
     };
   }, [id, loginUser.id]);
 
-  function getSocketIO() {
-    if (socketRef.current === null) {
-      socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
-    }
+  // function getSocketIO() {
+  //   if (socketRef.current === null) {
+  //     socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
+  //   }
 
-    return socketRef.current;
-  }
+  //   return socketRef.current;
+  // }
 
   return (
     <>
-      <Header
-        toggleMail={setOnMail}
-        toggleFriendSearch={setOnFriendSearch}
-        toggleFriendList={setOnFriendList}
-        toggleShop={setOnShopOpen}
-        onTownTransition={onTownTransition}
-        onSignout={onTownTransition}
-        socket={getSocketIO()}
-      />
+      <Header socket={socket} />
       <VisitorsContainer>
         {!!visitors.length &&
           visitors.map((visitor) => {
@@ -151,73 +170,33 @@ function Town({ iceCount, onTownTransition }) {
             setOutItems={setOutItems}
           />
         ))}
-        <PostBox toggleGuestbook={setOnPostBox} socket={getSocketIO()} />
-        {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
+        <PostBox socket={socket} />
+        {isMe && <InItemBox />}
         <ModalPortals>
-          {onMail && <Mail toggleMail={setOnMail} />}
-          {onPostBox && (
-            <GuestBook
-              isOpen={onPostBox}
-              toggleGuestbook={setOnPostBox}
-              socket={getSocketIO()}
-            />
-          )}
-          {onShopOpen && (
-            <Shop
-              onClose={setOnShopOpen}
-              toggleNotification={setOnNotification}
-              getTargetItem={setTargetItem}
-              getNotificationType={setNotificationType}
-              toggleShopFriendList={setOnShopFriendList}
-            />
-          )}
-          {onFriendList && (
-            <FriendList
-              visitFriend={onTownTransition}
-              toggleFriendList={setOnFriendList}
-              socket={getSocketIO()}
-            />
-          )}
-          {onNotification && (
+          {isMailOpen && <Mail />}
+          {isPostBoxOpen && <GuestBook socket={socket} />}
+          {isShopOpen && <Shop getTargetItem={setTargetItem} />}
+          {isFriendListOpen && <FriendList socket={socket} />}
+          {isNotificatoinOpen && (
             <Notification
-              onTownTransition={onTownTransition}
-              toggleNotification={setOnNotification}
               notificationType={notificationType}
               targetItem={targetItem}
-              toggleItemBox={setOnItemBoxOpen}
               from={from}
             />
           )}
-          {onFriendSearch && (
-            <FriendSearch
-              toggleFriendSearch={setOnFriendSearch}
-              visitFriend={onTownTransition}
-              socket={getSocketIO()}
-            />
+          {isFriendSearchOpen && <FriendSearch socket={socket} />}
+          {isPresentFriendsOpen && (
+            <ShopFriendList targetItem={targetItem} socket={socket} />
           )}
-          {onShopFriendList && (
-            <ShopFriendList
-              toggleShopFriendList={setOnShopFriendList}
-              targetItem={targetItem}
-              socket={getSocketIO()}
-            />
-          )}
-          {onItemBoxOpen && (
-            <ItemBox
-              toggleItemBox={setOnItemBoxOpen}
-              setOutItems={setOutItems}
-            />
-          )}
+          {isItemBoxOpen && <ItemBox setOutItems={setOutItems} />}
         </ModalPortals>
       </TownDiv>
     </>
   );
 }
 
-Town.propTypes = {
-  townId: proptypes.string.isRequired,
-  iceCount: proptypes.string.isRequired,
-  onTownTransition: proptypes.func.isRequired,
-};
-
 export default Town;
+
+Town.propTypes = {
+  socket: proptypes.object.isRequired,
+};

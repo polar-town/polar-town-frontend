@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import proptypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import useGapi from "../../hooks/useGapi";
+import { userLogin } from "../../api/auth";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
-
-import {
-  loginPending,
-  loginSuccess,
-  loginFail,
-} from "../../features/login/loginSlice";
-import { userLogin } from "../../api/auth";
-import { useNavigate } from "react-router-dom";
 
 const LoginOverlay = styled.div`
   background: linear-gradient(to top, #03bcf6, #89fff1);
@@ -49,13 +41,11 @@ const FailureMessage = styled.span`
   margin-top: 10px;
 `;
 
-function Login({ goTown }) {
-  // const [error, setError] = useState("");
+function Login() {
+  const [error, setError] = useState("");
   const gapi = useGapi();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, isAuth, error } = useSelector((state) => state.login);
-  // isLoading, error 관련 컴포넌트 보여주기
 
   useEffect(() => {
     if (!gapi) return;
@@ -71,7 +61,6 @@ function Login({ goTown }) {
   }, [gapi]);
 
   async function responseGoogle(result) {
-    dispatch(loginPending());
     const profile = result.getBasicProfile();
     const name = profile.getName();
     const email = profile.getEmail();
@@ -83,10 +72,9 @@ function Login({ goTown }) {
       });
 
       if (isAuth.result === "error") {
-        return dispatch(loginFail(isAuth.error.message));
+        return setError(isAuth.error.message);
       }
 
-      dispatch(loginSuccess());
       dispatch(saveLoginUser(isAuth.result));
       navigate(`users/${isAuth.result.user._id}`);
     } catch (error) {
@@ -94,11 +82,9 @@ function Login({ goTown }) {
     }
   }
 
-  function responseError() {
-    // setError("Login Failed");
-    // setTimeout(() => {
-    //   setError("");
-    // }, 3000);
+  function responseError(error) {
+    console.error(error);
+    setError("Login Failed");
   }
 
   return (
@@ -119,7 +105,3 @@ function Login({ goTown }) {
 }
 
 export default Login;
-
-Login.propTypes = {
-  goTown: proptypes.func.isRequired,
-};

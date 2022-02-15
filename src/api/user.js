@@ -6,7 +6,7 @@ export async function getTownHostInfo(townId) {
       `${process.env.REACT_APP_BASE_URL}/users/${townId}`,
     );
 
-    return response.data.result;
+    return response.data;
   } catch (err) {
     console.error(err);
   }
