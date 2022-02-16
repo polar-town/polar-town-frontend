@@ -25,16 +25,26 @@ export async function changeStorage({
   to,
   axiosInstance,
 }) {
-  try {
-    const response = await axiosInstance.put(
-      `/users/${userId}/items/${itemId}`,
-      { from, to },
-    );
+  const response = await axiosInstance.put(`/users/${userId}/items/${itemId}`, {
+    from,
+    to,
+  });
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
+}
+
+export async function changeLocation({
+  userId,
+  itemId,
+  newLocation,
+  axiosInstance,
+}) {
+  const response = await axiosInstance.put(
+    `/users/${userId}/items/${itemId}/location`,
+    { newLocation },
+  );
+
+  return response.data;
 }
 
 export async function addItem({ userId, name, price, axiosInstance }) {

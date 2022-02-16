@@ -32,8 +32,7 @@ function FriendSearchRow({
   userPendingFriendList,
 }) {
   const { id: townId } = useParams();
-  const user = useSelector(selectUser);
-  const userId = useSelector(selectUserId);
+  const { user } = useSelector((state) => state.user);
   const { name, email, photo, id } = friend;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ function FriendSearchRow({
 
   async function sendFriendRequest(e) {
     await updateTargetPendingFriendList({
-      userId,
+      userId: user.id,
       targetEmail: email,
       axiosInstance,
     });

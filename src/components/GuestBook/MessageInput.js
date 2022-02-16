@@ -11,11 +11,11 @@ const StyledInputContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
   width: 100%;
-  background-color: #f5ecdb;
-  border-radius: 10px;
+  background-color: #eae3d5;
+  border-radius: 35px;
 
   input {
-    width: 90%;
+    width: 92%;
     height: 50px;
     font-size: 15px;
     border: 0;
@@ -25,7 +25,9 @@ const StyledInputContainer = styled.div`
   }
 
   .fa-envelope {
-    font-size: 25px;
+    font-size: 22px;
+    color: #c48679;
+    cursor: pointer;
   }
 `;
 

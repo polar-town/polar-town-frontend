@@ -6,7 +6,7 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 
 import { EVENTS } from "../../constants/socketEvents";
-import { getMessageList } from "../../api/guestbook";
+import { getMessageList, changeCheckMessage } from "../../api/guestbook";
 import { togglePostBox } from "../../features/modal/modalSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
@@ -22,7 +22,7 @@ const StyledGuestBookContainer = styled.div`
   background-color: var(--game-modal-background);
 `;
 
-function GuestBook({ socket }) {
+function GuestBook({ socket, setIsReceiveGuestBook }) {
   const [messageList, setMessageList] = useState([]);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -36,6 +36,11 @@ function GuestBook({ socket }) {
       const sortedMessages = sortMessages(messages.data.result.guestBook);
 
       setMessageList(sortedMessages);
+
+      if (user.id === id) {
+        await changeCheckMessage({ userId: user.id, axiosInstance });
+        setIsReceiveGuestBook(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +67,6 @@ function GuestBook({ socket }) {
       if (a.date === b.date) return 0;
     });
   }
-
   return (
     <GameModal
       subject="방명록"
@@ -83,6 +87,7 @@ function GuestBook({ socket }) {
                 name={post.name}
                 message={post.message}
                 date={post.date}
+                post={post}
               />
             );
           })}
@@ -95,4 +100,5 @@ export default GuestBook;
 
 GuestBook.propTypes = {
   socket: proptypes.object,
+  setIsReceiveGuestBook: proptypes.func,
 };

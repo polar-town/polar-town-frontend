@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { func } from "prop-types";
 import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import PresentBox from "./PresentBox";
@@ -7,7 +7,7 @@ import MyItemBox from "./MyItemBox";
 import { useDispatch } from "react-redux";
 import { toggleItemBox } from "../../features/modal/modalSlice";
 
-function ItemBox({ setOutItems }) {
+function ItemBox({ setOutItems, setIsReceiveGift }) {
   const dispatch = useDispatch();
 
   return (
@@ -16,7 +16,10 @@ function ItemBox({ setOutItems }) {
         dispatch(toggleItemBox());
       }}
     >
-      <HalfModal category={["내 아이템", "선물함"]}>
+      <HalfModal
+        category={["내 아이템", "선물함"]}
+        setIsReceiveGift={setIsReceiveGift}
+      >
         <MyItemBox setOutItems={setOutItems} />
         <PresentBox setOutItems={setOutItems} />
       </HalfModal>
@@ -27,5 +30,6 @@ function ItemBox({ setOutItems }) {
 export default ItemBox;
 
 ItemBox.propTypes = {
-  setOutItems: PropTypes.func.isRequired,
+  setOutItems: PropTypes.func,
+  setIsReceiveGift: PropTypes.func,
 };

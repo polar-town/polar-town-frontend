@@ -19,3 +19,9 @@ export async function leaveNewMessage({ townId, message, axiosInstance }) {
     console.error(error);
   }
 }
+
+export async function changeCheckMessage({ userId, axiosInstance }) {
+  const response = await axiosInstance.put(`/users/${userId}/guestbook`);
+
+  return response.data.result;
+}

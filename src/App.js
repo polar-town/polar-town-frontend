@@ -33,7 +33,6 @@ function App() {
       <GlobalStyle />
       <Routes>
         <Route path="/login" element={<Login />} />
-
         <Route element={<PersistLogin />}>
           <Route element={<RequireAuth />}>
             <Route
@@ -46,7 +45,6 @@ function App() {
             />
           </Route>
         </Route>
-
         <Route path="*" element={<div>Error</div>} />
       </Routes>
     </>

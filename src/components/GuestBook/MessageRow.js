@@ -2,49 +2,50 @@ import React from "react";
 import proptypes from "prop-types";
 import styled from "styled-components";
 import { DateTime } from "luxon";
+import FriendProfile from "../FriendProfile/FriendProfile";
 
 const StyledPostContainer = styled.div`
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 100px;
-  background: #67d9fd;
+  height: 75px;
+  background: rgba(39, 114, 114, 0.1);
   margin-bottom: 10px;
-  padding: 20px;
-  border-radius: 10px;
+  border-radius: 8px;
 `;
 
 const StyledRightSection = styled.section`
-  flex: 0.4;
-  text-align: center;
-  margin-right: 30px;
+  width: 120px;
+  margin-right: 10px;
+  padding: 16px 5px;
+  border-right: 1px solid #d6f6f6;
 `;
 
-const StyledName = styled.span`
-  font-size: 20px;
-  font-weight: 700;
-  opacity: 0.7;
-`;
 const StyledMessage = styled.span`
   font-size: 15px;
   opacity: 0.7;
 `;
+
 const StyledDate = styled.span`
-  font-size: 12px;
+  font-size: 13px;
   opacity: 0.5;
 `;
 
 const StyledLeftSection = styled.section`
   display: flex;
   flex-direction: column;
+  padding: 5px 5px;
+  width: 320px;
 `;
 
-function MessageRow({ name, message, date }) {
+function MessageRow({ post }) {
+  const { name, message, date, photo } = post;
+
   return (
     <StyledPostContainer>
       <StyledRightSection>
-        <StyledName>{name}</StyledName>
+        <FriendProfile name={name} photo={photo} />
       </StyledRightSection>
       <StyledLeftSection>
         <StyledMessage>{message}</StyledMessage>
@@ -60,4 +61,5 @@ MessageRow.propTypes = {
   name: proptypes.string.isRequired,
   message: proptypes.string.isRequired,
   date: proptypes.string.isRequired,
+  post: proptypes.object,
 };

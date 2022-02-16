@@ -115,7 +115,7 @@ function Notification({ notificationType, targetItem, from }) {
 
   return (
     <GameModal
-      subject={notificationType === "friendRequest" && "친구 요청"}
+      subject={notificationType === "friendRequest" ? "친구 요청" : ""}
       onClose={() => {
         dispatch(closeNotification());
       }}

@@ -20,7 +20,6 @@ import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
-import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
 import Header from "../Header/header";
@@ -29,21 +28,16 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
+import IcePalette from "./IcePalette";
 
 const TownDiv = styled.div`
-  background-image: url(${(props) =>
-      `/images/ice-background/${props.iceCount}.png`}),
-    url("/images/town-background-image.jpg");
-  background-position: center 40px, center center;
-  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  background: url("/images/town-background-image.jpg");
+  background-position: center center;
   background-size: cover;
-  image-rendering: pixelated;
+  overflow: hidden;
   position: relative;
-
-  .a {
-    background-color: lemonchiffon;
-    position: absolute;
-  }
 `;
 
 const VisitorsContainer = styled.div`
@@ -53,6 +47,24 @@ const VisitorsContainer = styled.div`
   z-index: 1;
 `;
 
+const GiftAndItemContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 200px;
+  height: 170px;
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+
+  .giftNoti {
+    font-size: 22px;
+    color: red;
+    position: absolute;
+    right: -5px;
+  }
+`;
+
 function Town({ socket }) {
   const [isLoading, setIsLoading] = useState(false);
   const [iceCount, setIceCount] = useState(1);
@@ -60,6 +72,8 @@ function Town({ socket }) {
   const [visitors, setVisitors] = useState([]);
   const [from, setFrom] = useState([]);
   const [targetItem, setTargetItem] = useState("");
+  const [isReceiveGift, setIsReceiveGift] = useState(false);
+  const [isReceiveGuestBook, setIsReceiveGuestBook] = useState(false);
   const { id } = useParams();
   const dispatch = useDispatch();
   const {
@@ -103,6 +117,7 @@ function Town({ socket }) {
       setFrom([data.from]);
       dispatch(openNotification());
       dispatch(setNotificationType(TYPE.TYPE_PRESENT));
+      setIsReceiveGift(true);
     });
 
     socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
@@ -122,8 +137,9 @@ function Town({ socket }) {
       socket.off(EVENTS.JOIN);
       socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
+      socket.off(EVENTS.GET_PRESENT);
     };
-  }, [id]);
+  }, [id, loginUser.id]);
 
   return (
     <>
@@ -136,21 +152,32 @@ function Town({ socket }) {
           })}
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
-        <div className="a">{id}</div>
         <CokeCounter />
-        {outItems?.map((item) => (
-          <OutItem
-            key={item._id}
-            name={item.name}
-            itemId={item._id}
-            setOutItems={setOutItems}
-          />
-        ))}
-        <PostBox />
-        {loginUser.id === id && <InItemBox />}
+        <PostBox
+          isReceiveGuestBook={isReceiveGuestBook}
+          setIsReceiveGuestBook={setIsReceiveGuestBook}
+        />
+        <IcePalette
+          iceCount={iceCount}
+          outItems={outItems}
+          onOutItems={setOutItems}
+        />
+        {loginUser.id === id && (
+          <GiftAndItemContainer>
+            <InItemBox />
+            {isReceiveGift && (
+              <i className="fas fa-exclamation-circle giftNoti" />
+            )}
+          </GiftAndItemContainer>
+        )}
         <ModalPortals>
           {isMailOpen && <Mail />}
-          {isPostBoxOpen && <GuestBook socket={socket} />}
+          {isPostBoxOpen && (
+            <GuestBook
+              socket={socket}
+              setIsReceiveGuestBook={setIsReceiveGuestBook}
+            />
+          )}
           {isShopOpen && <Shop getTargetItem={setTargetItem} />}
           {isFriendListOpen && <FriendList socket={socket} />}
           {isNotificatoinOpen && (
@@ -164,7 +191,12 @@ function Town({ socket }) {
           {isPresentFriendsOpen && (
             <ShopFriendList targetItem={targetItem} socket={socket} />
           )}
-          {isItemBoxOpen && <ItemBox setOutItems={setOutItems} />}
+          {isItemBoxOpen && (
+            <ItemBox
+              setOutItems={setOutItems}
+              setIsReceiveGift={setIsReceiveGift}
+            />
+          )}
         </ModalPortals>
       </TownDiv>
     </>
