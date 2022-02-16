@@ -90,7 +90,7 @@ function Town({ socket }) {
     } catch (error) {
       console.error(error);
     }
-  }, [id]);
+  }, [id, loginUser.iceCount]);
 
   useEffect(() => {
     if (isLoading) return;

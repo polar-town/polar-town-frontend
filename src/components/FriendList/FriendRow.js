@@ -76,17 +76,17 @@ function FriendRow({
   }
 
   async function onDeletion() {
-    await deleteFriend({ userId: user.id, email, deleteFriend });
+    await deleteFriend({ userId: user.id, email, deleteFriend, axiosInstance });
     handleDeletion((prev) => prev.filter((friend) => friend.id !== id));
   }
 
   async function acceptFriendRequest() {
-    await addFriendList(user.id, email);
+    await addFriendList({ userId: user.id, email, axiosInstance });
     handleResponse((prev) => prev.filter((friend) => friend.id !== id));
   }
 
   async function declineFriendRequest() {
-    await deletePendingFriend(user.id, email);
+    await deletePendingFriend({ userId: user.id, email, axiosInstance });
     handleResponse((prev) => prev.filter((friend) => friend.id !== id));
   }
 
