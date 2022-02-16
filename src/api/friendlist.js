@@ -1,10 +1,6 @@
-import axios from "axios";
-
-export async function getFriendList(userId) {
+export async function getFriendList({ userId, axiosInstance }) {
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends`,
-    );
+    const response = await axiosInstance.get(`/users/${userId}/friends`);
 
     const friendList = response.data.result.map((res) => {
       const { _id, name, photo, iceCount, email } = res.userId;
@@ -24,10 +20,10 @@ export async function getFriendList(userId) {
   }
 }
 
-export async function deleteFriend(userId, email) {
+export async function deleteFriend({ userId, email, axiosInstance }) {
   try {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends`,
+    await axiosInstance.delete(
+      `/users/${userId}/friends`,
       { data: { email } },
       { withCredentials: true },
     );
@@ -36,11 +32,11 @@ export async function deleteFriend(userId, email) {
   }
 }
 
-export async function getPendingFriendList(userId) {
+export async function getPendingFriendList({ userId, axiosInstance }) {
+  console.log(userId, axiosInstance);
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends/pending`,
-      { withCredentials: true },
+    const response = await axiosInstance.get(
+      `/users/${userId}/friends/pending`,
     );
 
     const pendingFriendList = response.data.result.map((res) => {
@@ -62,10 +58,15 @@ export async function getPendingFriendList(userId) {
   }
 }
 
-export async function addFriendList(userId, email, isAlarm = false) {
+export async function addFriendList({
+  userId,
+  email,
+  isAlarm = false,
+  axiosInstance,
+}) {
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends`,
+    const response = await axiosInstance.post(
+      `/users/${userId}/friends`,
       { email, isAlarm },
       { withCredentials: true },
     );
@@ -76,10 +77,10 @@ export async function addFriendList(userId, email, isAlarm = false) {
   }
 }
 
-export async function deletePendingFriend(userId, email) {
+export async function deletePendingFriend({ userId, email, axiosInstance }) {
   try {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends/pending`,
+    await axiosInstance.delete(
+      `/users/${userId}/friends/pending`,
       { data: { email } },
       { withCredentials: true },
     );

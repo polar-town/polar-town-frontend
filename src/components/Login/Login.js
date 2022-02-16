@@ -76,10 +76,6 @@ function Login() {
         googleData: { name, email, photo: imageUrl },
       });
 
-      if (isAuth.result === "error") {
-        return setError(isAuth.error.message);
-      }
-
       dispatch(saveLoginUser(isAuth.result));
       navigate(to, { replace: true });
     } catch (error) {

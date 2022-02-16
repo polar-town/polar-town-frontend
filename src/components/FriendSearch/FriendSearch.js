@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleFriendSearch } from "../../features/modal/modalSlice";
 import { getSearchedFriendList } from "../../api/friendSearch";
 import { getFriendList, getPendingFriendList } from "../../api/friendlist";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const PaginationButtonContainer = styled.div`
   display: flex;
@@ -34,36 +35,38 @@ function FriendSearch({ socket }) {
   const [query, setQuery] = useState("");
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
-    const friendList = await getFriendList(user.id);
-    const pendingFriendList = await getPendingFriendList(user.id);
+    const friendList = await getFriendList({ userId: user.id, axiosInstance });
+    const pendingFriendList = await getPendingFriendList({
+      userId: user.id,
+      axiosInstance,
+    });
 
-    if (friendList.result !== "error" && pendingFriendList.result !== "error") {
-      setUserFriendList([...friendList]);
-      setUserPendingFriendList([...pendingFriendList]);
-    } else {
-      // error handling!
-    }
+    setUserFriendList([...friendList]);
+    setUserPendingFriendList([...pendingFriendList]);
   }, []);
 
   async function onPageChange(option) {
     if (option === PAGE_OPTION[PREV] && page > 1) {
-      const searchResult = await getSearchedFriendList(
-        user.id,
+      const pageIndex = page - 1;
+      const searchResult = await getSearchedFriendList({
         query,
-        page - 1,
-      );
+        pageIndex,
+        axiosInstance,
+      });
       setPage(searchResult.page);
       setSearchedFriends(searchResult.users);
       return;
     }
 
     if (hasResult) {
+      const pageIndex = page + 1;
       const searchResult = await getSearchedFriendList(
-        user.id,
         query,
-        page + 1,
+        pageIndex,
+        axiosInstance,
       );
       if (!searchResult.users.length) {
         setHasResult(false);

@@ -6,11 +6,11 @@ import GlobalStyle from "./GlobalStyle";
 import Login from "./components/Login/Login";
 import Town from "./components/Town/Town";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
-import Logout from "./components/Logout/Logout";
+import PersistLogin from "./components/PersistLogin/PersistLogin";
 
 function App() {
   const socketRef = useRef(null);
-  const { isAuth, user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     const socket = getSocketIO();
@@ -32,20 +32,22 @@ function App() {
     <>
       <GlobalStyle />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Navigate replace to={!isAuth ? "/login" : `/users/${user.id}`} />
-          }
-        />
         <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
 
-        <Route element={<RequireAuth />}>
-          <Route path="/users/:id" element={<Town socket={getSocketIO()} />} />
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth />}>
+            <Route
+              path="/"
+              element={<Navigate replace to={`/users/${user.id}`} />}
+            />
+            <Route
+              path="/users/:id"
+              element={<Town socket={getSocketIO()} />}
+            />
+          </Route>
         </Route>
 
-        {/* <Route path="*" element={<Error />} /> */}
+        <Route path="*" element={<div>Error</div>} />
       </Routes>
     </>
   );

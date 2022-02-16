@@ -3,16 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
-import useGapi from "../../hooks/useGapi";
 import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
-import { userLogout } from "../../api/auth";
 import {
   toggleMail,
   toggleFriendSearch,
   toggleFriendList,
   toggleShop,
 } from "../../features/modal/modalSlice";
-import { resetLoginUser } from "../../features/user/userSlice";
+import useLogout from "../../hooks/useLogout";
 
 const HeaderContainer = styled.header`
   width: 100vw;
@@ -48,20 +46,13 @@ function Header({ socket }) {
   const { id: prevTownId } = useParams();
   const { user, isAuth } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const gapi = useGapi();
+  const logout = useLogout();
 
-  const logout = async () => {
-    const auth2 = gapi.auth2.getAuthInstance();
-
-    auth2.signOut().then(function () {
-      auth2.disconnect();
-    });
-
-    await userLogout(user);
-    navigate("/logout");
+  async function signOut() {
+    await logout();
     socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
-    dispatch(resetLoginUser());
-  };
+    navigate("/");
+  }
 
   return (
     <HeaderContainer>
@@ -100,7 +91,7 @@ function Header({ socket }) {
               dispatch(toggleShop());
             }}
           />
-          <i className="fas fa-sign-out-alt" onClick={logout} />
+          <i className="fas fa-sign-out-alt" onClick={signOut} />
         </NavWrapperNav>
       )}
     </HeaderContainer>

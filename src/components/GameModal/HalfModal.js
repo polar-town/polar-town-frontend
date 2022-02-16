@@ -5,6 +5,7 @@ import NotificationCircle from "../NotificationCircle/NotificationCircle";
 import { getPendingFriendList } from "../../api/friendlist";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledHalfModal = styled.div`
   margin: 0 auto;
@@ -39,9 +40,13 @@ function HalfModal({ category, children }) {
   const { user } = useSelector((state) => state.user);
   const [hasNewPendingFriend, setHasNewPendingFriend] = useState(false);
   const [showFirstContent, setShowFirstContent] = useState(true);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
-    const pendingFriendList = await getPendingFriendList(user.id);
+    const pendingFriendList = await getPendingFriendList({
+      userId: user.id,
+      axiosInstance,
+    });
     const isExistNewPendingFriend = pendingFriendList.some(
       (friend) => !friend.isChecked,
     );

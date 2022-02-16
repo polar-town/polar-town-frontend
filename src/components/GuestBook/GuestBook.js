@@ -8,6 +8,7 @@ import proptypes from "prop-types";
 import { EVENTS } from "../../constants/socketEvents";
 import { getMessageList } from "../../api/guestbook";
 import { togglePostBox } from "../../features/modal/modalSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
@@ -27,10 +28,11 @@ function GuestBook({ socket }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { isPostBoxOpen } = useSelector((state) => state.modal);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
     try {
-      const messages = await getMessageList(id);
+      const messages = await getMessageList({ townId: id, axiosInstance });
       const sortedMessages = sortMessages(messages.data.result.guestBook);
 
       setMessageList(sortedMessages);

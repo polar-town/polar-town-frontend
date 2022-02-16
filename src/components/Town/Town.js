@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
@@ -12,6 +12,7 @@ import {
   setNotificationType,
 } from "../../features/modal/modalSlice";
 import { getTownHostInfo } from "../../api/user";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -60,7 +61,6 @@ function Town({ socket }) {
   const [from, setFrom] = useState([]);
   const [targetItem, setTargetItem] = useState("");
   const { id } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     isMailOpen,
@@ -74,20 +74,22 @@ function Town({ socket }) {
     notificationType,
   } = useSelector((state) => state.modal);
   const { user: loginUser } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
     setIsLoading(true);
-    const response = await getTownHostInfo(id);
 
-    if (response.result === "error") {
-      return navigate("/error");
+    try {
+      const response = await getTownHostInfo({ axiosInstance, townId: id });
+      const { iceCount, outItemBox } = response.result.user;
+
+      setIceCount(iceCount);
+      setOutItems([...outItemBox]);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
     }
-
-    const { iceCount, outItemBox } = response.result.user;
-    setIceCount(iceCount);
-    setOutItems([...outItemBox]);
-
-    setIsLoading(false);
   }, [id]);
 
   useEffect(() => {

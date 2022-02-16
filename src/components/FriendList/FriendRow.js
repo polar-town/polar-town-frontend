@@ -23,6 +23,7 @@ import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
 
 import GameModalButton from "../GameModal/GameModalButton";
 import FriendProfile from "../FriendProfile/FriendProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const FriendRowContainer = styled.div`
   display: flex;
@@ -62,6 +63,7 @@ function FriendRow({
   const { id: townId } = useParams();
   const { user } = useSelector((state) => state.user);
   const { name, email, photo, id } = friend;
+  const axiosInstance = useAxiosPrivate();
 
   function visitFriendTown() {
     socket.emit(EVENTS.LEFT, {
@@ -74,7 +76,7 @@ function FriendRow({
   }
 
   async function onDeletion() {
-    await deleteFriend(user.id, email);
+    await deleteFriend({ userId: user.id, email, deleteFriend });
     handleDeletion((prev) => prev.filter((friend) => friend.id !== id));
   }
 
@@ -128,12 +130,13 @@ function FriendRow({
             const isAffordable = user.cokeCount >= ITEM_PRICE_LIST[targetItem];
             const key = nanoid();
             const handleSelect = async () => {
-              await sendItem(
-                user.id,
-                id,
-                targetItem,
-                ITEM_PRICE_LIST[targetItem],
-              );
+              await sendItem({
+                townId: user.id,
+                presentTo: id,
+                name: targetItem,
+                price: ITEM_PRICE_LIST[targetItem],
+                axiosInstance,
+              });
 
               socket.emit(EVENTS.SEND_PRESENT, {
                 to: email,

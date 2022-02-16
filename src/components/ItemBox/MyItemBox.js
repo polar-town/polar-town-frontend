@@ -9,6 +9,7 @@ import { countItem, itemCounter } from "../../utils/item";
 import { ITEM_LIST } from "../../constants/item";
 import { updateItemCount } from "../../features/user/userSlice";
 import { toggleItemBox } from "../../features/modal/modalSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -24,13 +25,14 @@ function MyItemBox({ setOutItems }) {
   const [myItemList, setMyItemList] = useState([]);
   const { user, itemCount } = useSelector((state) => state.user);
   const iceCount = user.iceCount;
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
     setIsMounted(true);
 
     try {
       if (isMounted) {
-        const myItemBox = await getInItemBox(id);
+        const myItemBox = await getInItemBox({ townId: id, axiosInstance });
 
         setMyItemList(myItemBox.result.inItemBox);
       }
@@ -61,12 +63,13 @@ function MyItemBox({ setOutItems }) {
       return item.name === itemName;
     });
 
-    const response = await changeStorage(
-      id,
-      targetItem._id,
-      "inItemBox",
-      "outItemBox",
-    );
+    const response = await changeStorage({
+      userId: id,
+      itemId: targetItem._id,
+      from: "inItemBox",
+      to: "outItemBox",
+      axiosInstance,
+    });
 
     setOutItems(response.result.outBox);
     dispatch(toggleItemBox());

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { changeStorage } from "../../api/item";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const OutItemDiv = styled.div`
   position: absolute;
@@ -17,9 +18,16 @@ function OutItem({ name, itemId, setOutItems }) {
   const imageSrc = `/images/items/${name}.png`;
   const { id } = useParams();
   const { user } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   const goToOutBox = async () => {
-    const response = await changeStorage(id, itemId, "outItemBox", "inItemBox");
+    const response = await changeStorage({
+      userId: id,
+      itemId,
+      from: "outItemBox",
+      to: "inItemBox",
+      axiosInstance,
+    });
     const { outBox } = response.result;
     setOutItems(outBox);
   };

@@ -14,6 +14,7 @@ import {
   toggleItemBox,
 } from "../../features/modal/modalSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -41,6 +42,7 @@ function Notification({ notificationType, targetItem, from }) {
   const [buttonContent, setButtonContent] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState("");
   const { user } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(() => {
     if (notificationType === TYPE.CONFIRM_PURCHASE) {
@@ -65,7 +67,12 @@ function Notification({ notificationType, targetItem, from }) {
             dispatch(updateIceCount());
           }
 
-          await addItem(user.id, targetItem, ITEM_PRICE_LIST[targetItem]);
+          await addItem({
+            userId: user.id,
+            name: targetItem,
+            price: ITEM_PRICE_LIST[targetItem],
+            axiosInstance,
+          });
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
 
           return dispatch(closeNotification());
@@ -88,12 +95,21 @@ function Notification({ notificationType, targetItem, from }) {
   };
 
   const handleAcceptFriend = async () => {
-    await addFriendList(user.id, from[1], true);
+    await addFriendList({
+      userId: user.id,
+      email: from[1],
+      isAlarm: true,
+      axiosInstance,
+    });
     dispatch(closeNotification());
   };
 
   const handleRejectFriend = async () => {
-    await deletePendingFriend(user.id, from[1]);
+    await deletePendingFriend({
+      userId: user.id,
+      email: from[1],
+      axiosInstance,
+    });
     dispatch(closeNotification());
   };
 

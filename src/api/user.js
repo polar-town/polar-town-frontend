@@ -1,13 +1,5 @@
-import axios from "axios";
+export async function getTownHostInfo({ axiosInstance, townId }) {
+  const response = await axiosInstance.get(`/users/${townId}`);
 
-export async function getTownHostInfo(townId) {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/${townId}`,
-    );
-
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }

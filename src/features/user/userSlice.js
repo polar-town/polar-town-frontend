@@ -46,13 +46,8 @@ export const userSlice = createSlice({
     resetLoginUser: () => {
       return initialState;
     },
-    exchangeAccessToken: (state, action) => {
-      const { accessToken } = action.payload;
-
-      return {
-        ...state,
-        accessToken,
-      };
+    exchangeAccessToken: (state, { payload }) => {
+      state.accessToken = payload;
     },
     currentCoke: (state, action) => {
       state.user.cokeCount = action.payload;

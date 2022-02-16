@@ -9,6 +9,7 @@ import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import useGapi from "../../hooks/useGapi";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -128,6 +129,7 @@ function Mail() {
   const [isTrashActive, setIsTrashActive] = useState(false);
   const [googleAt, setGoogleAt] = useState(null);
   const gapi = useGapi();
+  const axiosInstance = useAxiosPrivate();
   let inBoxId;
 
   if (isPromotionActive) {
@@ -150,17 +152,22 @@ function Mail() {
   }, [gapi]);
 
   useEffect(async () => {
-    if (!googleAt) return;
+    if (!googleAt || !inBoxId) return;
 
     async function getUserEmailList() {
-      const response = await getMailList(googleAt, loginUser.id, inBoxId);
+      const response = await getMailList({
+        at: googleAt,
+        userId: loginUser.id,
+        inboxId: inBoxId,
+        axiosInstance,
+      });
 
       setUserEmailList(response?.result);
       setNextPageToken(response?.nextPageToken);
     }
 
     getUserEmailList();
-  }, [googleAt]);
+  }, [googleAt, inBoxId]);
 
   const getCategoryEmails = async (e) => {
     const inBoxId = e.target.id;
@@ -183,7 +190,12 @@ function Mail() {
       setIsSpamActive(false);
     }
 
-    const response = await getMailList(googleAt, loginUser.id, inBoxId);
+    const response = await getMailList({
+      at: googleAt,
+      userId: loginUser.id,
+      inboxId: inBoxId,
+      axiosInstance,
+    });
 
     setUserEmailList(response.result);
     setNextPageToken(response?.nextPageToken);
@@ -196,12 +208,13 @@ function Mail() {
     const scrolledHeight = e.target.scrollTop;
 
     if (bodyHeight === showContentHeight + scrolledHeight) {
-      const response = await getMailList(
-        googleAt,
-        loginUser.id,
-        inBoxId,
-        nextPageToken,
-      );
+      const response = await getMailList({
+        at: googleAt,
+        userId: loginUser.id,
+        inboxId: inBoxId,
+        pageToken: nextPageToken,
+        axiosInstance,
+      });
 
       setUserEmailList([...userEmailList, ...response.result]);
       setNextPageToken(response.nextPageToken);

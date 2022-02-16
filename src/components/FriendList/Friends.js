@@ -6,14 +6,16 @@ import FriendRow from "./FriendRow";
 import { TYPE } from "../../constants/friendList";
 import { updateFriendList } from "../../features/user/userSlice";
 import { getFriendList } from "../../api/friendlist";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function Friends({ type, targetItem, socket }) {
   const [friends, setFriends] = useState([]);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
-    const friendList = await getFriendList(user.id);
+    const friendList = await getFriendList({ userId: user.id, axiosInstance });
     setFriends(friendList);
     dispatch(updateFriendList(friendList));
   }, []);

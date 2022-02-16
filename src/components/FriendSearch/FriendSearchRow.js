@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
 
 import FriendProfile from "../FriendProfile/FriendProfile";
 import GameModalButton from "../GameModal/GameModalButton";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const FriendSearchRowContainer = styled.div`
   display: flex;
@@ -36,6 +37,7 @@ function FriendSearchRow({
   const { name, email, photo, id } = friend;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
 
   function checkFriendType(searchedId) {
     const isFriend = userFriendList.some((friend) => friend.id === searchedId);
@@ -66,7 +68,11 @@ function FriendSearchRow({
   }
 
   async function sendFriendRequest(e) {
-    await updateTargetPendingFriendList(userId, email);
+    await updateTargetPendingFriendList({
+      userId,
+      targetEmail: email,
+      axiosInstance,
+    });
     e.target.textContent = OPTION.REQUEST_SENT;
     e.target.setAttribute("disabled", true);
 
