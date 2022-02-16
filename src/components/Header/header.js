@@ -61,7 +61,14 @@ function Header({ socket }) {
           src="/images/logo.png"
           alt="mailLogo"
           onClick={() => {
+            if (prevTownId === user.id) return;
+
             navigate(`/users/${user.id}`);
+            socket.emit(EVENTS.LEFT, {
+              prevTownId,
+              user,
+              type: LEFT_TYPE.TRANSITION,
+            });
           }}
         />
       </ImgWrapperDiv>

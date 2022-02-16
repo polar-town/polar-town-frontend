@@ -33,7 +33,6 @@ export async function deleteFriend({ userId, email, axiosInstance }) {
 }
 
 export async function getPendingFriendList({ userId, axiosInstance }) {
-  console.log(userId, axiosInstance);
   try {
     const response = await axiosInstance.get(
       `/users/${userId}/friends/pending`,
