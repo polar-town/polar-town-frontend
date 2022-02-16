@@ -53,7 +53,7 @@ function OutItem({ name, isMe, itemId, setOutItems, location }) {
         location={location}
         onDoubleClick={(e) => {
           if (isMe) {
-            isMe && goToInBox();
+            goToInBox();
             e.currentTarget.parentNode.removeChild(e.currentTarget);
           }
         }}

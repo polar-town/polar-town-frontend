@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import proptypes from "prop-types";
 import styled from "styled-components";
 
 const SpriteImageContainer = styled.div`
@@ -61,9 +61,9 @@ function InItemSpriteImage({ imageName, width, height, size, margin }) {
 export default InItemSpriteImage;
 
 InItemSpriteImage.propTypes = {
-  imageName: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.string.isRequired,
-  size: PropTypes.object,
-  margin: PropTypes.object,
+  imageName: proptypes.string.isRequired,
+  width: proptypes.number.isRequired,
+  height: proptypes.string.isRequired,
+  size: proptypes.object,
+  margin: proptypes.object,
 };

@@ -35,15 +35,6 @@ const TownDiv = styled.div`
   background-size: cover;
   overflow: "hidden";
   position: relative;
-
-  .a {
-    background-color: lemonchiffon;
-    position: absolute;
-  }
-
-  .draggable.dragging {
-    opacity: 0.5;
-  }
 `;
 
 const VisitorsContainer = styled.div`
