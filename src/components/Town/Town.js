@@ -16,7 +16,6 @@ import GuestBook from "../GuestBook/GuestBook";
 import ModalPortals from "../ModalPortals/ModalPortals";
 import Notification from "../Notification/Notification";
 import InItemBox from "./InItemBox";
-import OutItem from "./OutItem";
 import FriendList from "../FriendList/FriendList";
 import FriendSearch from "../FriendSearch/FriendSearch";
 import Header from "../Header/header";
@@ -26,19 +25,24 @@ import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
 import { TYPE } from "../../constants/notification";
+import IcePalette from "./IcePalette";
 
 const TownDiv = styled.div`
-  background-image: url(${(props) => props.iceCount}),
-    url("/images/town-background-image.jpg");
-  background-position: center 40px, center center;
-  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  background: url("/images/town-background-image.jpg");
+  background-position: center center;
   background-size: cover;
-  image-rendering: pixelated;
+  overflow: "hidden";
   position: relative;
 
   .a {
     background-color: lemonchiffon;
     position: absolute;
+  }
+
+  .draggable.dragging {
+    opacity: 0.5;
   }
 `;
 
@@ -136,18 +140,13 @@ function Town({ iceCount, onTownTransition }) {
           })}
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
-        <div className="a">{id}</div>
         <CokeCounter />
-        {outItems?.map((item) => (
-          <OutItem
-            key={item._id}
-            name={item.name}
-            isMe={isMe}
-            itemId={item._id}
-            setOutItems={setOutItems}
-          />
-        ))}
         <PostBox toggleGuestbook={setOnPostBox} socket={getSocketIO()} />
+        <IcePalette
+          iceCount={iceCount}
+          outItems={outItems}
+          onOutItems={setOutItems}
+        />
         {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
@@ -212,7 +211,7 @@ function Town({ iceCount, onTownTransition }) {
 
 Town.propTypes = {
   townId: proptypes.string.isRequired,
-  iceCount: proptypes.string.isRequired,
+  iceCount: proptypes.number.isRequired,
   onTownTransition: proptypes.func.isRequired,
 };
 

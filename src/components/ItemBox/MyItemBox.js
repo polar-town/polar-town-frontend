@@ -33,9 +33,13 @@ function MyItemBox({ onClose, setOutItems }) {
 
     try {
       if (isMounted) {
-        const myItemBox = await getInItemBox(id);
+        try {
+          const myItemBox = await getInItemBox(id);
 
-        setMyItemList(myItemBox.result.inItemBox);
+          setMyItemList(myItemBox.result.inItemBox);
+        } catch (err) {
+          console.error(err);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -64,15 +68,19 @@ function MyItemBox({ onClose, setOutItems }) {
       return item.name === itemName;
     });
 
-    const response = await changeStorage(
-      id,
-      targetItem._id,
-      "inItemBox",
-      "outItemBox",
-    );
+    try {
+      const response = await changeStorage(
+        id,
+        targetItem._id,
+        "inItemBox",
+        "outItemBox",
+      );
 
-    setOutItems(response.result.outBox);
-    onClose(false);
+      setOutItems(response.result.outBox);
+      onClose(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

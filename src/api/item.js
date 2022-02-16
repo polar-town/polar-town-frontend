@@ -25,16 +25,21 @@ export async function getPresentBox(townId) {
 }
 
 export async function changeStorage(userId, itemId, from, to) {
-  try {
-    const response = await axios.put(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/items/${itemId}`,
-      { from, to },
-    );
+  const response = await axios.put(
+    `${process.env.REACT_APP_BASE_URL}/users/${userId}/items/${itemId}`,
+    { from, to },
+  );
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
+}
+
+export async function changeLocation(userId, itemId, newLocation) {
+  const response = await axios.put(
+    `${process.env.REACT_APP_BASE_URL}/users/${userId}/items/${itemId}/location`,
+    { newLocation },
+  );
+
+  return response.data;
 }
 
 export async function addItem(userId, name, price) {

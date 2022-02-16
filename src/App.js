@@ -27,7 +27,7 @@ function App() {
           element={
             <Town
               townId={townId}
-              iceCount={`/images/ice-background/${townIceCount}.png`}
+              iceCount={townIceCount}
               onTownTransition={onTownTransition}
             />
           }

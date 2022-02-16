@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { TYPE } from "../../constants/notification";
+import SpriteImage from "../SpriteImage/SpriteImage";
 
 const ItemOverlayDiv = styled.div`
   display: ${(props) => props.display};
@@ -38,33 +39,17 @@ const ItemContainerDiv = styled.div`
     margin-top: 0;
   }
 
-  #PolarBear {
-    width: 105px;
-    margin-top: 20px;
-  }
-
-  #Penguin {
-    width: 150px;
-    margin-top: 35px;
-  }
-
-  #Seal {
-    width: 165px;
-    margin-top: 50px;
-    margin-left: 50px;
-  }
-
-  #Igloo {
+  .Igloo {
     width: 225px;
     margin-top: 20px;
   }
 
-  #Ice {
+  .Ice {
     width: 90px;
     margin-top: 55px;
   }
 
-  #Flower {
+  .Flower {
     width: 80px;
     margin-top: 65px;
   }
@@ -79,6 +64,11 @@ const ItemContainerDiv = styled.div`
     text-align: center;
     font-size: 18px;
   }
+`;
+
+const InItemImage = styled.img`
+  position: absolute;
+  image-rendering: pixelated;
 `;
 
 const CashContainerDiv = styled.div`
@@ -138,7 +128,23 @@ function Item({
       <ItemOverlayDiv display={shouldOverlaid ? "block" : "none"}>
         <i className="fas fa-solid fa-lock lock" />
       </ItemOverlayDiv>
-      <img src={`/images/${imageName}.png`} id={imageName} />
+      {imageName === "PolarBear" ||
+      imageName === "Seal" ||
+      imageName === "Penguin" ? (
+        <SpriteImage
+          imageName={imageName}
+          width={imageName === "Seal" ? 155 : 135}
+          height="220"
+          size={{ PolarBear: 140, Penguin: 120, Seal: 96 }}
+          margin={{ PolarBear: 20, Penguin: 40, Seal: 60 }}
+        />
+      ) : (
+        <InItemImage
+          src={`/images/${imageName}.png`}
+          id={imageName}
+          className={imageName}
+        />
+      )}
       {storageType === "myItemBox" && <p>{`x ${content}`}</p>}
       {storageType === "presentBox" && <p>{`From ${content}`}</p>}
       {storageType === "shop" && (
