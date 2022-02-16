@@ -58,9 +58,9 @@ function Header({ socket }) {
     });
 
     await userLogout(user);
-    dispatch(resetLoginUser());
+    navigate("/logout");
     socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
-    navigate("/");
+    dispatch(resetLoginUser());
   };
 
   return (

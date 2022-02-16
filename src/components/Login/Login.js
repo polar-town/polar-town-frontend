@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useGapi from "../../hooks/useGapi";
 import { userLogin } from "../../api/auth";
 import { saveLoginUser } from "../../features/user/userSlice";
@@ -46,6 +46,9 @@ function Login() {
   const gapi = useGapi();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname;
+  const to = !from || from === "/logout" ? "/" : from;
 
   useEffect(() => {
     if (!gapi) return;
@@ -56,7 +59,9 @@ function Login() {
       theme: "dark",
       longtitle: true,
       onsuccess: responseGoogle,
-      onfailure: responseError,
+      onfailure: (error) => {
+        setError(error.message);
+      },
     });
   }, [gapi]);
 
@@ -76,15 +81,16 @@ function Login() {
       }
 
       dispatch(saveLoginUser(isAuth.result));
-      navigate(`/users/${isAuth.result.user._id}`);
+      navigate(to, { replace: true });
     } catch (error) {
-      console.error(error);
+      if (!error?.response) {
+        setError("No Server Response");
+      } else if (error.response?.statue === 401) {
+        setError("Unauthorized");
+      } else {
+        setError("Login Failed");
+      }
     }
-  }
-
-  function responseError(error) {
-    console.error(error);
-    setError("Login Failed");
   }
 
   return (

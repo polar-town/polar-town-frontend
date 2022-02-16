@@ -30,7 +30,8 @@ import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
 
 const TownDiv = styled.div`
-  background-image: url(${(props) => props.iceCount}),
+  background-image: url(${(props) =>
+      `/images/ice-background/${props.iceCount}.png`}),
     url("/images/town-background-image.jpg");
   background-position: center 40px, center center;
   background-repeat: no-repeat;
@@ -83,12 +84,11 @@ function Town({ socket }) {
     }
 
     const { iceCount, outItemBox } = response.result.user;
-
     setIceCount(iceCount);
     setOutItems([...outItemBox]);
 
     setIsLoading(false);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (isLoading) return;
