@@ -6,15 +6,13 @@ import { useSelector } from "react-redux";
 import { selectUserId } from "../../features/user/userSlice";
 
 const PostBoxContainer = styled.div`
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+  position: absolute;
+  top: 40%;
+  left: 10%;
+  z-index: 1;
 
   img {
     width: 75px;
-    position: absolute;
-    top: 260px;
-    left: 70px;
     image-rendering: pixelated;
     cursor: pointer;
   }

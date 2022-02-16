@@ -98,5 +98,5 @@ export default FriendSearch;
 FriendSearch.propTypes = {
   toggleFriendSearch: proptypes.func.isRequired,
   visitFriend: proptypes.func.isRequired,
-  socket: proptypes.func,
+  socket: proptypes.object,
 };
