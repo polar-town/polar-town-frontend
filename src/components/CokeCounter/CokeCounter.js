@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectCokeCount } from "../../features/user/userSlice";
 
-const StyledCokeCountContainer = styled.div`
+const CokeCountContainer = styled.div`
   position: absolute;
   z-index: 1;
   display: flex;
@@ -31,14 +31,14 @@ const StyledCokeCountContainer = styled.div`
 `;
 
 function CokeCounter() {
-  const cokeCount = useSelector(selectCokeCount);
+  const { user } = useSelector((state) => state.user);
 
   return (
-    <StyledCokeCountContainer>
+    <CokeCountContainer>
       <img src="/images/coke.png" />
       <span>x</span>
-      <span className="count">{cokeCount}</span>
-    </StyledCokeCountContainer>
+      <span className="count">{user.cokeCount}</span>
+    </CokeCountContainer>
   );
 }
 

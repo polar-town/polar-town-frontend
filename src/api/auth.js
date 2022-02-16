@@ -1,15 +1,25 @@
-import useGapi from "../hooks/useGapi";
-import getAccessToken from "../utils/accessToken";
+import axios from "./axios";
 
-export async function checkUserLoginStatus() {
-  const gapi = useGapi();
-  const isLogedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
+const LOGIN_URL = "/auth/login";
+const LOGOUT_URL = "/auth/logout";
 
-  if (isLogedIn) {
-    try {
-      return await getAccessToken();
-    } catch (err) {
-      console.error(err);
-    }
-  }
+export async function userLogin({ googleData }) {
+  const res = await axios.post(
+    LOGIN_URL,
+    { ...googleData },
+    {
+      headers: { "content-type": "application/json" },
+      withCredentials: true,
+    },
+  );
+
+  return res.data;
+}
+
+export async function userLogout(user) {
+  await axios.post(
+    LOGOUT_URL,
+    { email: user.email },
+    { withCredentials: true },
+  );
 }

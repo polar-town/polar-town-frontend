@@ -1,8 +1,10 @@
 import React from "react";
 import proptypes from "prop-types";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { changeStorage } from "../../api/item";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import SpriteImage from "../SpriteImage/SpriteImage";
 
 const OutItemDiv = styled.div`
@@ -26,24 +28,25 @@ const FixedImage = styled.img`
   }
 `;
 
-function OutItem({ name, isMe, itemId, setOutItems, location }) {
+function OutItem({ name, itemId, setOutItems, location }) {
   const imageSrc = `/images/items/${name}.png`;
   const { id } = useParams();
+  const { user } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   const goToInBox = async () => {
     try {
-      const response = await changeStorage(
-        id,
+      const response = await changeStorage({
+        userId: id,
         itemId,
-        "outItemBox",
-        "inItemBox",
-      );
-
+        from: "outItemBox",
+        to: "inItemBox",
+        axiosInstance,
+      });
       const { outBox } = response.result;
-
       setOutItems(outBox);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -52,7 +55,7 @@ function OutItem({ name, isMe, itemId, setOutItems, location }) {
       <OutItemDiv
         location={location}
         onDoubleClick={(e) => {
-          if (isMe) {
+          if (user.id === id) {
             goToInBox();
             e.currentTarget.parentNode.removeChild(e.currentTarget);
           }
@@ -89,7 +92,6 @@ function OutItem({ name, isMe, itemId, setOutItems, location }) {
 
 OutItem.propTypes = {
   name: proptypes.string,
-  isMe: proptypes.bool,
   itemId: proptypes.string,
   setOutItems: proptypes.func,
   location: proptypes.array,

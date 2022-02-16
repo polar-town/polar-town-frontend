@@ -4,6 +4,7 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 import { leaveNewMessage } from "../../api/guestbook";
 import { EVENTS } from "../../constants/socketEvents";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledInputContainer = styled.div`
   display: flex;
@@ -33,17 +34,19 @@ const StyledInputContainer = styled.div`
 function MessageInput({ socket }) {
   const { id } = useParams();
   const messageInput = useRef();
+  const axiosInstance = useAxiosPrivate();
 
   async function handleSendButtonClick() {
     const messageValue = messageInput.current.value;
 
     try {
-      if (messageValue) {
-        const { newMessage } = await leaveNewMessage(id, messageValue);
-
-        socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
-        messageInput.current.value = "";
-      }
+      const { newMessage } = await leaveNewMessage({
+        townId: id,
+        message: messageValue,
+        axiosInstance,
+      });
+      socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
+      messageInput.current.value = "";
     } catch (error) {
       console.error(error);
     }

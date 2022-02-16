@@ -1,60 +1,51 @@
-import axios from "axios";
-// import instance from "./interceptor";
-
-export async function getMailList(at, userId, inboxId, pageToken = null) {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/${inboxId}/${pageToken}`,
-      {
-        headers: {
-          gapiauthorization: `Bearer ${at}`,
-        },
-        withCredentials: true,
+export async function getMailList({
+  at,
+  userId,
+  inboxId,
+  pageToken = null,
+  axiosInstance,
+}) {
+  const response = await axiosInstance.get(
+    `/users/${userId}/mails/${inboxId}/${pageToken}`,
+    {
+      headers: {
+        gapiauthorization: `Bearer ${at}`,
       },
-    );
+    },
+  );
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }
 
-export async function moveEmailToTrash(at, userId, mailId) {
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/trash`,
-      {
-        mailId,
+export async function moveEmailToTrash({ at, userId, mailId, axiosInstance }) {
+  const response = await axiosInstance.post(
+    `/users/${userId}/mails/trash`,
+    {
+      mailId,
+    },
+    {
+      headers: {
+        gapiauthorization: `Bearer ${at}`,
       },
-      {
-        headers: {
-          gapiauthorization: `Bearer ${at}`,
-          withCredentials: true,
-        },
-      },
-    );
+    },
+  );
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }
 
-export async function deleteTrashEmail(at, userId, mailId, count) {
-  try {
-    const response = await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/mails/trash`,
-      {
-        headers: {
-          gapiauthorization: `Bearer ${at}`,
-          withCredentials: true,
-        },
-        data: { mail: mailId, cokeCount: count },
-      },
-    );
+export async function deleteTrashEmail({
+  at,
+  userId,
+  mailId,
+  count,
+  axiosInstance,
+}) {
+  const response = await axiosInstance.delete(`/users/${userId}/mails/trash`, {
+    headers: {
+      gapiauthorization: `Bearer ${at}`,
+    },
+    data: { mail: mailId, cokeCount: count },
+  });
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }

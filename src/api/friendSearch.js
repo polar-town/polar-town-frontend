@@ -1,9 +1,11 @@
-import axios from "axios";
-
-export async function getSearchedFriendList(userId, query, page = 1) {
+export async function getSearchedFriendList({
+  query,
+  pageIndex = 1,
+  axiosInstance,
+}) {
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/?size=4&page=${page}&keyword=${query}`,
+    const response = await axiosInstance.get(
+      `/users/?size=4&page=${pageIndex}&keyword=${query}`,
     );
 
     const users = response.data.result.users.map((user) => {
@@ -19,16 +21,20 @@ export async function getSearchedFriendList(userId, query, page = 1) {
       };
     });
 
-    return { page: page++, users };
+    return { page: pageIndex++, users };
   } catch (error) {
     console.error(error);
   }
 }
 
-export async function updateTargetPendingFriendList(userId, targetEmail) {
+export async function updateTargetPendingFriendList({
+  userId,
+  targetEmail,
+  axiosInstance,
+}) {
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/users/${userId}/friends/pending`,
+    const response = await axiosInstance.post(
+      `/users/${userId}/friends/pending`,
       { email: targetEmail },
       {
         withCredentials: true,

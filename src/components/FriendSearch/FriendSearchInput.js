@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { getSearchedFriendList } from "../../api/friendSearch";
 import { selectUserId } from "../../features/user/userSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const SearchInputContainer = styled.div`
   display: flex;
@@ -31,10 +32,15 @@ const SearchInputContainer = styled.div`
 function FriendSearchInput({ updateResult, onPageChange, storeQuery }) {
   const searchInput = useRef();
   const userId = useSelector(selectUserId);
+  const axiosInstance = useAxiosPrivate();
 
   async function handleSendButtonClick() {
     const query = searchInput.current.value;
-    const searchResult = await getSearchedFriendList(userId, query);
+    const searchResult = await getSearchedFriendList({
+      userId,
+      query,
+      axiosInstance,
+    });
     onPageChange(2);
     storeQuery(query);
     updateResult(searchResult.users);

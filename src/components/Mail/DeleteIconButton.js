@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../api/mail";
 import { useDispatch, useSelector } from "react-redux";
 import { increseCoke, selectUserId } from "../../features/user/userSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledDeleteButton = styled.button`
   background: none;
@@ -33,20 +34,42 @@ function DeleteIconButton({
   at,
 }) {
   const dispatch = useDispatch();
-  const userId = useSelector(selectUserId);
+  const { user } = useSelector((state) => state.user);
   const count = deleteEmail?.length;
+  const axiosInstance = useAxiosPrivate();
 
   const moveToTrash = async () => {
-    await moveEmailToTrash(at, userId, deleteEmail);
-    const { result } = await getMailList(at, userId, "CATEGORY_PROMOTIONS");
+    await moveEmailToTrash({
+      at,
+      userId: user.id,
+      mailId: deleteEmail,
+      axiosInstance,
+    });
+    const { result } = await getMailList({
+      at,
+      userId: user.id,
+      inboxId: "CATEGORY_PROMOTIONS",
+      axiosInstance,
+    });
 
     checkedMails([]);
     setUserEmailList(result);
   };
 
   const deleteTrash = async () => {
-    await deleteTrashEmail(at, userId, deleteEmail, count);
-    const { result } = await getMailList(at, userId, "TRASH");
+    await deleteTrashEmail({
+      at,
+      userId: user.id,
+      mailId: deleteEmail,
+      count,
+      axiosInstance,
+    });
+    const { result } = await getMailList({
+      at,
+      userId: user.id,
+      inboxId: "TRASH",
+      axiosInstance,
+    });
 
     checkedMails([]);
     dispatch(increseCoke(count));

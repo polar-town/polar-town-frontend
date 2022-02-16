@@ -1,7 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import {
+  setNotificationType,
+  openNotification,
+  togglePresentFriends,
+} from "../../features/modal/modalSlice";
 import { TYPE } from "../../constants/notification";
+import { useDispatch } from "react-redux";
 import SpriteImage from "../SpriteImage/SpriteImage";
 
 const ItemOverlayDiv = styled.div`
@@ -108,12 +114,11 @@ function Item({
   content,
   imageName,
   shouldOverlaid,
-  toggleNotification,
   moveToOutBox,
   onTargetItem,
-  onNotificationType,
-  toggleShopFriendList,
 }) {
+  const dispatch = useDispatch();
+
   return (
     <ItemContainerDiv
       onClick={(e) => {
@@ -156,9 +161,9 @@ function Item({
           <button
             className="purchaseButton"
             onClick={() => {
-              onNotificationType(TYPE.CONFIRM_PURCHASE);
+              dispatch(setNotificationType(TYPE.CONFIRM_PURCHASE));
               onTargetItem(imageName);
-              toggleNotification(true);
+              dispatch(openNotification());
             }}
           >
             구매하기
@@ -167,7 +172,7 @@ function Item({
             <button
               className="giftButton"
               onClick={() => {
-                toggleShopFriendList(true);
+                dispatch(togglePresentFriends());
                 onTargetItem(imageName);
               }}
             >
@@ -191,9 +196,6 @@ Item.propTypes = {
   ]),
   imageName: PropTypes.string.isRequired,
   shouldOverlaid: PropTypes.bool,
-  toggleNotification: PropTypes.func,
   moveToOutBox: PropTypes.func,
   onTargetItem: PropTypes.func,
-  onNotificationType: PropTypes.func,
-  toggleShopFriendList: PropTypes.func,
 };

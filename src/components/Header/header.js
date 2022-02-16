@@ -1,18 +1,18 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import proptype from "prop-types";
+import { useParams, useNavigate } from "react-router-dom";
+import proptypes from "prop-types";
 import styled from "styled-components";
-import {
-  removeLogoutUser,
-  selectUser,
-  selectUserToken,
-} from "../../features/user/userSlice";
-import useGapi from "../../hooks/useGapi";
 import { EVENTS, LEFT_TYPE } from "../../constants/socketEvents";
+import {
+  toggleMail,
+  toggleFriendSearch,
+  toggleFriendList,
+  toggleShop,
+} from "../../features/modal/modalSlice";
+import useLogout from "../../hooks/useLogout";
 
-const StyledHeader = styled.header`
+const HeaderContainer = styled.header`
   width: 100vw;
   height: 60px;
   background: rgba(214, 245, 245, 0.5);
@@ -21,7 +21,7 @@ const StyledHeader = styled.header`
   align-items: center;
 `;
 
-const StyledImgWrapperDiv = styled.div`
+const ImgWrapperDiv = styled.div`
   line-height: 60px;
 
   img {
@@ -31,7 +31,7 @@ const StyledImgWrapperDiv = styled.div`
   }
 `;
 
-const StyledNavWrapperNav = styled.nav`
+const NavWrapperNav = styled.nav`
   i {
     color: var(--header-content);
     margin-right: 20px;
@@ -41,86 +41,72 @@ const StyledNavWrapperNav = styled.nav`
   }
 `;
 
-function Header({
-  toggleMail,
-  toggleFriendSearch,
-  toggleFriendList,
-  toggleShop,
-  onTownTransition,
-  onSignout,
-  socket,
-}) {
+function Header({ socket }) {
   const dispatch = useDispatch();
-  const gapi = useGapi();
-  const user = useSelector(selectUser);
-  const currentUserAccessToken = useSelector(selectUserToken);
   const { id: prevTownId } = useParams();
+  const { user, isAuth } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const logout = useLogout();
 
-  const logout = async () => {
-    const auth2 = gapi.auth2.getAuthInstance();
-
-    auth2.signOut().then(function () {
-      auth2.disconnect();
-    });
-
-    dispatch(removeLogoutUser());
-    onTownTransition("", 1);
-    await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/logout`, {
-      email: user.email,
-    });
+  async function signOut() {
+    await logout();
     socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
-  };
-
-  const goToMyTown = () => {
-    onTownTransition(user.id, user.iceCount);
-  };
+    navigate("/");
+  }
 
   return (
-    <StyledHeader>
-      <StyledImgWrapperDiv>
-        <img src="/images/logo.png" alt="mailLogo" onClick={goToMyTown} />
-      </StyledImgWrapperDiv>
-      {currentUserAccessToken && (
-        <StyledNavWrapperNav>
+    <HeaderContainer>
+      <ImgWrapperDiv>
+        <img
+          src="/images/logo.png"
+          alt="mailLogo"
+          onClick={() => {
+            if (prevTownId === user.id) return;
+
+            navigate(`/users/${user.id}`);
+            socket.emit(EVENTS.LEFT, {
+              prevTownId,
+              user,
+              type: LEFT_TYPE.TRANSITION,
+            });
+          }}
+        />
+      </ImgWrapperDiv>
+      {isAuth && (
+        <NavWrapperNav>
           <i
             className="fas fa-envelope"
             onClick={() => {
-              toggleMail(true);
+              dispatch(toggleMail());
             }}
           />
           <i
             className="fas fa-user-plus"
             onClick={() => {
-              toggleFriendSearch(true);
+              dispatch(toggleFriendSearch());
             }}
           />
           <i
             className="fas fa-user-friends"
             onClick={() => {
-              toggleFriendList(true);
+              dispatch(toggleFriendList());
             }}
           />
           <i
             className="fas fa-star"
             onClick={() => {
-              toggleShop(true);
+              dispatch(toggleShop());
             }}
           />
-          <i className="fas fa-sign-out-alt" onClick={logout} />
-        </StyledNavWrapperNav>
+          <i className="fas fa-sign-out-alt" onClick={signOut} />
+        </NavWrapperNav>
       )}
-    </StyledHeader>
+    </HeaderContainer>
   );
 }
 
 export default Header;
 
 Header.propTypes = {
-  toggleMail: proptype.func,
-  toggleFriendSearch: proptype.func,
-  toggleFriendList: proptype.func,
-  toggleShop: proptype.func,
-  onTownTransition: proptype.func,
-  onSignout: proptype.func,
-  socket: proptype.object,
+  socket: proptypes.object,
 };

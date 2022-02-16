@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import proptypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { toggleItemBox } from "../../features/modal/modalSlice";
 
 const ItemBoxDiv = styled.div`
   background-color: #013a4c;
@@ -19,20 +20,18 @@ const ItemBoxDiv = styled.div`
   }
 `;
 
-function InItemBox({ toggleItemBox }) {
+function InItemBox() {
+  const dispatch = useDispatch();
+
   return (
     <ItemBoxDiv
       onClick={() => {
-        toggleItemBox(true);
+        dispatch(toggleItemBox());
       }}
     >
       <i className="fas fa-paw"></i>
     </ItemBoxDiv>
   );
 }
-
-InItemBox.propTypes = {
-  toggleItemBox: proptypes.func.isRequired,
-};
 
 export default InItemBox;

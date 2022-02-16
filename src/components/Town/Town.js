@@ -1,14 +1,18 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import proptypes from "prop-types";
 import styled from "styled-components";
-import { io } from "socket.io-client";
 import { nanoid } from "nanoid";
 
-import { getTownHostInfo } from "../../api/user";
-import { selectUser } from "../../features/user/userSlice";
 import { EVENTS } from "../../constants/socketEvents";
+import { TYPE } from "../../constants/notification";
+import {
+  openNotification,
+  setNotificationType,
+} from "../../features/modal/modalSlice";
+import { getTownHostInfo } from "../../api/user";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import PostBox from "./PostBox";
 import Mail from "../Mail/Mail";
@@ -24,7 +28,6 @@ import ItemBox from "../ItemBox/ItemBox";
 import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
-import { TYPE } from "../../constants/notification";
 import IcePalette from "./IcePalette";
 
 const TownDiv = styled.div`
@@ -33,7 +36,7 @@ const TownDiv = styled.div`
   background: url("/images/town-background-image.jpg");
   background-position: center center;
   background-size: cover;
-  overflow: "hidden";
+  overflow: hidden;
   position: relative;
 `;
 
@@ -62,37 +65,49 @@ const GiftAndItemContainer = styled.div`
   }
 `;
 
-function Town({ iceCount, onTownTransition }) {
-  const { id } = useParams();
+function Town({ socket }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [iceCount, setIceCount] = useState(1);
   const [outItems, setOutItems] = useState([]);
-  const loginUser = useSelector(selectUser);
-  const isMe = loginUser.id === id;
-  const [onMail, setOnMail] = useState(false);
-  const [onPostBox, setOnPostBox] = useState(false);
-  const [onNotification, setOnNotification] = useState(false);
-  const [onFriendList, setOnFriendList] = useState(false);
-  const [onFriendSearch, setOnFriendSearch] = useState(false);
-  const [onItemBoxOpen, setOnItemBoxOpen] = useState(false);
-  const [onShopOpen, setOnShopOpen] = useState(false);
   const [visitors, setVisitors] = useState([]);
-  const [notificationType, setNotificationType] = useState("");
-  const [targetItem, setTargetItem] = useState("");
-  const [onShopFriendList, setOnShopFriendList] = useState(false);
   const [from, setFrom] = useState([]);
+  const [targetItem, setTargetItem] = useState("");
   const [isReceiveGift, setIsReceiveGift] = useState(false);
   const [isReceiveGuestBook, setIsReceiveGuestBook] = useState(false);
-  const socketRef = useRef(null);
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const {
+    isMailOpen,
+    isPostBoxOpen,
+    isNotificatoinOpen,
+    isFriendListOpen,
+    isFriendSearchOpen,
+    isItemBoxOpen,
+    isShopOpen,
+    isPresentFriendsOpen,
+    notificationType,
+  } = useSelector((state) => state.modal);
+  const { user: loginUser } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
-    const user = await getTownHostInfo(id);
+    setIsLoading(true);
 
-    setOutItems(user?.outItemBox);
-  }, [id, iceCount]);
+    try {
+      const response = await getTownHostInfo({ axiosInstance, townId: id });
+      const { iceCount, outItemBox } = response.result.user;
+
+      setIceCount(iceCount);
+      setOutItems([...outItemBox]);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id, loginUser.iceCount]);
 
   useEffect(() => {
-    if (!loginUser.id) return;
-
-    const socket = getSocketIO();
+    if (isLoading) return;
 
     socket.on(EVENTS.JOIN, (data) => {
       setVisitors(data.visitors);
@@ -100,8 +115,8 @@ function Town({ iceCount, onTownTransition }) {
 
     socket.on(EVENTS.GET_PRESENT, (data) => {
       setFrom([data.from]);
-      setNotificationType(TYPE.TYPE_PRESENT);
-      setOnNotification(true);
+      dispatch(openNotification());
+      dispatch(setNotificationType(TYPE.TYPE_PRESENT));
       setIsReceiveGift(true);
     });
 
@@ -114,8 +129,8 @@ function Town({ iceCount, onTownTransition }) {
     socket.on(EVENTS.FRIEND_REQUEST, (data) => {
       const { userName, email } = data;
       setFrom([userName, email]);
-      setOnNotification(true);
-      setNotificationType(TYPE.FRIEND_REQUEST);
+      dispatch(openNotification());
+      dispatch(setNotificationType(TYPE.FRIEND_REQUEST));
     });
 
     return () => {
@@ -126,24 +141,9 @@ function Town({ iceCount, onTownTransition }) {
     };
   }, [id, loginUser.id]);
 
-  function getSocketIO() {
-    if (socketRef.current === null) {
-      socketRef.current = io.connect(process.env.REACT_APP_BASE_URL);
-    }
-
-    return socketRef.current;
-  }
   return (
     <>
-      <Header
-        toggleMail={setOnMail}
-        toggleFriendSearch={setOnFriendSearch}
-        toggleFriendList={setOnFriendList}
-        toggleShop={setOnShopOpen}
-        onTownTransition={onTownTransition}
-        onSignout={onTownTransition}
-        socket={getSocketIO()}
-      />
+      <Header socket={socket} />
       <VisitorsContainer>
         {!!visitors.length &&
           visitors.map((visitor) => {
@@ -153,78 +153,46 @@ function Town({ iceCount, onTownTransition }) {
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
+        <PostBox
+          isReceiveGuestBook={isReceiveGuestBook}
+          setIsReceiveGuestBook={setIsReceiveGuestBook}
+        />
         <IcePalette
           iceCount={iceCount}
           outItems={outItems}
           onOutItems={setOutItems}
         />
-        <PostBox
-          toggleGuestbook={setOnPostBox}
-          isMe={isMe}
-          isReceiveGuestBook={isReceiveGuestBook}
-          setIsReceiveGuestBook={setIsReceiveGuestBook}
-        />
-        {isMe && (
+        {loginUser.id === id && (
           <GiftAndItemContainer>
-            <InItemBox toggleItemBox={setOnItemBoxOpen} />
+            <InItemBox />
             {isReceiveGift && (
               <i className="fas fa-exclamation-circle giftNoti" />
             )}
           </GiftAndItemContainer>
         )}
         <ModalPortals>
-          {onMail && <Mail toggleMail={setOnMail} />}
-          {onPostBox && (
+          {isMailOpen && <Mail />}
+          {isPostBoxOpen && (
             <GuestBook
-              isOpen={onPostBox}
-              toggleGuestbook={setOnPostBox}
-              socket={getSocketIO()}
+              socket={socket}
               setIsReceiveGuestBook={setIsReceiveGuestBook}
             />
           )}
-          {onShopOpen && (
-            <Shop
-              onClose={setOnShopOpen}
-              toggleNotification={setOnNotification}
-              getTargetItem={setTargetItem}
-              getNotificationType={setNotificationType}
-              toggleShopFriendList={setOnShopFriendList}
-            />
-          )}
-          {onFriendList && (
-            <FriendList
-              visitFriend={onTownTransition}
-              toggleFriendList={setOnFriendList}
-              socket={getSocketIO()}
-            />
-          )}
-          {onNotification && (
+          {isShopOpen && <Shop getTargetItem={setTargetItem} />}
+          {isFriendListOpen && <FriendList socket={socket} />}
+          {isNotificatoinOpen && (
             <Notification
-              onTownTransition={onTownTransition}
-              toggleNotification={setOnNotification}
               notificationType={notificationType}
               targetItem={targetItem}
-              toggleItemBox={setOnItemBoxOpen}
               from={from}
             />
           )}
-          {onFriendSearch && (
-            <FriendSearch
-              toggleFriendSearch={setOnFriendSearch}
-              visitFriend={onTownTransition}
-              socket={getSocketIO()}
-            />
+          {isFriendSearchOpen && <FriendSearch socket={socket} />}
+          {isPresentFriendsOpen && (
+            <ShopFriendList targetItem={targetItem} socket={socket} />
           )}
-          {onShopFriendList && (
-            <ShopFriendList
-              toggleShopFriendList={setOnShopFriendList}
-              targetItem={targetItem}
-              socket={getSocketIO()}
-            />
-          )}
-          {onItemBoxOpen && (
+          {isItemBoxOpen && (
             <ItemBox
-              toggleItemBox={setOnItemBoxOpen}
               setOutItems={setOutItems}
               setIsReceiveGift={setIsReceiveGift}
             />
@@ -235,10 +203,8 @@ function Town({ iceCount, onTownTransition }) {
   );
 }
 
-Town.propTypes = {
-  townId: proptypes.string.isRequired,
-  iceCount: proptypes.number.isRequired,
-  onTownTransition: proptypes.func.isRequired,
-};
-
 export default Town;
+
+Town.propTypes = {
+  socket: proptypes.object.isRequired,
+};

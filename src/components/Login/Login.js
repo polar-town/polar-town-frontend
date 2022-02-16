@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import proptypes from "prop-types";
-import useGapi from "../../hooks/useGapi";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import useGapi from "../../hooks/useGapi";
+import { userLogin } from "../../api/auth";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
 
@@ -41,10 +41,14 @@ const FailureMessage = styled.span`
   margin-top: 10px;
 `;
 
-function Login({ goTown }) {
+function Login() {
   const [error, setError] = useState("");
   const gapi = useGapi();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname;
+  const to = !from || from === "/logout" ? "/" : from;
 
   useEffect(() => {
     if (!gapi) return;
@@ -55,55 +59,34 @@ function Login({ goTown }) {
       theme: "dark",
       longtitle: true,
       onsuccess: responseGoogle,
-      onfailure: responseError,
+      onfailure: (error) => {
+        setError(error.message);
+      },
     });
   }, [gapi]);
 
   async function responseGoogle(result) {
     const profile = result.getBasicProfile();
     const name = profile.getName();
-    const userEmail = profile.getEmail();
-    const photo = profile.getImageUrl();
+    const email = profile.getEmail();
+    const imageUrl = profile.getImageUrl();
 
-    const serverResponse = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/auth/login`,
-      { name, email: userEmail, photo },
-      { withCredentials: true },
-    );
+    try {
+      const isAuth = await userLogin({
+        googleData: { name, email, photo: imageUrl },
+      });
 
-    const {
-      id,
-      accessToken,
-      username,
-      email,
-      pendingFriendList,
-      friendList,
-      iceCount,
-      cokeCount,
-    } = serverResponse.data.result;
-
-    const currentUser = {
-      id,
-      accessToken,
-      username,
-      email,
-      pendingFriendList,
-      friendList,
-      iceCount,
-      cokeCount,
-      photo,
-    };
-
-    dispatch(saveLoginUser(currentUser));
-    goTown(id, iceCount);
-  }
-
-  function responseError() {
-    setError("Login Failed");
-
-    setTimeout(() => {
-      setError("");
-    }, 3000);
+      dispatch(saveLoginUser(isAuth.result));
+      navigate(to, { replace: true });
+    } catch (error) {
+      if (!error?.response) {
+        setError("No Server Response");
+      } else if (error.response?.statue === 401) {
+        setError("Unauthorized");
+      } else {
+        setError("Login Failed");
+      }
+    }
   }
 
   return (
@@ -124,7 +107,3 @@ function Login({ goTown }) {
 }
 
 export default Login;
-
-Login.propTypes = {
-  goTown: proptypes.func.isRequired,
-};

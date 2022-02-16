@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { toggleMail } from "../../features/modal/modalSlice";
 
 const ModalWrapper = styled.div`
   position: relative;
@@ -32,13 +34,15 @@ const ModalWrapper = styled.div`
   }
 `;
 
-function MailModal({ onClose, children }) {
+function MailModal({ children }) {
+  const dispatch = useDispatch();
+
   return (
     <ModalWrapper>
       <div className="modalBox">
         <button
           onClick={() => {
-            onClose(false);
+            dispatch(toggleMail());
           }}
           className="modalCloseButton"
           type="button"
@@ -56,5 +60,4 @@ export default MailModal;
 
 MailModal.propTypes = {
   children: PropTypes.node.isRequired,
-  onClose: PropTypes.func.isRequired,
 };

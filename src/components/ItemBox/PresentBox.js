@@ -5,6 +5,9 @@ import { nanoid } from "nanoid";
 import PropTypes from "prop-types";
 import { changeStorage, getPresentBox } from "../../api/item";
 import Item from "../Item/Item";
+import { useDispatch } from "react-redux";
+import { toggleItemBox } from "../../features/modal/modalSlice";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -21,14 +24,16 @@ const ItemContainerDiv = styled.div`
   }
 `;
 
-function PresentBox({ onClose, setOutItems }) {
+function PresentBox({ setOutItems }) {
   const [presentList, setPresentList] = useState([]);
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const axiosInstance = useAxiosPrivate();
   const GMAIL_ADDRESS = 10;
 
   useEffect(async () => {
     try {
-      const presentBox = await getPresentBox(id);
+      const presentBox = await getPresentBox({ townId: id, axiosInstance });
 
       setPresentList(presentBox.result);
     } catch (err) {
@@ -41,17 +46,18 @@ function PresentBox({ onClose, setOutItems }) {
       return item.name === itemName;
     });
 
-    const response = await changeStorage(
-      id,
-      targetItem._id,
-      "presentBox",
-      "outItemBox",
-    );
+    const response = await changeStorage({
+      userId: id,
+      itemId: targetItem._id,
+      from: "presentBox",
+      to: "outItemBox",
+      axiosInstance,
+    });
 
     const { outBox } = response.result;
 
     setOutItems(outBox);
-    onClose(false);
+    dispatch(toggleItemBox());
   };
 
   return (
@@ -79,6 +85,5 @@ function PresentBox({ onClose, setOutItems }) {
 export default PresentBox;
 
 PresentBox.propTypes = {
-  onClose: PropTypes.func.isRequired,
   setOutItems: PropTypes.func,
 };

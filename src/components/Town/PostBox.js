@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import proptype, { bool } from "prop-types";
+import { useDispatch } from "react-redux";
+import { togglePostBox } from "../../features/modal/modalSlice";
+import proptype from "prop-types";
 import { getMessageList } from "../../api/guestbook";
 import { useSelector } from "react-redux";
-import { selectUserId } from "../../features/user/userSlice";
+import { useParams } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const PostBoxContainer = styled.div`
   position: absolute;
@@ -26,17 +29,14 @@ const PostBoxContainer = styled.div`
   }
 `;
 
-function PostBox({
-  toggleGuestbook,
-  isReceiveGuestBook,
-  setIsReceiveGuestBook,
-  isMe,
-}) {
-  const loginUserId = useSelector(selectUserId);
-  // const [isReceiveGuestBook, setIsReceiveGuestBook] = useState(false);
+function PostBox({ isReceiveGuestBook, setIsReceiveGuestBook }) {
+  const dispatch = useDispatch();
+  const axiosInstance = useAxiosPrivate();
+  const { id } = useParams();
+  const { user } = useSelector((state) => state.user);
 
   useEffect(async () => {
-    const response = await getMessageList(loginUserId);
+    const response = await getMessageList({ townId: id, axiosInstance });
     const { guestBook } = response.data.result;
     const isExistNewGuestBook = guestBook.some((msg) => !msg.isChecked);
     setIsReceiveGuestBook(isExistNewGuestBook);
@@ -46,11 +46,11 @@ function PostBox({
     <PostBoxContainer>
       <img
         onClick={() => {
-          toggleGuestbook(true);
+          dispatch(togglePostBox());
         }}
         src="/images/postbox.png"
       />
-      {isMe && isReceiveGuestBook && (
+      {user.id === id && isReceiveGuestBook && (
         <i className="fas fa-exclamation-circle guestBookNoti" />
       )}
     </PostBoxContainer>
@@ -60,8 +60,6 @@ function PostBox({
 export default PostBox;
 
 PostBox.propTypes = {
-  toggleGuestbook: proptype.func.isRequired,
   isReceiveGuestBook: proptype.bool,
   setIsReceiveGuestBook: proptype.func,
-  isMe: proptype.bool,
 };

@@ -1,11 +1,6 @@
-import axios from "axios";
-
-export async function getMessageList(townId) {
+export async function getMessageList({ townId, axiosInstance }) {
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
-      { withCredentials: true },
-    );
+    const response = await axiosInstance.get(`/users/${townId}/guestbook`);
 
     return response;
   } catch (error) {
@@ -13,13 +8,11 @@ export async function getMessageList(townId) {
   }
 }
 
-export async function leaveNewMessage(townId, message) {
+export async function leaveNewMessage({ townId, message, axiosInstance }) {
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/users/${townId}/guestbook`,
-      { message },
-      { withCredentials: true },
-    );
+    const response = await axiosInstance.post(`/users/${townId}/guestbook`, {
+      message,
+    });
 
     return response.data.result;
   } catch (error) {
@@ -27,15 +20,8 @@ export async function leaveNewMessage(townId, message) {
   }
 }
 
-export async function changeCheckMessage(loginId) {
-  try {
-    const response = await axios.put(
-      `${process.env.REACT_APP_BASE_URL}/users/${loginId}/guestbook`,
-      { withCredentials: true },
-    );
+export async function changeCheckMessage({ userId, axiosInstance }) {
+  const response = await axiosInstance.put(`/users/${userId}/guestbook`);
 
-    return response.data.result;
-  } catch (error) {
-    console.error(error);
-  }
+  return response.data.result;
 }

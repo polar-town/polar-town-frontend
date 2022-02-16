@@ -7,6 +7,7 @@ import { changeLocation } from "../../api/item";
 import { selectUser } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import possibleLocation from "../../utils/iceBackgroundLocation";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const IcePaletteContainer = styled.div`
   position: relative;
@@ -22,9 +23,9 @@ const IcePaletteContainer = styled.div`
 `;
 
 function IcePalette({ iceCount, outItems, onOutItems }) {
-  const { id } = useParams();
-  const loginUser = useSelector(selectUser);
-  const isMe = loginUser.id === id;
+  const { id: townId } = useParams();
+  // const { user: loginUser } = useSelector((state) => state.user);
+  const axiosInstance = useAxiosPrivate();
 
   return (
     <IcePaletteContainer
@@ -49,10 +50,12 @@ function IcePalette({ iceCount, outItems, onOutItems }) {
           targetItem.style.top = yCoordinate + "px";
 
           try {
-            await changeLocation(loginUser.id, itemId, [
-              xCoordinate,
-              yCoordinate,
-            ]);
+            await changeLocation({
+              userId: townId,
+              itemId,
+              newLocation: [xCoordinate, yCoordinate],
+              axiosInstance,
+            });
           } catch (err) {
             console.error(err);
           }
@@ -63,7 +66,6 @@ function IcePalette({ iceCount, outItems, onOutItems }) {
         <OutItem
           key={item._id}
           name={item.name}
-          isMe={isMe}
           itemId={item._id}
           setOutItems={onOutItems}
           location={item.location}

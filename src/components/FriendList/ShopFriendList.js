@@ -1,20 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 import GameModal from "../GameModal/GameModal";
 import Friends from "./Friends";
 import { TYPE } from "../../constants/friendList";
+import { togglePresentFriends } from "../../features/modal/modalSlice";
 
-function ShopFriendList({ toggleShopFriendList, targetItem, socket }) {
+function ShopFriendList({ targetItem, socket }) {
+  const dispatch = useDispatch();
+
   return (
     <GameModal
       onClose={() => {
-        toggleShopFriendList(false);
+        dispatch(togglePresentFriends());
       }}
     >
       <Friends
         type={TYPE.SHOP_MY_FRIEND}
         targetItem={targetItem}
-        toggleShopFriendList={toggleShopFriendList}
         socket={socket}
       />
     </GameModal>
@@ -24,7 +27,6 @@ function ShopFriendList({ toggleShopFriendList, targetItem, socket }) {
 export default ShopFriendList;
 
 ShopFriendList.propTypes = {
-  toggleShopFriendList: PropTypes.func.isRequired,
   targetItem: PropTypes.string,
   socket: PropTypes.object,
 };
