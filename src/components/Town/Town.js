@@ -44,6 +44,24 @@ const VisitorsContainer = styled.div`
   z-index: 1;
 `;
 
+const GiftAndItemContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 200px;
+  height: 170px;
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+
+  .giftNoti {
+    font-size: 22px;
+    color: red;
+    position: absolute;
+    right: -5px;
+  }
+`;
+
 function Town({ iceCount, onTownTransition }) {
   const { id } = useParams();
   const [outItems, setOutItems] = useState([]);
@@ -61,6 +79,8 @@ function Town({ iceCount, onTownTransition }) {
   const [targetItem, setTargetItem] = useState("");
   const [onShopFriendList, setOnShopFriendList] = useState(false);
   const [from, setFrom] = useState([]);
+  const [isReceiveGift, setIsReceiveGift] = useState(false);
+  const [isReceiveGuestBook, setIsReceiveGuestBook] = useState(false);
   const socketRef = useRef(null);
 
   useEffect(async () => {
@@ -82,6 +102,7 @@ function Town({ iceCount, onTownTransition }) {
       setFrom([data.from]);
       setNotificationType(TYPE.TYPE_PRESENT);
       setOnNotification(true);
+      setIsReceiveGift(true);
     });
 
     socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
@@ -101,6 +122,7 @@ function Town({ iceCount, onTownTransition }) {
       socket.off(EVENTS.JOIN);
       socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
+      socket.off(EVENTS.GET_PRESENT);
     };
   }, [id, loginUser.id]);
 
@@ -111,7 +133,6 @@ function Town({ iceCount, onTownTransition }) {
 
     return socketRef.current;
   }
-
   return (
     <>
       <Header
@@ -132,13 +153,25 @@ function Town({ iceCount, onTownTransition }) {
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
         <CokeCounter />
-        <PostBox toggleGuestbook={setOnPostBox} socket={getSocketIO()} />
         <IcePalette
           iceCount={iceCount}
           outItems={outItems}
           onOutItems={setOutItems}
         />
-        {isMe && <InItemBox toggleItemBox={setOnItemBoxOpen} />}
+        <PostBox
+          toggleGuestbook={setOnPostBox}
+          isMe={isMe}
+          isReceiveGuestBook={isReceiveGuestBook}
+          setIsReceiveGuestBook={setIsReceiveGuestBook}
+        />
+        {isMe && (
+          <GiftAndItemContainer>
+            <InItemBox toggleItemBox={setOnItemBoxOpen} />
+            {isReceiveGift && (
+              <i className="fas fa-exclamation-circle giftNoti" />
+            )}
+          </GiftAndItemContainer>
+        )}
         <ModalPortals>
           {onMail && <Mail toggleMail={setOnMail} />}
           {onPostBox && (
@@ -146,6 +179,7 @@ function Town({ iceCount, onTownTransition }) {
               isOpen={onPostBox}
               toggleGuestbook={setOnPostBox}
               socket={getSocketIO()}
+              setIsReceiveGuestBook={setIsReceiveGuestBook}
             />
           )}
           {onShopOpen && (
@@ -192,6 +226,7 @@ function Town({ iceCount, onTownTransition }) {
             <ItemBox
               toggleItemBox={setOnItemBoxOpen}
               setOutItems={setOutItems}
+              setIsReceiveGift={setIsReceiveGift}
             />
           )}
         </ModalPortals>

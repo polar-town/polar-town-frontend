@@ -8,9 +8,6 @@ const ItemBoxDiv = styled.div`
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  position: absolute;
-  bottom: 100px;
-  right: 45px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -26,3 +26,16 @@ export async function leaveNewMessage(townId, message) {
     console.error(error);
   }
 }
+
+export async function changeCheckMessage(loginId) {
+  try {
+    const response = await axios.put(
+      `${process.env.REACT_APP_BASE_URL}/users/${loginId}/guestbook`,
+      { withCredentials: true },
+    );
+
+    return response.data.result;
+  } catch (error) {
+    console.error(error);
+  }
+}
