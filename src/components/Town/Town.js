@@ -67,34 +67,6 @@ const GiftAndItemContainer = styled.div`
   }
 `;
 
-const GuestBookContainer = styled.div`
-  /* display: flex;
-  justify-content: flex-end;
-  align-items: flex-start; */
-  /* width: 400px;
-  height: 500px; */
-  /* position: absolute; */
-  /* bottom: 0;
-  right: 20px; */
-  /* background-color: aliceblue; */
-
-  .guestBookNoti {
-    font-size: 22px;
-    color: red;
-    position: absolute;
-    left: 0;
-  }
-`;
-
-const GuestBookNoti = styled.i`
-  font-size: 22px;
-  color: red;
-  position: absolute;
-  left: 0;
-  z-index: 10;
-  top: 50%;
-`;
-
 function Town({ iceCount, onTownTransition }) {
   const { id } = useParams();
   const [outItems, setOutItems] = useState([]);
