@@ -24,13 +24,15 @@ const StyledGuestBookContainer = styled.div`
 
 function GuestBook({ socket, setIsReceiveGuestBook }) {
   const [messageList, setMessageList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useSelector((state) => state.user);
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
-  const { isPostBoxOpen } = useSelector((state) => state.modal);
   const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {
+    setIsLoading(true);
+
     try {
       const messages = await getMessageList({ townId: id, axiosInstance });
       const sortedMessages = sortMessages(messages.data.result.guestBook);
@@ -41,13 +43,15 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
         await changeCheckMessage({ userId: user.id, axiosInstance });
         setIsReceiveGuestBook(false);
       }
+
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
   }, []);
 
   useEffect(() => {
-    if (!isPostBoxOpen) return;
+    if (isLoading) return;
 
     socket.on(EVENTS.GET_MESSAGES, (messages) => {
       const sortedUpdatedMessages = sortMessages(messages);
@@ -58,7 +62,7 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
       socket.off(EVENTS.READ_MESSAGES);
       socket.off(EVENTS.GET_MESSAGES);
     };
-  }, [isPostBoxOpen]);
+  }, [isLoading]);
 
   function sortMessages(messages) {
     return messages.sort((a, b) => {

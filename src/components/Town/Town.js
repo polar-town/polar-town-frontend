@@ -65,7 +65,7 @@ const GiftAndItemContainer = styled.div`
   }
 `;
 
-function Town({ socket }) {
+function Town({ socketInit }) {
   const [isLoading, setIsLoading] = useState(false);
   const [iceCount, setIceCount] = useState(1);
   const [outItems, setOutItems] = useState([]);
@@ -89,6 +89,7 @@ function Town({ socket }) {
   } = useSelector((state) => state.modal);
   const { user: loginUser } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
+  const socket = socketInit();
 
   useEffect(async () => {
     setIsLoading(true);
@@ -109,21 +110,11 @@ function Town({ socket }) {
   useEffect(() => {
     if (isLoading) return;
 
-    socket.on(EVENTS.JOIN, (data) => {
-      setVisitors(data.visitors);
-    });
-
     socket.on(EVENTS.GET_PRESENT, (data) => {
       setFrom([data.from]);
       dispatch(openNotification());
       dispatch(setNotificationType(TYPE.TYPE_PRESENT));
       setIsReceiveGift(true);
-    });
-
-    socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
-
-    socket.on(EVENTS.LEFT, (data) => {
-      setVisitors(data.visitors);
     });
 
     socket.on(EVENTS.FRIEND_REQUEST, (data) => {
@@ -139,7 +130,26 @@ function Town({ socket }) {
       socket.off(EVENTS.FRIEND_REQUEST);
       socket.off(EVENTS.GET_PRESENT);
     };
-  }, [id, loginUser.id]);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    socket.on(EVENTS.JOIN, (data) => {
+      setVisitors(data.visitors);
+    });
+
+    socket.emit(EVENTS.JOIN, { townId: id, user: loginUser });
+
+    socket.on(EVENTS.LEFT, (data) => {
+      setVisitors(data.visitors);
+    });
+
+    return () => {
+      socket.off(EVENTS.JOIN);
+      socket.off(EVENTS.LEFT);
+    };
+  }, [isLoading, id]);
 
   return (
     <>
@@ -206,5 +216,5 @@ function Town({ socket }) {
 export default Town;
 
 Town.propTypes = {
-  socket: proptypes.object.isRequired,
+  socketInit: proptypes.func.isRequired,
 };
