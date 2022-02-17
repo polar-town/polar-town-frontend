@@ -4,7 +4,6 @@ import proptypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { selectUser, selectUserId } from "../../features/user/userSlice";
 import { closeAll } from "../../features/modal/modalSlice";
 import { updateTargetPendingFriendList } from "../../api/friendSearch";
 import { TYPE, OPTION } from "../../constants/searchFriend";
@@ -41,7 +40,7 @@ function FriendSearchRow({
   function checkFriendType(searchedId) {
     const isFriend = userFriendList.some((friend) => friend.id === searchedId);
     const isSent = friend.pendingFriendList.some(
-      (friend) => friend.userId === userId,
+      (friend) => friend.userId === user.id,
     );
     const isPendingFriend = userPendingFriendList.some(
       (friend) => friend.id === searchedId,

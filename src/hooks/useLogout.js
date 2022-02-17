@@ -14,7 +14,7 @@ function useLogout() {
         googleAuth.disconnect();
       });
 
-      const response = await userLogout(user);
+      await userLogout(user);
       dispatch(resetLoginUser());
     } catch (error) {
       console.error(error);
