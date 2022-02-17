@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes, { func } from "prop-types";
+import PropTypes from "prop-types";
 import GameModal from "../GameModal/GameModal";
 import HalfModal from "../GameModal/HalfModal";
 import PresentBox from "./PresentBox";

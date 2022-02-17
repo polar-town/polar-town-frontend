@@ -72,7 +72,7 @@ export const userSlice = createSlice({
         itemCount: { PolarBear, Penguin, Seal, Igloo, Flower },
       };
     },
-    updateIceCount: (state, action) => {
+    updateIceCount: (state) => {
       state.user.iceCount = state.user.iceCount + 1;
     },
   },
