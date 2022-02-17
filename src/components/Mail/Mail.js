@@ -5,6 +5,7 @@ import MailDetail from "./MailDetail";
 import MailRow from "./MailRow";
 import MailModal from "../MailModal/MailModal";
 import DeleteIconButton from "./DeleteIconButton";
+import Loading from "../Loading/Loading";
 import { getMailList } from "../../api/mail";
 import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
@@ -130,6 +131,7 @@ function Mail() {
   const [googleAt, setGoogleAt] = useState(null);
   const gapi = useGapi();
   const axiosInstance = useAxiosPrivate();
+  const [isLoading, setIsLoading] = useState(true);
   let inBoxId;
 
   if (isPromotionActive) {
@@ -164,12 +166,14 @@ function Mail() {
 
       setUserEmailList(response?.result);
       setNextPageToken(response?.nextPageToken);
+      setIsLoading(false);
     }
 
     getUserEmailList();
   }, [googleAt, inBoxId]);
 
   const getCategoryEmails = async (e) => {
+    setIsLoading(true);
     const inBoxId = e.target.id;
 
     if (inBoxId === "CATEGORY_PROMOTIONS") {
@@ -199,6 +203,7 @@ function Mail() {
 
     setUserEmailList(response.result);
     setNextPageToken(response?.nextPageToken);
+    setIsLoading(false);
     document.querySelector(".emails").scrollTo(0, 0);
   };
 
@@ -256,6 +261,7 @@ function Mail() {
               Trash
             </NavButton>
           </StyledNavDiv>
+          {isLoading && <Loading />}
           {userEmailList?.length ? (
             <StyledSubHeaderDiv>
               <input
@@ -285,7 +291,7 @@ function Mail() {
               />
             </StyledSubHeaderDiv>
           ) : (
-            <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
+            !isLoading && <EmptyEmail>메일함이 비었습니다.</EmptyEmail>
           )}
           <StyledMailDetailDiv onScroll={handleScroll} className="emails">
             {userEmailList?.map((mail) => {

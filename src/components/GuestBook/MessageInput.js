@@ -45,6 +45,7 @@ function MessageInput({ socket }) {
         message: messageValue,
         axiosInstance,
       });
+
       socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
       messageInput.current.value = "";
     } catch (error) {

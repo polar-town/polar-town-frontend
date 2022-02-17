@@ -64,6 +64,14 @@ function Notification({ notificationType, targetItem, from }) {
       try {
         if (user.cokeCount - Number(ITEM_PRICE_LIST[targetItem]) >= 0) {
           if (targetItem === "Ice") {
+            if (user.iceCount === 10) {
+              setNotificationMessage(
+                "🐻‍❄️ 이미 제일 큰 얼음을 가지고 있어요🤍",
+              );
+
+              return setButtonContent([]);
+            }
+
             dispatch(updateIceCount());
           }
 
@@ -78,7 +86,7 @@ function Notification({ notificationType, targetItem, from }) {
           return dispatch(closeNotification());
         }
 
-        setNotificationMessage("콜라가 부족합니다🥲");
+        setNotificationMessage("콜라가 부족합니다💦");
         setButtonContent([]);
       } catch (err) {
         console.error(err);
@@ -101,6 +109,7 @@ function Notification({ notificationType, targetItem, from }) {
       isAlarm: true,
       axiosInstance,
     });
+
     dispatch(closeNotification());
   };
 
@@ -110,6 +119,7 @@ function Notification({ notificationType, targetItem, from }) {
       email: from[1],
       axiosInstance,
     });
+
     dispatch(closeNotification());
   };
 

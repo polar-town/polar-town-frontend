@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import useGapi from "../../hooks/useGapi";
@@ -7,11 +7,36 @@ import { userLogin } from "../../api/auth";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
 
+const background = keyframes`
+  0% {
+    background-position: 0 center;
+  }
+  100% {
+    background-position: -1500px center;
+  }
+`;
+
 const LoginOverlay = styled.div`
-  background: linear-gradient(to top, #03bcf6, #89fff1);
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 100vh;
+
+  &:after {
+    width: 100%;
+    height: 100%;
+    background: url("/images/town-background-image.jpg") 0 center / 1500px
+      repeat-x;
+    animation: ${background} 25s linear infinite;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-size: 100%;
+    opacity: 0.7;
+    z-index: -1;
+    filter: alpha(opacity=70);
+    content: "";
+  }
 `;
 
 const LoginContent = styled.div`
@@ -19,7 +44,7 @@ const LoginContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 30%;
+  width: 23%;
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);

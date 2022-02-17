@@ -15,14 +15,13 @@ const IcePaletteContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -40%);
   image-rendering: pixelated;
+  background-size: cover;
   background-image: url(${(props) =>
     `/images/ice-background/${props.iceCount}.png`});
-  background-size: cover;
 `;
 
 function IcePalette({ iceCount, outItems, onOutItems }) {
   const { id: townId } = useParams();
-  // const { user: loginUser } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
 
   return (

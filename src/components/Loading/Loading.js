@@ -1,4 +1,5 @@
 import React from "react";
+import proptypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 
 const spinner = keyframes`
@@ -36,25 +37,29 @@ const Contaniner = styled.div`
 
 const LoadingSpinner = styled.div`
   margin: 100px auto;
-  font-size: 13px;
+  font-size: 10px;
   width: 1em;
   height: 1em;
   border-radius: 50%;
   position: absolute;
   text-indent: -9999em;
-  top: 20%;
+  top: ${(props) => (props.isDelete ? "500%" : "35%")};
   right: 50%;
   animation: ${spinner} 1.1s infinite ease;
   transform: translateZ(0);
   z-index: 2;
 `;
 
-function Loading() {
+function Loading({ isDelete }) {
   return (
     <Contaniner>
-      <LoadingSpinner />
+      <LoadingSpinner isDelete={isDelete} />
     </Contaniner>
   );
 }
 
 export default Loading;
+
+Loading.propTypes = {
+  isDelete: proptypes.bool,
+};
