@@ -40,6 +40,17 @@ const TownDiv = styled.div`
   position: relative;
 `;
 
+const HostNameContainer = styled.div`
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background-color: #1e5269;
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-family: "Jua", sans-serif;
+`;
+
 const VisitorsContainer = styled.div`
   display: flex;
   position: fixed;
@@ -67,6 +78,7 @@ const GiftAndItemContainer = styled.div`
 
 function Town({ socket }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [hostName, setHostName] = useState("");
   const [iceCount, setIceCount] = useState(1);
   const [outItems, setOutItems] = useState([]);
   const [visitors, setVisitors] = useState([]);
@@ -95,8 +107,10 @@ function Town({ socket }) {
 
     try {
       const response = await getTownHostInfo({ axiosInstance, townId: id });
-      const { iceCount, outItemBox } = response.result.user;
+      const { name, iceCount, outItemBox, _id } = response.result.user;
+      const lastName = name.substring(1);
 
+      loginUser.id === _id ? setHostName("내") : setHostName(`${lastName}의`);
       setIceCount(iceCount);
       setOutItems([...outItemBox]);
 
@@ -152,6 +166,7 @@ function Town({ socket }) {
           })}
       </VisitorsContainer>
       <TownDiv iceCount={iceCount}>
+        <HostNameContainer>{hostName} 마을</HostNameContainer>
         <CokeCounter />
         <PostBox
           isReceiveGuestBook={isReceiveGuestBook}

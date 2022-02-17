@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { selectCokeCount } from "../../features/user/userSlice";
 
 const CokeCountContainer = styled.div`
   position: absolute;
@@ -10,7 +9,7 @@ const CokeCountContainer = styled.div`
   align-items: center;
   justify-content: center;
   background-color: rgb(231, 194, 184, 0.8);
-  width: 140px;
+  padding: 0 20px;
   height: 60px;
   margin: 15px 0 0 15px;
   border-radius: 13px;

@@ -2,9 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { changeLocation } from "../../api/item";
-import { selectUser } from "../../features/user/userSlice";
 import OutItem from "./OutItem";
 import possibleLocation from "../../utils/iceBackgroundLocation";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -17,14 +15,13 @@ const IcePaletteContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -40%);
   image-rendering: pixelated;
+  background-size: cover;
   background-image: url(${(props) =>
     `/images/ice-background/${props.iceCount}.png`});
-  background-size: cover;
 `;
 
 function IcePalette({ iceCount, outItems, onOutItems }) {
   const { id: townId } = useParams();
-  // const { user: loginUser } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
 
   return (

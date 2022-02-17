@@ -71,6 +71,7 @@ function FriendRow({
       user,
       type: LEFT_TYPE.TRANSITION,
     });
+
     dispatch(closeAll());
     navigate(`/users/${id}`);
   }

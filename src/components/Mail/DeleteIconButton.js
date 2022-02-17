@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
 import {
@@ -7,8 +7,9 @@ import {
   moveEmailToTrash,
 } from "../../api/mail";
 import { useDispatch, useSelector } from "react-redux";
-import { increseCoke, selectUserId } from "../../features/user/userSlice";
+import { increseCoke } from "../../features/user/userSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Loading from "../Loading/Loading";
 
 const StyledDeleteButton = styled.button`
   background: none;
@@ -37,14 +38,18 @@ function DeleteIconButton({
   const { user } = useSelector((state) => state.user);
   const count = deleteEmail?.length;
   const axiosInstance = useAxiosPrivate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const moveToTrash = async () => {
+    setIsLoading(true);
+
     await moveEmailToTrash({
       at,
       userId: user.id,
       mailId: deleteEmail,
       axiosInstance,
     });
+
     const { result } = await getMailList({
       at,
       userId: user.id,
@@ -54,9 +59,12 @@ function DeleteIconButton({
 
     checkedMails([]);
     setUserEmailList(result);
+    setIsLoading(false);
   };
 
   const deleteTrash = async () => {
+    setIsLoading(true);
+
     await deleteTrashEmail({
       at,
       userId: user.id,
@@ -64,6 +72,7 @@ function DeleteIconButton({
       count,
       axiosInstance,
     });
+
     const { result } = await getMailList({
       at,
       userId: user.id,
@@ -74,11 +83,13 @@ function DeleteIconButton({
     checkedMails([]);
     dispatch(increseCoke(count));
     setUserEmailList(result);
+    setIsLoading(false);
   };
 
   return (
     <StyledDeleteButton onClick={isTrash ? deleteTrash : moveToTrash}>
       <i className="fas fa-trash-alt"></i>
+      {isLoading && <Loading isDelete={true} />}
     </StyledDeleteButton>
   );
 }

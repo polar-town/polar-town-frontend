@@ -23,11 +23,11 @@ const StyledGuestBookContainer = styled.div`
 `;
 
 function GuestBook({ socket, setIsReceiveGuestBook }) {
-  const [messageList, setMessageList] = useState([]);
-  const { id } = useParams();
   const dispatch = useDispatch();
+  const { id } = useParams();
   const { user } = useSelector((state) => state.user);
   const { isPostBoxOpen } = useSelector((state) => state.modal);
+  const [messageList, setMessageList] = useState([]);
   const axiosInstance = useAxiosPrivate();
 
   useEffect(async () => {

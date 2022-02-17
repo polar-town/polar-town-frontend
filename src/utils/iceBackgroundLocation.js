@@ -2,7 +2,6 @@ export default function possibleLocation(ice, x, y) {
   let rightUp, rightDown, leftUp, leftDown;
 
   if (ice === 10) {
-    console.log("아이스카운트 10일때");
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 288;
     }
@@ -21,8 +20,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 9) {
-    console.log("아이스카운트 9일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 288;
     }
@@ -41,8 +38,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 8) {
-    console.log("아이스카운트 8일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 250;
     }
@@ -61,8 +56,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 7) {
-    console.log("아이스카운트 7일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 220;
     }
@@ -81,8 +74,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 6) {
-    console.log("아이스카운트 6일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 200;
     }
@@ -101,8 +92,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 5) {
-    console.log("아이스카운트 5일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 175;
     }
@@ -121,8 +110,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 4) {
-    console.log("아이스카운트 4일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 155;
     }
@@ -141,8 +128,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 3) {
-    console.log("아이스카운트 3일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 125;
     }
@@ -161,8 +146,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 2) {
-    console.log("아이스카운트 2일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 90;
     }
@@ -181,8 +164,6 @@ export default function possibleLocation(ice, x, y) {
   }
 
   if (ice === 1) {
-    console.log("아이스카운트 1일때");
-
     if (x >= 600 && x <= 1200 && y >= 0 && y < 290) {
       rightUp = 0.48 * x - y - 70;
     }
