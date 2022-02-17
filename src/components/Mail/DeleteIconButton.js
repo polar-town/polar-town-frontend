@@ -7,7 +7,7 @@ import {
   moveEmailToTrash,
 } from "../../api/mail";
 import { useDispatch, useSelector } from "react-redux";
-import { increseCoke, selectUserId } from "../../features/user/userSlice";
+import { increseCoke } from "../../features/user/userSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledDeleteButton = styled.button`

@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { selectCokeCount } from "../../features/user/userSlice";
 
 const CokeCountContainer = styled.div`
   position: absolute;

@@ -4,7 +4,6 @@ import proptypes from "prop-types";
 import NotificationCircle from "../NotificationCircle/NotificationCircle";
 import { getPendingFriendList } from "../../api/friendlist";
 import { useSelector } from "react-redux";
-import { selectUserId } from "../../features/user/userSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyledHalfModal = styled.div`

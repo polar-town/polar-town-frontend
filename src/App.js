@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     return () => {
-      socket.disconnect();
+      getSocketIO().disconnect();
     };
   }, []);
 
