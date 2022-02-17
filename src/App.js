@@ -13,8 +13,6 @@ function App() {
   const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const socket = getSocketIO();
-
     return () => {
       socket.disconnect();
     };
@@ -41,7 +39,7 @@ function App() {
             />
             <Route
               path="/users/:id"
-              element={<Town socket={getSocketIO()} />}
+              element={<Town socketInit={getSocketIO} />}
             />
           </Route>
         </Route>
