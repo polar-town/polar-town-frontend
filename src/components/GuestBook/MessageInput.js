@@ -40,14 +40,16 @@ function MessageInput({ socket }) {
     const messageValue = messageInput.current.value;
 
     try {
-      const { newMessage } = await leaveNewMessage({
-        townId: id,
-        message: messageValue,
-        axiosInstance,
-      });
+      if (messageValue) {
+        const { newMessage } = await leaveNewMessage({
+          townId: id,
+          message: messageValue,
+          axiosInstance,
+        });
 
-      socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
-      messageInput.current.value = "";
+        socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
+        messageInput.current.value = "";
+      }
     } catch (error) {
       console.error(error);
     }
