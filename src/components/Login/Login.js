@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import useGapi from "../../hooks/useGapi";
 import { userLogin } from "../../api/auth";
@@ -73,7 +73,7 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
-  const to = !from || from === "/logout" ? "/" : from;
+  const hasLogoutHistory = useSelector((state) => state.user.hasLogoutHistory);
 
   useEffect(() => {
     if (!gapi) return;
@@ -102,7 +102,7 @@ function Login() {
       });
 
       dispatch(saveLoginUser(isAuth.result));
-      navigate(to, { replace: true });
+      navigate(hasLogoutHistory ? "/" : from, { replace: true });
     } catch (error) {
       if (!error?.response) {
         setError("No Server Response");
