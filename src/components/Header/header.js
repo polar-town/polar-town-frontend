@@ -49,9 +49,16 @@ function Header({ socket }) {
   const logout = useLogout();
 
   async function signOut() {
-    await logout();
-    socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
-    navigate("/");
+    try {
+      await logout();
+      socket.emit(EVENTS.LEFT, { prevTownId, user, type: LEFT_TYPE.SIGNOUT });
+      navigate("/");
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }
 
   return (

@@ -6,6 +6,7 @@ import useGapi from "../../hooks/useGapi";
 import { userLogin } from "../../api/auth";
 import { saveLoginUser } from "../../features/user/userSlice";
 import Header from "../Header/header";
+// import { saveRefreshToken } from "../../db/token";
 
 const background = keyframes`
   0% {
@@ -66,6 +67,8 @@ const FailureMessage = styled.span`
   margin-top: 10px;
 `;
 
+const REFRESH_TOKEN = "token";
+
 function Login() {
   const [error, setError] = useState("");
   const gapi = useGapi();
@@ -102,6 +105,7 @@ function Login() {
       });
 
       dispatch(saveLoginUser(isAuth.result));
+      localStorage.setItem(REFRESH_TOKEN, isAuth.result.refreshToken);
       navigate(hasLogoutHistory ? "/" : from, { replace: true });
     } catch (error) {
       if (!error?.response) {

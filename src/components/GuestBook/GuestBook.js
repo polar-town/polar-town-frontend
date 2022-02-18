@@ -13,6 +13,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
+import useLogout from "../../hooks/useLogout";
 
 const StyledGuestBookContainer = styled.div`
   height: 350px;
@@ -29,6 +30,7 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
   const { id } = useParams();
   const dispatch = useDispatch();
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
     setIsLoading(true);
@@ -46,7 +48,10 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
 
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, []);
 

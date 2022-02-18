@@ -7,6 +7,7 @@ import { getMessageList } from "../../api/guestbook";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const PostBoxContainer = styled.div`
   position: absolute;
@@ -34,12 +35,20 @@ function PostBox({ isReceiveGuestBook, setIsReceiveGuestBook }) {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { user } = useSelector((state) => state.user);
+  const logout = useLogout();
 
   useEffect(async () => {
-    const response = await getMessageList({ townId: id, axiosInstance });
-    const { guestBook } = response.data.result;
-    const isExistNewGuestBook = guestBook.some((msg) => !msg.isChecked);
-    setIsReceiveGuestBook(isExistNewGuestBook);
+    try {
+      const response = await getMessageList({ townId: id, axiosInstance });
+      const { guestBook } = response.data.result;
+      const isExistNewGuestBook = guestBook.some((msg) => !msg.isChecked);
+      setIsReceiveGuestBook(isExistNewGuestBook);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }, []);
 
   return (

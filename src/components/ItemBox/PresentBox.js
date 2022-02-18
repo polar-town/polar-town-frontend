@@ -8,6 +8,7 @@ import Item from "../Item/Item";
 import { useDispatch } from "react-redux";
 import { toggleItemBox } from "../../features/modal/modalSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -30,34 +31,45 @@ function PresentBox({ setOutItems }) {
   const dispatch = useDispatch();
   const axiosInstance = useAxiosPrivate();
   const GMAIL_ADDRESS = 10;
+  const logout = useLogout();
 
   useEffect(async () => {
     try {
       const presentBox = await getPresentBox({ townId: id, axiosInstance });
 
       setPresentList(presentBox.result);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, []);
 
   const moveItemToOutBox = async (itemName) => {
-    const targetItem = presentList.find((item) => {
-      return item.name === itemName;
-    });
+    try {
+      const targetItem = presentList.find((item) => {
+        return item.name === itemName;
+      });
 
-    const response = await changeStorage({
-      userId: id,
-      itemId: targetItem._id,
-      from: "presentBox",
-      to: "outItemBox",
-      axiosInstance,
-    });
+      const response = await changeStorage({
+        userId: id,
+        itemId: targetItem._id,
+        from: "presentBox",
+        to: "outItemBox",
+        axiosInstance,
+      });
 
-    const { outBox } = response.result;
+      const { outBox } = response.result;
 
-    setOutItems(outBox);
-    dispatch(toggleItemBox());
+      setOutItems(outBox);
+      dispatch(toggleItemBox());
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   return (
