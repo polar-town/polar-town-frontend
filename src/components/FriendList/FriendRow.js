@@ -141,7 +141,7 @@ function FriendRow({
 
               socket.emit(EVENTS.SEND_PRESENT, {
                 to: email,
-                from: user.username,
+                from: user.name,
               });
               dispatch(togglePresentFriends());
               dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));

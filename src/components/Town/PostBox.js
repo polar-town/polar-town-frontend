@@ -22,8 +22,8 @@ const PostBoxContainer = styled.div`
 
   i {
     position: absolute;
-    top: 260px;
-    left: 132px;
+    top: 0px;
+    left: 57px;
     font-size: 17px;
     color: red;
   }

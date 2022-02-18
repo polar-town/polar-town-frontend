@@ -15,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   *, *::before, *::after {
+    @import url("https://fonts.googleapis.com/css2?family=Balsamiq+Sans&family=Jua&display=swap");
     box-sizing: border-box;
   }
 

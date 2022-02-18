@@ -76,7 +76,7 @@ function FriendSearchRow({
 
     socket.emit(EVENTS.FRIEND_REQUEST, {
       to: email,
-      userName: user.username,
+      userName: user.name,
       email: user.email,
     });
   }
