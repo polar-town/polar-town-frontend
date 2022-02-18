@@ -4,6 +4,7 @@ const initialState = {
   user: {},
   isAuth: false,
   accessToken: null,
+  hasLogoutHistory: false,
   itemCount: {
     PolarBear: 0,
     Penguin: 0,
@@ -44,7 +45,7 @@ export const userSlice = createSlice({
       state.isAuth = true;
     },
     resetLoginUser: () => {
-      return initialState;
+      return { ...initialState, hasLogoutHistory: true };
     },
     exchangeAccessToken: (state, { payload }) => {
       state.accessToken = payload;
