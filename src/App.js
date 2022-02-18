@@ -7,6 +7,7 @@ import Login from "./components/Login/Login";
 import Town from "./components/Town/Town";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   const socketRef = useRef(null);
@@ -29,6 +30,17 @@ function App() {
   return (
     <>
       <GlobalStyle />
+      <ToastContainer
+        position="bottom-left"
+        autoClose={1500}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<PersistLogin />}>
