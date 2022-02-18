@@ -16,6 +16,7 @@ function PendingFriends() {
       userId: user.id,
       axiosInstance,
     });
+
     setPendingFriends(pendingFriendList);
   }, []);
 

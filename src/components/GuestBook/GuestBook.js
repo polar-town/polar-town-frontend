@@ -55,11 +55,11 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
 
     socket.on(EVENTS.GET_MESSAGES, (messages) => {
       const sortedUpdatedMessages = sortMessages(messages);
+
       setMessageList(sortedUpdatedMessages);
     });
 
     return () => {
-      socket.off(EVENTS.READ_MESSAGES);
       socket.off(EVENTS.GET_MESSAGES);
     };
   }, [isLoading]);
@@ -79,12 +79,11 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
       }}
     >
       <StyledGuestBookContainer>
-        {user.id !== id && (
-          <MessageInput onMessageListUpdate={setMessageList} socket={socket} />
-        )}
+        <MessageInput onMessageListUpdate={setMessageList} socket={socket} />
         {!!messageList.length &&
           messageList.map((post) => {
             const uniqueId = nanoid();
+
             return (
               <MessageRow
                 key={uniqueId}

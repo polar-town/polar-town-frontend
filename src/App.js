@@ -7,7 +7,7 @@ import Login from "./components/Login/Login";
 import Town from "./components/Town/Town";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const socketRef = useRef(null);

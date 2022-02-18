@@ -27,7 +27,6 @@ const GlobalStyle = createGlobalStyle`
 
     .toast {
       background-color: #1e5269;
-      /* background-color: #255d75d8; */
       color: #fff;
       font-size: 18px;
       text-align: center;

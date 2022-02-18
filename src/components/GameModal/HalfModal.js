@@ -47,13 +47,14 @@ function HalfModal({ category, children, setIsReceiveGift }) {
         userId: user.id,
         axiosInstance,
       });
+
       const isExistNewPendingFriend = pendingFriendList.some(
         (friend) => !friend.isChecked,
       );
 
       setHasNewPendingFriend(isExistNewPendingFriend);
     }
-  });
+  }, []);
 
   return (
     <StyledHalfModal>
@@ -70,7 +71,9 @@ function HalfModal({ category, children, setIsReceiveGift }) {
             if (setIsReceiveGift) {
               setIsReceiveGift(false);
             }
+
             setShowFirstContent(false);
+            setHasNewPendingFriend(false);
           }}
         >
           {category?.[1]}
