@@ -4,7 +4,7 @@ import proptypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { changeLocation } from "../../api/item";
 import OutItem from "./OutItem";
-import possibleLocation from "../../utils/iceBackgroundLocation";
+import possibleLocation from "../../utils/validateItemLocation";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const IcePaletteContainer = styled.div`
@@ -38,7 +38,7 @@ function IcePalette({ iceCount, outItems, onOutItems }) {
         const rect = e.target.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-
+        console.log("X", x, "Y", y);
         if (possibleLocation(iceCount, x, y)) {
           const xCoordinate = x - targetItem.children[0].offsetWidth / 2;
           const yCoordinate = y - targetItem.children[0].offsetHeight / 2;
