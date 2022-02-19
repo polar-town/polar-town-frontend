@@ -60,9 +60,11 @@ function FriendSearch({ socket }) {
     }
   }, []);
 
-  async function onPageChange(option) {
+  async function onPageChange(option, axiosInstance) {
     if (option === PAGE_OPTION[PREV] && page > 1) {
-      const pageIndex = page - 1;
+      const pageIndex = page - 2;
+      if (!pageIndex) return;
+
       const searchResult = await getSearchedFriendList({
         query,
         pageIndex,
@@ -70,20 +72,23 @@ function FriendSearch({ socket }) {
       });
       setPage(searchResult.page);
       setSearchedFriends(searchResult.users);
+      setHasResult(true);
       return;
     }
 
-    if (hasResult) {
-      const pageIndex = page + 1;
-      const searchResult = await getSearchedFriendList(
+    if (option !== PAGE_OPTION[PREV]) {
+      if (!hasResult) return;
+
+      const searchResult = await getSearchedFriendList({
         query,
-        pageIndex,
+        pageIndex: page,
         axiosInstance,
-      );
+      });
       if (!searchResult.users.length) {
         setHasResult(false);
         return;
       }
+
       setPage(searchResult.page);
       setSearchedFriends(searchResult.users);
     }
@@ -126,8 +131,8 @@ function FriendSearch({ socket }) {
               <GameModalButton
                 key={key}
                 content={option}
-                onClick={() => {
-                  onPageChange(option);
+                onSelect={() => {
+                  onPageChange(option, axiosInstance);
                 }}
               />
             );

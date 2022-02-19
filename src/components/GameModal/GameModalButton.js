@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StyleGameModalBtn = styled.button`
   width: 80px;
