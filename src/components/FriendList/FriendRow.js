@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
+import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -78,12 +79,20 @@ function FriendRow({
 
   async function onDeletion() {
     await deleteFriend({ userId: user.id, email, deleteFriend, axiosInstance });
+
     handleDeletion((prev) => prev.filter((friend) => friend.id !== id));
+    toast("친구 삭제 완료 🥲", {
+      className: "toast",
+    });
   }
 
   async function acceptFriendRequest() {
     await addFriendList({ userId: user.id, email, axiosInstance });
+
     handleResponse((prev) => prev.filter((friend) => friend.id !== id));
+    toast("친구가 생겼어요 🐻‍❄️", {
+      className: "toast",
+    });
   }
 
   async function declineFriendRequest() {
@@ -143,8 +152,12 @@ function FriendRow({
                 to: email,
                 from: user.name,
               });
+
               dispatch(togglePresentFriends());
               dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+              toast("선물 배달 완료 🎁", {
+                className: "toast",
+              });
             };
 
             return (
