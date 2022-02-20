@@ -62,7 +62,7 @@ function HalfModal({ category, children, setIsReceiveGift }) {
         logout();
       }
     }
-  });
+  }, []);
 
   return (
     <StyledHalfModal>
@@ -79,7 +79,9 @@ function HalfModal({ category, children, setIsReceiveGift }) {
             if (setIsReceiveGift) {
               setIsReceiveGift(false);
             }
+
             setShowFirstContent(false);
+            setHasNewPendingFriend(false);
           }}
         >
           {category?.[1]}

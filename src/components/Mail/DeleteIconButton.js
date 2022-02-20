@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   deleteTrashEmail,
   getMailList,
@@ -62,6 +64,10 @@ function DeleteIconButton({
 
       setUserEmailList(result);
       checkedMails([]);
+      setUserEmailList(result);
+      toast.success("휴지통으로 이동 완료 !", {
+        className: "toast",
+      });
       setIsLoading(false);
     } catch (error) {
       console.error(error.response?.status);
@@ -93,6 +99,9 @@ function DeleteIconButton({
       checkedMails([]);
       dispatch(increseCoke(count));
       setUserEmailList(result);
+      toast.success("불필요한 메일을 삭제했네요👍", {
+        className: "toast",
+      });
       setIsLoading(false);
     } catch (error) {
       console.error(error.response?.status);

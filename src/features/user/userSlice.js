@@ -11,7 +11,6 @@ const initialState = {
     Seal: 0,
     Igloo: 0,
     Flower: 0,
-    photo: null,
   },
 };
 
@@ -47,9 +46,6 @@ export const userSlice = createSlice({
     resetLoginUser: () => {
       return { ...initialState, hasLogoutHistory: true };
     },
-    currentCoke: (state, action) => {
-      state.user.cokeCount = action.payload;
-    },
     increseCoke: (state, action) => {
       state.user.cokeCount += action.payload;
     },
@@ -79,12 +75,8 @@ export const userSlice = createSlice({
 const { reducer, actions } = userSlice;
 
 export const {
-  getUserPending,
-  getUserSuccess,
-  getUserFail,
   saveLoginUser,
   resetLoginUser,
-  currentCoke,
   increseCoke,
   decreaseCoke,
   updateFriendList,
@@ -92,14 +84,5 @@ export const {
   updateItemCount,
   updateIceCount,
 } = actions;
-
-export const selectUser = (state) => state.user;
-export const selectUserId = (state) => state.user.id;
-export const selectUserToken = (state) => state.user.accessToken;
-export const selectCokeCount = (state) => state.user.cokeCount;
-export const selectIceCount = (state) => state.user.iceCount;
-export const selectFriendList = (state) => state.user.friendList;
-export const selectPendingFriendList = (state) => state.user.pendingFriendList;
-export const selectItemCount = (state) => state.user.itemCount;
 
 export default reducer;

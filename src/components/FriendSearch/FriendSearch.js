@@ -126,6 +126,8 @@ function FriendSearch({ socket }) {
         {!!searchedFriends.length &&
           PAGE_OPTION.map((option) => {
             const key = nanoid();
+            const isFirstResult = page === 2 && option === PAGE_OPTION[PREV];
+            const isLastResult = !hasResult && option !== PAGE_OPTION[PREV];
 
             return (
               <GameModalButton
@@ -134,6 +136,7 @@ function FriendSearch({ socket }) {
                 onSelect={() => {
                   onPageChange(option, axiosInstance);
                 }}
+                disabled={isFirstResult || isLastResult}
               />
             );
           })}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import GameModal from "../GameModal/GameModal";
 import GameModalButton from "../GameModal/GameModalButton";
 import { nanoid } from "nanoid";
@@ -83,7 +85,11 @@ function Notification({ notificationType, targetItem, from }) {
             price: ITEM_PRICE_LIST[targetItem],
             axiosInstance,
           });
+
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+          toast(`${targetItem} 구매완료 🤍`, {
+            className: "toast",
+          });
 
           return dispatch(closeNotification());
         }
@@ -117,6 +123,9 @@ function Notification({ notificationType, targetItem, from }) {
       });
 
       dispatch(closeNotification());
+      toast("친구가 생겼어요 🐻‍❄️", {
+        className: "toast",
+      });
     } catch (error) {
       console.error(error.response?.status);
       if (error.response?.status === 401) {

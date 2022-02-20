@@ -236,7 +236,7 @@ function Mail() {
     const scrolledHeight = e.target.scrollTop;
 
     try {
-      if (bodyHeight === showContentHeight + scrolledHeight) {
+      if (bodyHeight === showContentHeight + scrolledHeight + 0.5) {
         const response = await getMailList({
           at: googleAt,
           userId: loginUser.id,

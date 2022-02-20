@@ -7,8 +7,6 @@ export async function getSearchedFriendList({
     `/users/?size=4&page=${pageIndex}&keyword=${query}`,
   );
 
-  console.log(response);
-
   const users = response.data.result.users.map((user) => {
     const { _id, name, photo, iceCount, email, pendingFriendList } = user;
 
