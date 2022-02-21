@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { changeStorage } from "../../api/item";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import SpriteImage from "../SpriteImage/SpriteImage";
+import useLogout from "../../hooks/useLogout";
 
 const OutItemDiv = styled.div`
   position: absolute;
@@ -33,6 +34,7 @@ function OutItem({ name, itemId, setOutItems, location }) {
   const { id } = useParams();
   const { user } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   const goToInBox = async () => {
     try {
@@ -46,7 +48,10 @@ function OutItem({ name, itemId, setOutItems, location }) {
       const { outBox } = response.result;
       setOutItems(outBox);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   };
 

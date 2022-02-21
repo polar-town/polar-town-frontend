@@ -7,17 +7,29 @@ import { TYPE } from "../../constants/friendList";
 import { updateFriendList } from "../../features/user/userSlice";
 import { getFriendList } from "../../api/friendlist";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 function Friends({ type, targetItem, socket }) {
   const [friends, setFriends] = useState([]);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
-    const friendList = await getFriendList({ userId: user.id, axiosInstance });
-    setFriends(friendList);
-    dispatch(updateFriendList(friendList));
+    try {
+      const friendList = await getFriendList({
+        userId: user.id,
+        axiosInstance,
+      });
+      setFriends(friendList);
+      dispatch(updateFriendList(friendList));
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }, []);
 
   return (

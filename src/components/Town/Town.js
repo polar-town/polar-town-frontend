@@ -29,6 +29,7 @@ import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
 import IcePalette from "./IcePalette";
+import useLogout from "../../hooks/useLogout";
 import { getMessageList } from "../../api/guestbook";
 
 const TownDiv = styled.div`
@@ -118,6 +119,7 @@ function Town({ socketInit }) {
   const { user: loginUser } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
   const socket = socketInit();
+  const logout = useLogout();
 
   useEffect(async () => {
     setIsLoading(true);
@@ -133,7 +135,10 @@ function Town({ socketInit }) {
 
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, [id, loginUser.iceCount]);
 
@@ -155,8 +160,6 @@ function Town({ socketInit }) {
     });
 
     return () => {
-      socket.off(EVENTS.JOIN);
-      socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
       socket.off(EVENTS.GET_PRESENT);
     };

@@ -58,8 +58,5 @@ function MessageRow({ post }) {
 export default MessageRow;
 
 MessageRow.propTypes = {
-  name: proptypes.string.isRequired,
-  message: proptypes.string.isRequired,
-  date: proptypes.string.isRequired,
-  post: proptypes.object,
+  post: proptypes.object.isRequired,
 };

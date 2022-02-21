@@ -12,6 +12,7 @@ import { toggleFriendSearch } from "../../features/modal/modalSlice";
 import { getSearchedFriendList } from "../../api/friendSearch";
 import { getFriendList, getPendingFriendList } from "../../api/friendlist";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const PaginationButtonContainer = styled.div`
   display: flex;
@@ -36,21 +37,34 @@ function FriendSearch({ socket }) {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
-    const friendList = await getFriendList({ userId: user.id, axiosInstance });
-    const pendingFriendList = await getPendingFriendList({
-      userId: user.id,
-      axiosInstance,
-    });
+    try {
+      const friendList = await getFriendList({
+        userId: user.id,
+        axiosInstance,
+      });
+      const pendingFriendList = await getPendingFriendList({
+        userId: user.id,
+        axiosInstance,
+      });
 
-    setUserFriendList([...friendList]);
-    setUserPendingFriendList([...pendingFriendList]);
+      setUserFriendList([...friendList]);
+      setUserPendingFriendList([...pendingFriendList]);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }, []);
 
-  async function onPageChange(option) {
+  async function onPageChange(option, axiosInstance) {
     if (option === PAGE_OPTION[PREV] && page > 1) {
-      const pageIndex = page - 1;
+      const pageIndex = page - 2;
+      if (!pageIndex) return;
+
       const searchResult = await getSearchedFriendList({
         query,
         pageIndex,
@@ -58,20 +72,23 @@ function FriendSearch({ socket }) {
       });
       setPage(searchResult.page);
       setSearchedFriends(searchResult.users);
+      setHasResult(true);
       return;
     }
 
-    if (hasResult) {
-      const pageIndex = page + 1;
-      const searchResult = await getSearchedFriendList(
+    if (option !== PAGE_OPTION[PREV]) {
+      if (!hasResult) return;
+
+      const searchResult = await getSearchedFriendList({
         query,
-        pageIndex,
+        pageIndex: page,
         axiosInstance,
-      );
+      });
       if (!searchResult.users.length) {
         setHasResult(false);
         return;
       }
+
       setPage(searchResult.page);
       setSearchedFriends(searchResult.users);
     }
@@ -109,14 +126,17 @@ function FriendSearch({ socket }) {
         {!!searchedFriends.length &&
           PAGE_OPTION.map((option) => {
             const key = nanoid();
+            const isFirstResult = page === 2 && option === PAGE_OPTION[PREV];
+            const isLastResult = !hasResult && option !== PAGE_OPTION[PREV];
 
             return (
               <GameModalButton
                 key={key}
                 content={option}
-                onClick={() => {
-                  onPageChange(option);
+                onSelect={() => {
+                  onPageChange(option, axiosInstance);
                 }}
+                disabled={isFirstResult || isLastResult}
               />
             );
           })}

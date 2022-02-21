@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import useGapi from "../../hooks/useGapi";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const StyledMailDiv = styled.div`
   width: 80vh;
@@ -132,6 +133,7 @@ function Mail() {
   const gapi = useGapi();
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
+  const logout = useLogout();
   let inBoxId;
 
   if (isPromotionActive) {
@@ -145,28 +147,42 @@ function Mail() {
   useEffect(async () => {
     if (!gapi) return;
 
-    const googleAuth = gapi.auth2.getAuthInstance();
-    const { access_token } = await googleAuth.currentUser
-      .get()
-      .reloadAuthResponse();
+    try {
+      const googleAuth = gapi.auth2.getAuthInstance();
+      const { access_token } = await googleAuth.currentUser
+        .get()
+        .reloadAuthResponse();
 
-    setGoogleAt(access_token);
+      setGoogleAt(access_token);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }, [gapi]);
 
   useEffect(async () => {
     if (!googleAt || !inBoxId) return;
 
     async function getUserEmailList() {
-      const response = await getMailList({
-        at: googleAt,
-        userId: loginUser.id,
-        inboxId: inBoxId,
-        axiosInstance,
-      });
+      try {
+        const response = await getMailList({
+          at: googleAt,
+          userId: loginUser.id,
+          inboxId: inBoxId,
+          axiosInstance,
+        });
 
-      setUserEmailList(response?.result);
-      setNextPageToken(response?.nextPageToken);
-      setIsLoading(false);
+        setUserEmailList(response?.result);
+        setNextPageToken(response?.nextPageToken);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error.response?.status);
+        if (error.response?.status === 401) {
+          logout();
+        }
+      }
     }
 
     getUserEmailList();
@@ -194,17 +210,24 @@ function Mail() {
       setIsSpamActive(false);
     }
 
-    const response = await getMailList({
-      at: googleAt,
-      userId: loginUser.id,
-      inboxId: inBoxId,
-      axiosInstance,
-    });
+    try {
+      const response = await getMailList({
+        at: googleAt,
+        userId: loginUser.id,
+        inboxId: inBoxId,
+        axiosInstance,
+      });
 
-    setUserEmailList(response.result);
-    setNextPageToken(response?.nextPageToken);
-    setIsLoading(false);
-    document.querySelector(".emails").scrollTo(0, 0);
+      setUserEmailList(response.result);
+      setNextPageToken(response?.nextPageToken);
+      setIsLoading(false);
+      document.querySelector(".emails").scrollTo(0, 0);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   const handleScroll = throttle(async (e) => {
@@ -212,17 +235,24 @@ function Mail() {
     const showContentHeight = e.target.clientHeight;
     const scrolledHeight = e.target.scrollTop;
 
-    if (bodyHeight === showContentHeight + scrolledHeight + 0.5) {
-      const response = await getMailList({
-        at: googleAt,
-        userId: loginUser.id,
-        inboxId: inBoxId,
-        pageToken: nextPageToken,
-        axiosInstance,
-      });
+    try {
+      if (bodyHeight === showContentHeight + scrolledHeight + 0.5) {
+        const response = await getMailList({
+          at: googleAt,
+          userId: loginUser.id,
+          inboxId: inBoxId,
+          pageToken: nextPageToken,
+          axiosInstance,
+        });
 
-      setUserEmailList([...userEmailList, ...response.result]);
-      setNextPageToken(response.nextPageToken);
+        setUserEmailList([...userEmailList, ...response.result]);
+        setNextPageToken(response.nextPageToken);
+      }
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, 500);
 

@@ -66,6 +66,8 @@ const FailureMessage = styled.span`
   margin-top: 10px;
 `;
 
+const REFRESH_TOKEN = "token";
+
 function Login() {
   const [error, setError] = useState("");
   const gapi = useGapi();
@@ -102,6 +104,7 @@ function Login() {
       });
 
       dispatch(saveLoginUser(isAuth.result));
+      localStorage.setItem(REFRESH_TOKEN, isAuth.result.refreshToken);
       navigate(hasLogoutHistory ? "/" : from, { replace: true });
     } catch (error) {
       if (!error?.response) {

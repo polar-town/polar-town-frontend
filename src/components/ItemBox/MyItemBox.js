@@ -10,6 +10,7 @@ import { ITEM_LIST } from "../../constants/item";
 import { updateItemCount } from "../../features/user/userSlice";
 import { toggleItemBox } from "../../features/modal/modalSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const ItemContainerDiv = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ function MyItemBox({ setOutItems }) {
   const { user, itemCount } = useSelector((state) => state.user);
   const iceCount = user.iceCount;
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
     setIsMounted(true);
@@ -36,8 +38,11 @@ function MyItemBox({ setOutItems }) {
 
         setMyItemList(myItemBox.result.inItemBox);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
 
     return () => {
@@ -59,20 +64,27 @@ function MyItemBox({ setOutItems }) {
   }, [myItemList]);
 
   const moveItemToOutBox = async (itemName) => {
-    const targetItem = myItemList.find((item) => {
-      return item.name === itemName;
-    });
+    try {
+      const targetItem = myItemList.find((item) => {
+        return item.name === itemName;
+      });
 
-    const response = await changeStorage({
-      userId: id,
-      itemId: targetItem._id,
-      from: "inItemBox",
-      to: "outItemBox",
-      axiosInstance,
-    });
+      const response = await changeStorage({
+        userId: id,
+        itemId: targetItem._id,
+        from: "inItemBox",
+        to: "outItemBox",
+        axiosInstance,
+      });
 
-    setOutItems(response.result.outBox);
-    dispatch(toggleItemBox());
+      setOutItems(response.result.outBox);
+      dispatch(toggleItemBox());
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   return (

@@ -1,7 +1,6 @@
 import axios from "./axios";
 
 const LOGIN_URL = "/auth/login";
-const LOGOUT_URL = "/auth/logout";
 
 export async function userLogin({ googleData }) {
   const res = await axios.post(
@@ -14,12 +13,4 @@ export async function userLogin({ googleData }) {
   );
 
   return res.data;
-}
-
-export async function userLogout(user) {
-  await axios.post(
-    LOGOUT_URL,
-    { email: user.email },
-    { withCredentials: true },
-  );
 }
