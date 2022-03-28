@@ -11,6 +11,28 @@
 
 메일함의 경우 신경쓰지 않으면 어느새 꽉 차버리지는 않으신가요? 가득 쌓인 메일을 삭제해 주는 것 만으로도 탄소 배출을 줄일 수 있습니다. 스팸메일을 보관하는데 연간 1,700만 톤의 이산화 탄소가 발생한다는 사실! 메일함을 비우며 탄소 배출 줄이기에 관심을 가져보세요, 그리고 폴라타운의 소셜기능들을 이용하여 친구들과 지속적인 활동을 이어나가 보는 것은 어떨까요?
 
+## 💻 실행 방법
+### 원격 저장소 내려받기
+```
+$ git clone https://github.com/polar-town/spolar-town-frontend.git
+$ npm install
+```
+### 환경 변수 설정
+```
+REACT_APP_BASE_URL=http://localhost:3000
+REACT_APP_CLIENT_ID=<YOUR_GOOGIE_API_CLIENT_ID>
+REACT_APP_REDIRECT_URI=http://localhost:3001
+REACT_APP_USER_GMAIL=https://mail.google.com/mail/u/1/#inbox
+```
+### 실행
+```
+$ npm start
+```
+### 테스트
+```
+$ npm test
+```
+
 ## 🗓 개발기간
 
 `2022년 02월 04일 ~ 2021년 02월 18일`
@@ -19,7 +41,7 @@
 
 ### Language : <img alt="JavaScript" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-appveyor&logo=JavaScript&logoColor=white"/>
 
-### Netlify : <img alt="Netlify" src ="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-appveyor&logo=netlify&logoColor=white"/>
+### Netlify : [![Netlify Status](https://api.netlify.com/api/v1/badges/27da5df7-6519-486f-a4ff-6d793e2a2032/deploy-status)](https://app.netlify.com/sites/polartown/deploys)
 
 ### Front : <img alt="React" src ="https://img.shields.io/badge/React-61DAFB.svg?&style=for-the-appveyor&logo=React&logoColor=white"/> , <img alt="Redux" src ="https://img.shields.io/badge/Redux-764ABC.svg?&style=for-the-appveyor&logo=Redux&logoColor=white"/> , <img alt="styled-components" src ="https://img.shields.io/badge/styled_components-DB7093.svg?&style=for-the-appveyor&logo=styled-components&logoColor=white"/> , <img alt="axios" src ="https://img.shields.io/badge/axios-764ABC.svg?&style=for-the-appveyor&logo=axios&logoColor=white"/>
 
@@ -39,65 +61,29 @@
 |         | Notifications |                                               친구 신청, 선물 알림 이벤트 발생시 유저가 온라인 상태인 경우 실시간 알람을 받습니다. 상점에서 물건 구매시 구매 확정, 금액이 부족한 경우에도 알림창을 띄웁니다.                                               |
 
 <details>
-<summary><b style="color: DarkCyan;">상세 화면 이미지</b></summary>
-
-#### 랜딩 페이지 - 로그인
-
-![로그인](https://user-images.githubusercontent.com/80485020/160343676-cb4e57c0-5d4e-4d99-9bcf-d33235fc45ab.gif)
-
-#### 이메일 휴지통으로 보내기
-
-![이메일 휴지통](https://user-images.githubusercontent.com/80485020/160343702-48d71462-de36-4a90-9934-ba6b80ad1244.gif)
-
-#### 휴지통 이메일 비우기
-
-![휴지통 비우기](https://user-images.githubusercontent.com/80485020/160343709-c98c1f55-2929-450e-9ed1-2aabee9c1647.gif)
-
-#### 친구 마을 놀러가기
-
-![친구 마을 방문](https://user-images.githubusercontent.com/80485020/160343730-d547be37-a787-4ef4-bdc6-489d3720ed67.gif)
-
-#### 상점에서 아이템 구매하기
-
-![구매](https://user-images.githubusercontent.com/80485020/160343712-ca048508-9855-4ee8-8b9a-4003ee9f7694.gif)
-
-#### 아이템 함에서 아이템 꺼내고 넣기
-
-![아이템 꺼내기](https://user-images.githubusercontent.com/80485020/160343717-c0baa5d9-1ef3-4b69-91b0-a5fcc34e3af8.gif)
-
-#### 얼음판 위 아이템 배치하기
-
-![아이템 움직이기](https://user-images.githubusercontent.com/80485020/160343725-e0beaef6-2d37-4d78-b557-518141d576c8.gif)
-
-#### 친구에게 선물 보내기
-
-![선물 보내기](https://user-images.githubusercontent.com/80485020/160343735-cce63673-508d-475c-9724-41440ec22b14.gif)
-
-#### 실시간 알림 1 - 선물 알림
-
-![선물 받기](https://user-images.githubusercontent.com/80485020/160343737-ddacb1de-7f22-40a2-911a-f93a04d8b553.gif)
-
-#### 친구 신청 보내기
-
-![신청 보내기](https://user-images.githubusercontent.com/80485020/160343738-346f7243-944b-4701-96a0-39408159aeb5.gif)
-
-#### 실시간 알림 2 - 친구 신청
-
-![친구 요청 받기](https://user-images.githubusercontent.com/80485020/160343740-bd29a609-cafa-4ba9-97b8-248a26fda833.gif)
-
-#### 실시간 방명록 업데이트
-
-![실시간 방명록](https://user-images.githubusercontent.com/80485020/160343722-f93f6c11-b8a2-4aa8-9363-08e2a80876d8.gif)
-
-#### 실시간 방문한 유저 프로필
-
-![실시간 프로필](https://user-images.githubusercontent.com/80485020/160343732-b2a2a408-b7e2-4361-ac86-4f41f539b2ea.gif)
+<summary><b>상세 화면 이미지</b></summary>
+  
+| 랜딩 페이지 - 로그인 | 이메일 휴지통으로 보내기 |
+| :-----------: | :-----------: |
+| ![로그인](https://user-images.githubusercontent.com/80485020/160343676-cb4e57c0-5d4e-4d99-9bcf-d33235fc45ab.gif)| ![이메일 휴지통](https://user-images.githubusercontent.com/80485020/160343702-48d71462-de36-4a90-9934-ba6b80ad1244.gif)|
+| 휴지통 이메일 비우기 | 친구 마을 놀러가기 |
+| ![휴지통 비우기](https://user-images.githubusercontent.com/80485020/160343709-c98c1f55-2929-450e-9ed1-2aabee9c1647.gif) | ![친구 마을 방문](https://user-images.githubusercontent.com/80485020/160343730-d547be37-a787-4ef4-bdc6-489d3720ed67.gif)|
+| 상점에서 아이템 구매하기 | 아이템 함에서 아이템 꺼내고 넣기 |
+| ![구매](https://user-images.githubusercontent.com/80485020/160343712-ca048508-9855-4ee8-8b9a-4003ee9f7694.gif) | ![아이템 꺼내기](https://user-images.githubusercontent.com/80485020/160343717-c0baa5d9-1ef3-4b69-91b0-a5fcc34e3af8.gif)|
+| 얼음판 위 아이템 배치하기 | 실시간 방문한 유저 프로필 |
+| ![아이템 움직이기](https://user-images.githubusercontent.com/80485020/160343725-e0beaef6-2d37-4d78-b557-518141d576c8.gif) | ![실시간 프로필](https://user-images.githubusercontent.com/80485020/160343732-b2a2a408-b7e2-4361-ac86-4f41f539b2ea.gif)|  
+| 친구에게 선물 보내기 | 실시간 알림 1 - 선물 알림 |
+| ![선물 보내기](https://user-images.githubusercontent.com/80485020/160343735-cce63673-508d-475c-9724-41440ec22b14.gif)  | ![선물 받기](https://user-images.githubusercontent.com/80485020/160343737-ddacb1de-7f22-40a2-911a-f93a04d8b553.gif)|
+| 친구 신청 보내기 | 실시간 알림 2 - 친구 신청 |
+| ![신청 보내기](https://user-images.githubusercontent.com/80485020/160343738-346f7243-944b-4701-96a0-39408159aeb5.gif) | ![친구 요청 받기](https://user-images.githubusercontent.com/80485020/160343740-bd29a609-cafa-4ba9-97b8-248a26fda833.gif)|
+| 실시간 방명록 업데이트 |
+| ![실시간 방명록](https://user-images.githubusercontent.com/80485020/160343722-f93f6c11-b8a2-4aa8-9363-08e2a80876d8.gif) |
 
 </details>
 
 ## 🚀 챌린지
 
-<details><summary style="background-color: SeaShell;"><b>Google OAuth 2.0으로 Gmail API 호출 가능한 Access Token 요청하기</b>
+<details><summary><b>Google OAuth 2.0으로 Gmail API 호출 가능한 Access Token 요청하기</b>
 </summary>
 <b>Firebase의 한계점</b><p>
 프로젝트 초기에는 Firebase Auth의 Google 로그인을 사용하여 Gmail API 요청에 사용할 Access Token을 받아오는 방식으로 구현하였으나, 로그인 시 최초 발급받은 Google Access Token이 1시간 이후에 만료되는 이슈가 발생하였습니다. Firebase Auth는 권한 부여(Auth Z) 보다는 인증(AuthN)에 포커스를 두고 있기 때문에 ID Token은 갱신할 수 있으나, Google Access Token은 최초 발급 이후 갱신할 수 있는 메소드를 제공하고 있지 않다는 것을 알게 되었습니다.</p>
@@ -105,11 +91,11 @@
 이에 대한 해결책으로 Google OAuth 2.0으로 로그인 방식을 변경하여 1시간이 지나 만료된 Google Access Token을 갱신할 수 있게 되었습니다. 이에 Google Access Token이 만료되면 로그아웃 후 재 로그인하여 새로운 Google Access Token을 받는 기존 방식에서, 로그인을 유지하며 Google Access Token을 갱신할 수 있는 방식으로 변경하여 재로그인 과정을 없애 서버 요청 간소화 및 사용자 경험을 개선의 효과가 있었습니다.
 </details>
 
-<details><summary style="background-color: GhostWhite;"><b>Gmail API의 Get 요청 반환 값이 Base64 문자열일 때의 Mail Body 렌더링</b>
+<details><summary><b>Gmail API의 Get 요청 반환 값이 Base64 문자열일 때의 Mail Body 렌더링</b>
 </summary>
 <b>Base64 문자열에 대한 이해</b><p>
 Gmail API로 message에 대한 get 요청 시 mail body 반환 값이예상했던 HTML 문자열이 아닌 생소한 형태라 데이터 이해에 어려움이 있었습니다. 공식 문서를 찾아보니 인코딩된 base64url 문자열 형태임을 알게 되었습니다. 이메일은 문자 전송뿐만 아니라 음악 파일이나 그래픽 파일 등 첨부 파일로 바이너리 데이터를 포함하는 경우가 흔하기 때문에, 하드웨어나 운영체제에 관계없이 동일한 인코딩을 보장해주는 64개의 ASCII 문자로 인코딩된 base64 문자열 형식으로 전송한다는 것을 새롭게 배울 수 있었습니다.<br>
-<b style="color: DarkCyan;">
+<b>
 Base64 문자열 예시 👉 <i>Encoded:</i> dGVzdA== <i>Decoded:</i> test
 </b>
 
@@ -118,7 +104,7 @@ Base64 문자열 예시 👉 <i>Encoded:</i> dGVzdA== <i>Decoded:</i> test
 디코딩해서 얻게 될 문자열이 전부 영문으로 이루어져 있어 ASCII 문자만으로 대응이 된다면 클라이언트에서 atob()를 사용한 디코딩을 우선으로 고려할 수 있습니다. 그러나 한국어 서비스를 제공하는 프로젝트이므로 대부분의 이메일에 한글이 포함되어 있을 것으로 예상하여 유니코드 문자열에 대한 디코딩이 필요하다고 판단, Node의 Buffer 클래스를 사용한 유틸 함수를 작성하여 디코딩 시 유실되는 문자열이 없도록 작업하였습니다. 
 </details>
 
-<details><summary style="background-color: SeaShell;"><b>얼음 좌표 구하기</b>
+<details><summary><b>얼음 좌표 구하기</b>
 </summary>
 사용자가 아이템을 움직일 때 얼음 위에서만 마음대로 위치시키고 싶었기 때문에 이 부분에 있어서 고민을 꽤 많이 했었습니다. 처음에는 마우스의 절대좌표를 이용해 위치할 수 있는 좌표인지 판별하려고 했으나 유동적인 스크린 창에 대응하는 부분에 있어서 할 수 없다고 판단하여 다른 방법을 모색하였습니다. 얼음 이미지는 큰 div 태그 하나에 백그라운드 이미지로 보이고 있는 상황이었기 때문에 div 태그 기준으로 다이아몬드인 얼음 모양에 맞춰서 모서리 네 부분만 제약을 걸어야 했습니다. 얼음이 들어있는 큰 div 태그를 전체 좌표라고 생각하고 얼음 가운데를 (0,0) 좌표로 봤을 때 각각 4개의 일차함수로 이루어진 모양이라고 생각했습니다. 따라서 얼음 이미지 모양대로 4개의 일차함수를 그려 그 안을 지나는 좌표 일 때만 아이템을 위치 시키는 방법으로 해결하였습니다. 그 결과 저희가 원하던 모습대로 얼음을 제외하는 좌표에는 아이템을 위치시킬 수 없도록 제약을 걸 수 있었고 10가지의 얼음 좌표에 모두 유틸 함수 하나로 손쉽게 판별할 수 있었습니다. 저희 팀원들끼리 이 부분을 해결하지 못하면 어쩔 수 없이 아무 곳에 나 위치시킬 수 있도록 하자고 말을 했었는데 여러 가지 시행착오 끝에 결론적으로 저희의 의도대로 완성할 수 있어서 기분 좋게 마무리할 수 있었던 것 같습니다. 또한 좌표판별 알고리즘을 짜면서 그래프를 그려가면서 좌표를 그렸던 과정도 기억에 많이 남는 것 같습니다.<p>
 
@@ -135,7 +121,7 @@ y = 0.48x + 260 >= 0 (0 <= x < 600 && 290 <= y <= 580)</p>
 
 </details>
 
-<details><summary style="background-color: GhostWhite;"><b>Drag and Drop(DnD)을 이용한 아이템 이동</b>
+<details><summary><b>Drag and Drop(DnD)을 이용한 아이템 이동</b>
 </summary>
 <b>DnD 구현기</b><p>
 Drag and Drop을 위한 라이브러리가 존재했지만 어려운 기능이 필요한 것이 아니었기 때문에 직접 구현해 보는 방향으로 진행하였습니다. 구현중 가장 어려움이 많았던 부분은 아이템 drag 영역 설정과 마우스의 절대 좌표를 구해 해당 좌표에 위치시키는 부분이었다고 생각합니다. DnD 구현 초반에는 얼음판 전체 이미지 위에 작은 픽셀로 쪼갠 array를 매핑해 준 뒤, 마우스 drop시 찾아지는 엘리먼트에 아이템 이미지를 appendChild 해주는 방식을 사용하려 했습니다. 그러나 한 화면에 200개 이상의 div를 랜더 시키는 것은 비효율적이고 앱 성능에도 좋지 않을 것 같다는 팀원들의 의견이 있었고 아이템 drag시에 셀 수 없이 많은 이벤트 요청이 일어나는 이슈가 있어 하나의 큰 div에서 drag를 컨트롤하는 구현 방법으로 변경하게 되었습니다.
@@ -144,14 +130,14 @@ Drag and Drop Api의 DataTransfer를 이번 프로젝트를 하면서 처음 접
 애니메이션 효과와 더불어 이미지 렌더링 최적화를 위해 스프라이트 이미지를 사용하였는데 스프라이트 이미지를 사용하는 요소를 드래그하는 과정에서 스프라이트 이미지 전체가 노출되는 이슈가 있습니다. DataTransfer의 setDragImage를 사용하여 지정해준 이미지를 사용자에게 보여주려고 했지만, 완벽히 적용되지 않고 원본이 노출되는 현상을 해결하지 못해 아쉬움이 남습니다.
 </details>
 
-<details><summary style="background-color: SeaShell;"><b>Axios Interceptor를 사용한 보안 검증</b>
+<details><summary><b>Axios Interceptor를 사용한 보안 검증</b>
 </summary>
 <b>AccessToken 재발급 처리</b><br>
 AccessToken이 만료된 상태로 Gmail 서버로 요청을 보냈을 경우(401 Unauthorized) axios의 Interceptor를 통해 요청 중간에 AccessToken을 재발급 해준 뒤 서버에 재 요청을 보내는 방식을 사용하였습니다. AccessToken을 사용하는 모든 요청에서 각각 토큰 만료에 반응하는 반복되는 코드를 작성하지 않아도 되었고 헤더 및 baseUrl과 같이 동일하게 사용되는 부분을 공통으로 처리해 주어 관리하기 수월했다고 생각합니다.
 처음 작성 시에는 React 컴포넌트가 아닌 일반 JavaScript util 함수 안에서 Axios Interceptor를 작성해 사용하려 했었습니다. 하지만 Interceptor 내부에서 AccessToken을 재발급 해줌과 동시에 Redux 전역 상태 업데이트를 해줘야 했기 때문에 ‘Hooks는 함수 컴포넌트의 본문 내에서만 호출할 수 있습니다’라는 React Hooks 규칙 위반 오류 메시지를 접하게 되었습니다. 그렇기 때문에 Custom Hook으로 변경해 작성해 사용해 주었습니다.
 </details>
 
-<details><summary style="background-color: GhostWhite;"><b>Socket.IO와 사용자  실시간 인터랙션</b>
+<details><summary><b>Socket.IO와 사용자  실시간 인터랙션</b>
 </summary>
 소셜 웹 애플리케이션이기 때문에 생각보다 신경 써서 구현해야 할 유저 인터랙션이 많이 있었는데 예를 들어
 친구 신청이나 선물을 보냈을 때 두 명의 유저 모두 접속하고 있는 경우와 혹은 상대방은 접속해 있지 않을 때가 있습니다. 저희는 조금 더 사용자 친화적으로 웹 서비스를 완성시키고 싶었기에 두 상황 각각 다르게  대응하도록 하였습니다. 상대방이 현재 접속해 있을 때는 실시간으로 알림 모달을 보내서 친구가 왔거나 선물이 온 상황에 바로 답을 할 수 있도록 하였습니다. 친구 신청 버튼을 누르는 순간 Socket으로 이벤트를 보내고 누구에게 보내는 신청인지 확인하고 해당하는 유저에게 알림을 보냈습니다. 두 번째 상황으로 상대방은 접속해 있지 않을 때입니다. 이런 경우에는 실시간으로 알림 창을 띄워줄 수는 없었기에 유저가 로그인했을 때 확인하지 않은 새로운 알림이 있으면 작은 팝업으로 알림을 표시하기로 하였습니다. 하지만 초기 기획 때 이 부분을 미처 생각하지 못하고 진행했기 때문에 데이터베이스를 변경해야 하는 일이 생겼습니다. 따라서 isChecked라는 항목을 추가해서 유저가 확인한 알림인지 Boolean 값으로 판별할 수 있도록 하였습니다.
