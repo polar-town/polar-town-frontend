@@ -4,7 +4,7 @@ import proptypes from "prop-types";
 import { useParams } from "react-router-dom";
 import { changeLocation } from "../../api/item";
 import OutItem from "./OutItem";
-import possibleLocation from "../../utils/iceBackgroundLocation";
+import possibleLocation from "../../utils/validateItemLocation";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useLogout from "../../hooks/useLogout";
 

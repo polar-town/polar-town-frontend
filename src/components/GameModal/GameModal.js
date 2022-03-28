@@ -85,6 +85,7 @@ function GameModal({ onClose, children, maskClosable, className, subject }) {
         className={className}
         onClick={maskClosable ? onMaskClick : null}
         tabIndex={-1}
+        data-testid="wrapperdiv"
       >
         <ModalInner tabIndex={0} className="modal-inner">
           <CloseButton className="modal-close" onClick={() => onClose()}>
