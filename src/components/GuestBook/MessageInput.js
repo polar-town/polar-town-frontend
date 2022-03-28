@@ -5,6 +5,7 @@ import proptypes from "prop-types";
 import { leaveNewMessage } from "../../api/guestbook";
 import { EVENTS } from "../../constants/socketEvents";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const StyledInputContainer = styled.div`
   display: flex;
@@ -35,21 +36,27 @@ function MessageInput({ socket }) {
   const { id } = useParams();
   const messageInput = useRef();
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   async function handleSendButtonClick() {
     const messageValue = messageInput.current.value;
 
     try {
-      const { newMessage } = await leaveNewMessage({
-        townId: id,
-        message: messageValue,
-        axiosInstance,
-      });
+      if (messageValue) {
+        const { newMessage } = await leaveNewMessage({
+          townId: id,
+          message: messageValue,
+          axiosInstance,
+        });
 
-      socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
-      messageInput.current.value = "";
+        socket.emit(EVENTS.SEND_MESSAGE, { townId: id, message: newMessage });
+        messageInput.current.value = "";
+      }
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }
 

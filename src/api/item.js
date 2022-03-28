@@ -1,21 +1,13 @@
 export async function getInItemBox({ townId, axiosInstance }) {
-  try {
-    const response = await axiosInstance.get(`/users/${townId}/items`);
+  const response = await axiosInstance.get(`/users/${townId}/items`);
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }
 
 export async function getPresentBox({ townId, axiosInstance }) {
-  try {
-    const response = await axiosInstance.get(`/users/${townId}/items/present`);
+  const response = await axiosInstance.get(`/users/${townId}/items/present`);
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }
 
 export async function changeStorage({
@@ -48,16 +40,12 @@ export async function changeLocation({
 }
 
 export async function addItem({ userId, name, price, axiosInstance }) {
-  try {
-    const response = await axiosInstance.post(`/users/${userId}/items`, {
-      name,
-      price,
-    });
+  const response = await axiosInstance.post(`/users/${userId}/items`, {
+    name,
+    price,
+  });
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }
 
 export async function sendItem({
@@ -67,18 +55,11 @@ export async function sendItem({
   price,
   axiosInstance,
 }) {
-  try {
-    const response = await axiosInstance.post(
-      `/users/${townId}/items/present`,
-      {
-        presentTo,
-        name,
-        price,
-      },
-    );
+  const response = await axiosInstance.post(`/users/${townId}/items/present`, {
+    presentTo,
+    name,
+    price,
+  });
 
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
+  return response.data;
 }

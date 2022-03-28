@@ -3,28 +3,24 @@ export async function getSearchedFriendList({
   pageIndex = 1,
   axiosInstance,
 }) {
-  try {
-    const response = await axiosInstance.get(
-      `/users/?size=4&page=${pageIndex}&keyword=${query}`,
-    );
+  const response = await axiosInstance.get(
+    `/users/?size=4&page=${pageIndex}&keyword=${query}`,
+  );
 
-    const users = response.data.result.users.map((user) => {
-      const { _id, name, photo, iceCount, email, pendingFriendList } = user;
+  const users = response.data.result.users.map((user) => {
+    const { _id, name, photo, iceCount, email, pendingFriendList } = user;
 
-      return {
-        id: _id,
-        name,
-        photo,
-        iceCount,
-        email,
-        pendingFriendList,
-      };
-    });
+    return {
+      id: _id,
+      name,
+      photo,
+      iceCount,
+      email,
+      pendingFriendList,
+    };
+  });
 
-    return { page: pageIndex++, users };
-  } catch (error) {
-    console.error(error);
-  }
+  return { page: pageIndex + 1, users };
 }
 
 export async function updateTargetPendingFriendList({
@@ -32,16 +28,12 @@ export async function updateTargetPendingFriendList({
   targetEmail,
   axiosInstance,
 }) {
-  try {
-    const response = await axiosInstance.post(
-      `/users/${userId}/friends/pending`,
-      { email: targetEmail },
-      {
-        withCredentials: true,
-      },
-    );
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+  const response = await axiosInstance.post(
+    `/users/${userId}/friends/pending`,
+    { email: targetEmail },
+    {
+      withCredentials: true,
+    },
+  );
+  return response;
 }

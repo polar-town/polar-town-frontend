@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import proptypes from "prop-types";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   deleteTrashEmail,
   getMailList,
@@ -10,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { increseCoke } from "../../features/user/userSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import Loading from "../Loading/Loading";
+import useLogout from "../../hooks/useLogout";
 
 const StyledDeleteButton = styled.button`
   background: none;
@@ -39,51 +42,73 @@ function DeleteIconButton({
   const count = deleteEmail?.length;
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(false);
+  const logout = useLogout();
 
   const moveToTrash = async () => {
     setIsLoading(true);
 
-    await moveEmailToTrash({
-      at,
-      userId: user.id,
-      mailId: deleteEmail,
-      axiosInstance,
-    });
+    try {
+      await moveEmailToTrash({
+        at,
+        userId: user.id,
+        mailId: deleteEmail,
+        axiosInstance,
+      });
 
-    const { result } = await getMailList({
-      at,
-      userId: user.id,
-      inboxId: "CATEGORY_PROMOTIONS",
-      axiosInstance,
-    });
+      const { result } = await getMailList({
+        at,
+        userId: user.id,
+        inboxId: "CATEGORY_PROMOTIONS",
+        axiosInstance,
+      });
 
-    checkedMails([]);
-    setUserEmailList(result);
-    setIsLoading(false);
+      setUserEmailList(result);
+      checkedMails([]);
+      setUserEmailList(result);
+      toast.success("휴지통으로 이동 완료 !", {
+        className: "toast",
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   const deleteTrash = async () => {
     setIsLoading(true);
 
-    await deleteTrashEmail({
-      at,
-      userId: user.id,
-      mailId: deleteEmail,
-      count,
-      axiosInstance,
-    });
+    try {
+      await deleteTrashEmail({
+        at,
+        userId: user.id,
+        mailId: deleteEmail,
+        count,
+        axiosInstance,
+      });
 
-    const { result } = await getMailList({
-      at,
-      userId: user.id,
-      inboxId: "TRASH",
-      axiosInstance,
-    });
+      const { result } = await getMailList({
+        at,
+        userId: user.id,
+        inboxId: "TRASH",
+        axiosInstance,
+      });
 
-    checkedMails([]);
-    dispatch(increseCoke(count));
-    setUserEmailList(result);
-    setIsLoading(false);
+      checkedMails([]);
+      dispatch(increseCoke(count));
+      setUserEmailList(result);
+      toast.success("불필요한 메일을 삭제했네요👍", {
+        className: "toast",
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   return (

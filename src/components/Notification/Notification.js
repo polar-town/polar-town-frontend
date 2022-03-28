@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import GameModal from "../GameModal/GameModal";
 import GameModalButton from "../GameModal/GameModalButton";
 import { nanoid } from "nanoid";
@@ -15,6 +17,7 @@ import {
 } from "../../features/modal/modalSlice";
 import { ITEM_PRICE_LIST } from "../../constants/item";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const NotificationContainer = styled.div`
   height: 300px;
@@ -43,6 +46,7 @@ function Notification({ notificationType, targetItem, from }) {
   const [notificationMessage, setNotificationMessage] = useState("");
   const { user } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(() => {
     if (notificationType === TYPE.CONFIRM_PURCHASE) {
@@ -81,15 +85,22 @@ function Notification({ notificationType, targetItem, from }) {
             price: ITEM_PRICE_LIST[targetItem],
             axiosInstance,
           });
+
           dispatch(decreaseCoke(ITEM_PRICE_LIST[targetItem]));
+          toast(`${targetItem} 구매완료 🤍`, {
+            className: "toast",
+          });
 
           return dispatch(closeNotification());
         }
 
         setNotificationMessage("콜라가 부족합니다💦");
         setButtonContent([]);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error.response?.status);
+        if (error.response?.status === 401) {
+          logout();
+        }
       }
     }
     if (e.target.textContent === "아니요") {
@@ -103,24 +114,41 @@ function Notification({ notificationType, targetItem, from }) {
   };
 
   const handleAcceptFriend = async () => {
-    await addFriendList({
-      userId: user.id,
-      email: from[1],
-      isAlarm: true,
-      axiosInstance,
-    });
+    try {
+      await addFriendList({
+        userId: user.id,
+        email: from[1],
+        isAlarm: true,
+        axiosInstance,
+      });
 
-    dispatch(closeNotification());
+      dispatch(closeNotification());
+      toast("친구가 생겼어요 🐻‍❄️", {
+        className: "toast",
+      });
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   const handleRejectFriend = async () => {
-    await deletePendingFriend({
-      userId: user.id,
-      email: from[1],
-      axiosInstance,
-    });
+    try {
+      await deletePendingFriend({
+        userId: user.id,
+        email: from[1],
+        axiosInstance,
+      });
 
-    dispatch(closeNotification());
+      dispatch(closeNotification());
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   };
 
   return (

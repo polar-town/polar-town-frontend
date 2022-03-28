@@ -4,13 +4,13 @@ const initialState = {
   user: {},
   isAuth: false,
   accessToken: null,
+  hasLogoutHistory: false,
   itemCount: {
     PolarBear: 0,
     Penguin: 0,
     Seal: 0,
     Igloo: 0,
     Flower: 0,
-    photo: null,
   },
 };
 
@@ -44,13 +44,7 @@ export const userSlice = createSlice({
       state.isAuth = true;
     },
     resetLoginUser: () => {
-      return initialState;
-    },
-    exchangeAccessToken: (state, { payload }) => {
-      state.accessToken = payload;
-    },
-    currentCoke: (state, action) => {
-      state.user.cokeCount = action.payload;
+      return { ...initialState, hasLogoutHistory: true };
     },
     increseCoke: (state, action) => {
       state.user.cokeCount += action.payload;
@@ -81,13 +75,8 @@ export const userSlice = createSlice({
 const { reducer, actions } = userSlice;
 
 export const {
-  getUserPending,
-  getUserSuccess,
-  getUserFail,
   saveLoginUser,
   resetLoginUser,
-  exchangeAccessToken,
-  currentCoke,
   increseCoke,
   decreaseCoke,
   updateFriendList,
@@ -95,14 +84,5 @@ export const {
   updateItemCount,
   updateIceCount,
 } = actions;
-
-export const selectUser = (state) => state.user;
-export const selectUserId = (state) => state.user.id;
-export const selectUserToken = (state) => state.user.accessToken;
-export const selectCokeCount = (state) => state.user.cokeCount;
-export const selectIceCount = (state) => state.user.iceCount;
-export const selectFriendList = (state) => state.user.friendList;
-export const selectPendingFriendList = (state) => state.user.pendingFriendList;
-export const selectItemCount = (state) => state.user.itemCount;
 
 export default reducer;

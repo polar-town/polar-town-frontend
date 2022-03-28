@@ -13,6 +13,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import GameModal from "../GameModal/GameModal";
 import MessageInput from "./MessageInput";
 import MessageRow from "./MessageRow";
+import useLogout from "../../hooks/useLogout";
 
 const StyledGuestBookContainer = styled.div`
   height: 350px;
@@ -29,6 +30,7 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
   const { id } = useParams();
   const dispatch = useDispatch();
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
     setIsLoading(true);
@@ -46,7 +48,10 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
 
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, []);
 
@@ -55,11 +60,11 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
 
     socket.on(EVENTS.GET_MESSAGES, (messages) => {
       const sortedUpdatedMessages = sortMessages(messages);
+
       setMessageList(sortedUpdatedMessages);
     });
 
     return () => {
-      socket.off(EVENTS.READ_MESSAGES);
       socket.off(EVENTS.GET_MESSAGES);
     };
   }, [isLoading]);
@@ -79,21 +84,12 @@ function GuestBook({ socket, setIsReceiveGuestBook }) {
       }}
     >
       <StyledGuestBookContainer>
-        {user.id !== id && (
-          <MessageInput onMessageListUpdate={setMessageList} socket={socket} />
-        )}
+        <MessageInput onMessageListUpdate={setMessageList} socket={socket} />
         {!!messageList.length &&
           messageList.map((post) => {
             const uniqueId = nanoid();
-            return (
-              <MessageRow
-                key={uniqueId}
-                name={post.name}
-                message={post.message}
-                date={post.date}
-                post={post}
-              />
-            );
+
+            return <MessageRow key={uniqueId} post={post} />;
           })}
       </StyledGuestBookContainer>
     </GameModal>

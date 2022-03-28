@@ -3,6 +3,7 @@ import styled from "styled-components";
 import proptypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { closeAll } from "../../features/modal/modalSlice";
 import { updateTargetPendingFriendList } from "../../api/friendSearch";
@@ -71,12 +72,17 @@ function FriendSearchRow({
       targetEmail: email,
       axiosInstance,
     });
+
     e.target.textContent = OPTION.REQUEST_SENT;
     e.target.setAttribute("disabled", true);
 
+    toast(`친구 신청을 완료했어요 🎉`, {
+      className: "toast",
+    });
+
     socket.emit(EVENTS.FRIEND_REQUEST, {
       to: email,
-      userName: user.username,
+      userName: user.name,
       email: user.email,
     });
   }
