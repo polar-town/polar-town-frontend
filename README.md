@@ -1,8 +1,31 @@
 # 🐻‍❄️POLAR TOWN🐻‍❄️
 
-메일함 비우기를 통하여 얻을 수 있는 콜라로 북극곰 마을을 꾸밀 수 있는 소셜 웹 앱
+메일함 비우기를 통하여 얻을 수 있는 콜라로 북극곰 마을을 꾸밀 수 있는 소셜 웹 애플리케이션
 
 ❄️ [폴라타운 놀러가기](https://polartowns.com/) <br>
+<details>
+  <summary><b>Google에서 확인하지 않은 앱 로그인 방법 (Troubleshooting)</b></summary>
+  <br/>
+  애플리케이션을 처음 이용하시는 경우 팝업창에 <a target="_blank" href="https://support.google.com/cloud/answer/7454865#unverified-app-screen">Google에서 확인하지 않은 앱</a> 이라는 정보를 보실 수 있습니다. <br>폴라타운은 로그인 시 유저에게 gmail에 대한 권한(확인, 영구 삭제 포함) 요청을 하는데, 해당 scope이 구글의 Restricted scope에 해당하기 때문에 애플리케이션에 대한 Google 인증이 필요합니다.
+  <br>
+  폴라타운 팀은 다음과 같은 <a target="_blank" href="https://www.privacypolicies.com/live/fea10eb9-79bb-4a3c-805a-845a79f53d81" >Privacy Policy</a>로 애플리케이션 인증을 진행 중입니다. 인증에는 2022년 3월 30일 기준, 약 4-6주가량 소요되므로 Google 인증 완료 전까지 아래와 같은 절차로 로그인 진행하실 수 있음을 안내해 드립니다. 해당 절차는 최초 한 번만 진행하시면 됩니다.
+  <br>
+  <br>
+  <ul>
+    <li>팝업창 좌측 하단의 <b>고급</b> → <b>polartowns.com으로 이동</b> → <b>Gmail에서 모든 이메일 확인, 작성, 전송, 영구삭제</b> 권한 동의 후 로그인</li>
+  <ul>
+  <br>
+  <table>
+    <tbody>
+      <tr>
+        <td><img width="300" src="https://user-images.githubusercontent.com/80205036/160642971-2297e707-ee13-4b81-bc01-e98aad044253.png"></td>
+        <td><img width="300" src="https://user-images.githubusercontent.com/80205036/160642962-c59a3622-6f84-4cc5-994c-50df7498fa8f.png"></td>
+        <td><img width="300" src="https://user-images.githubusercontent.com/80205036/160642955-09f3f937-2ba5-49b1-b6de-b351935ce050.png"></td>
+      </tr>
+    </tbody>
+  </table>
+</details>
+
 ❄️ [백엔드 Repository](https://github.com/polar-town/polar-town-backend)
 
 ## ✔️ 폴라타운 소개
@@ -19,9 +42,9 @@ $ npm install
 ```
 ### 환경 변수 설정
 ```
-REACT_APP_BASE_URL=http://localhost:3000
+REACT_APP_BASE_URL=http://localhost:3001
 REACT_APP_CLIENT_ID=<YOUR_GOOGIE_API_CLIENT_ID>
-REACT_APP_REDIRECT_URI=http://localhost:3001
+REACT_APP_REDIRECT_URI=http://localhost:3000
 REACT_APP_USER_GMAIL=https://mail.google.com/mail/u/1/#inbox
 ```
 ### 실행
