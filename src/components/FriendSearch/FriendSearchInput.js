@@ -1,10 +1,9 @@
 import React, { useRef } from "react";
 import proptypes from "prop-types";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import { getSearchedFriendList } from "../../api/friendSearch";
-import { selectUserId } from "../../features/user/userSlice";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const SearchInputContainer = styled.div`
   display: flex;
@@ -31,19 +30,25 @@ const SearchInputContainer = styled.div`
 
 function FriendSearchInput({ updateResult, onPageChange, storeQuery }) {
   const searchInput = useRef();
-  const userId = useSelector(selectUserId);
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   async function handleSendButtonClick() {
-    const query = searchInput.current.value;
-    const searchResult = await getSearchedFriendList({
-      userId,
-      query,
-      axiosInstance,
-    });
-    onPageChange(2);
-    storeQuery(query);
-    updateResult(searchResult.users);
+    try {
+      const query = searchInput.current.value;
+      const searchResult = await getSearchedFriendList({
+        query,
+        axiosInstance,
+      });
+      onPageChange(2);
+      storeQuery(query);
+      updateResult(searchResult.users);
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
   }
 
   return (

@@ -6,6 +6,7 @@ import { changeLocation } from "../../api/item";
 import OutItem from "./OutItem";
 import possibleLocation from "../../utils/validateItemLocation";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const IcePaletteContainer = styled.div`
   position: relative;
@@ -23,6 +24,7 @@ const IcePaletteContainer = styled.div`
 function IcePalette({ iceCount, outItems, onOutItems }) {
   const { id: townId } = useParams();
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   return (
     <IcePaletteContainer
@@ -53,8 +55,11 @@ function IcePalette({ iceCount, outItems, onOutItems }) {
               newLocation: [xCoordinate, yCoordinate],
               axiosInstance,
             });
-          } catch (err) {
-            console.error(err);
+          } catch (error) {
+            console.error(error.response?.status);
+            if (error.response?.status === 401) {
+              logout();
+            }
           }
         }
       }}

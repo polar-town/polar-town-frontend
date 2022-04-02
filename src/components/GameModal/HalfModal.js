@@ -5,6 +5,7 @@ import NotificationCircle from "../NotificationCircle/NotificationCircle";
 import { getPendingFriendList } from "../../api/friendlist";
 import { useSelector } from "react-redux";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useLogout from "../../hooks/useLogout";
 
 const StyledHalfModal = styled.div`
   margin: 0 auto;
@@ -40,20 +41,28 @@ function HalfModal({ category, children, setIsReceiveGift }) {
   const [hasNewPendingFriend, setHasNewPendingFriend] = useState(false);
   const [showFirstContent, setShowFirstContent] = useState(true);
   const axiosInstance = useAxiosPrivate();
+  const logout = useLogout();
 
   useEffect(async () => {
-    if (category[1] === "친구 요청") {
-      const pendingFriendList = await getPendingFriendList({
-        userId: user.id,
-        axiosInstance,
-      });
-      const isExistNewPendingFriend = pendingFriendList.some(
-        (friend) => !friend.isChecked,
-      );
+    try {
+      if (category[1] === "친구 요청") {
+        const pendingFriendList = await getPendingFriendList({
+          userId: user.id,
+          axiosInstance,
+        });
+        const isExistNewPendingFriend = pendingFriendList.some(
+          (friend) => !friend.isChecked,
+        );
 
-      setHasNewPendingFriend(isExistNewPendingFriend);
+        setHasNewPendingFriend(isExistNewPendingFriend);
+      }
+    } catch (error) {
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
-  });
+  }, []);
 
   return (
     <StyledHalfModal>
@@ -70,7 +79,9 @@ function HalfModal({ category, children, setIsReceiveGift }) {
             if (setIsReceiveGift) {
               setIsReceiveGift(false);
             }
+
             setShowFirstContent(false);
+            setHasNewPendingFriend(false);
           }}
         >
           {category?.[1]}

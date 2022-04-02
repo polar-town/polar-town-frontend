@@ -29,6 +29,8 @@ import Shop from "../Shop/Shop";
 import FriendProfile from "../FriendProfile/FriendProfile";
 import ShopFriendList from "../FriendList/ShopFriendList";
 import IcePalette from "./IcePalette";
+import useLogout from "../../hooks/useLogout";
+import { getMessageList } from "../../api/guestbook";
 
 const TownDiv = styled.div`
   width: 100vw;
@@ -76,6 +78,21 @@ const GiftAndItemContainer = styled.div`
   }
 `;
 
+const PostBoxContainer = styled.div`
+  position: absolute;
+  top: 40%;
+  left: 10%;
+  z-index: 1;
+
+  i {
+    position: absolute;
+    top: 0px;
+    left: 57px;
+    font-size: 17px;
+    color: red;
+  }
+`;
+
 function Town({ socketInit }) {
   const [isLoading, setIsLoading] = useState(false);
   const [hostName, setHostName] = useState("");
@@ -102,6 +119,7 @@ function Town({ socketInit }) {
   const { user: loginUser } = useSelector((state) => state.user);
   const axiosInstance = useAxiosPrivate();
   const socket = socketInit();
+  const logout = useLogout();
 
   useEffect(async () => {
     setIsLoading(true);
@@ -117,7 +135,10 @@ function Town({ socketInit }) {
 
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.status);
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   }, [id, loginUser.iceCount]);
 
@@ -139,8 +160,6 @@ function Town({ socketInit }) {
     });
 
     return () => {
-      socket.off(EVENTS.JOIN);
-      socket.off(EVENTS.LEFT);
       socket.off(EVENTS.FRIEND_REQUEST);
       socket.off(EVENTS.GET_PRESENT);
     };
@@ -165,6 +184,26 @@ function Town({ socketInit }) {
     };
   }, [isLoading, id]);
 
+  useEffect(async () => {
+    const response = await getMessageList({ townId: id, axiosInstance });
+
+    const { guestBook } = response.data.result;
+    const isExistNewGuestBook = guestBook.some((msg) => !msg.isChecked);
+    setIsReceiveGuestBook(isExistNewGuestBook);
+  }, [isReceiveGuestBook]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    socket.on(EVENTS.GET_MESSAGES, () => {
+      setIsReceiveGuestBook(true);
+    });
+
+    return () => {
+      socket.off(EVENTS.GET_MESSAGES);
+    };
+  }, [isLoading, isReceiveGuestBook]);
+
   return (
     <>
       <Header socket={socket} />
@@ -178,10 +217,12 @@ function Town({ socketInit }) {
       <TownDiv iceCount={iceCount}>
         <HostNameContainer>{hostName} 마을</HostNameContainer>
         <CokeCounter />
-        <PostBox
-          isReceiveGuestBook={isReceiveGuestBook}
-          setIsReceiveGuestBook={setIsReceiveGuestBook}
-        />
+        <PostBoxContainer>
+          <PostBox />
+          {isReceiveGuestBook && loginUser.id === id && (
+            <i className="fas fa-exclamation-circle guestBookNoti" />
+          )}
+        </PostBoxContainer>
         <IcePalette
           iceCount={iceCount}
           outItems={outItems}

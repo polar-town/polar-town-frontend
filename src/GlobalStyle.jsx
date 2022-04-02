@@ -24,6 +24,13 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.5;
     overflow-x: hidden;
     overflow-y: hidden;
+
+    .toast {
+      background-color: #1e5269;
+      color: #fff;
+      font-size: 18px;
+      text-align: center;
+    }
   }
 
   h2, p {
