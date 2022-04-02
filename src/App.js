@@ -7,6 +7,7 @@ import Login from "./components/Login/Login";
 import Town from "./components/Town/Town";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
+import PrivacyPolicy from "./components/PrivacyPolicy/PrivacyPolicy";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
             />
           </Route>
         </Route>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="*" element={<div>Error</div>} />
       </Routes>
     </>
